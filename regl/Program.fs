@@ -1,30 +1,58 @@
 ﻿// For more information see https://aka.ms/fsharp-console-apps
-module Program
+namespace Regl
 
-open System
-open Argu
+open System.IO
 
-type Arguments =
-    | [<AltCommandLine("-e")>] Pattern of string
+module Program =
 
-    interface IArgParserTemplate with
-        member s.Usage =
-            match s with
-            | Pattern _ -> "To gives pattern of Regex..."
+    open System
+    open Argu
+    open TextCopy
 
-[<EntryPoint>]
-let main args =
+    type Commands =
+        | [<AltCommandLine("copy")>] Copy
+        | [<AltCommandLine("split")>] Split of string
 
-    let pipe = Console.In.ReadToEnd()
-    printfn $"{pipe}"
-    
-    let parser = ArgumentParser.Create<Arguments>()
-    try
-        let results = parser.ParseCommandLine args
-        ()
-    with
-    | :? ArguParseException as ex ->
-        // 印出 Argu 自動產生的使用說明
-        printfn "%s" ex.Message
+        interface IArgParserTemplate with
+            member s.Usage =
+                match s with
+                | Copy -> "Copies txt to clipboard."
+                | Split _ -> "Separates txt to lines."
 
-    0
+    type Arguments =
+        | [<AltCommandLine("-e")>] Pattern of string
+
+        interface IArgParserTemplate with
+            member s.Usage =
+                match s with
+                | Pattern _ -> "To gives pattern of Regex..."
+
+    [<EntryPoint>]
+    let Main args =
+        let mutable pipeIn = Console.In.ReadToEnd()
+
+        let rt =
+            if pipeIn |> String.IsNullOrEmpty then
+                printfn "regl must be used after a pipe to input txt..."
+                1
+            else
+                let parser = ArgumentParser.Create<Commands>()
+
+                try
+                    let results = parser.ParseCommandLine args
+
+                    for cmd in results |> _.GetAllResults() do
+                        Console.WriteLine $"==> {cmd}"
+                        match cmd with
+                        | Copy ->
+                            ClipboardService.SetText pipeIn
+                        | Split separator ->
+                            pipeIn <- pipeIn |> _.Split(separator) |> Array.reduce (fun a b -> $"{a}\n{b}")
+
+                    Console.Out.Write(pipeIn)
+                with :? ArguParseException as ex ->
+                    printfn $"%s{ex.Message}"
+
+                0
+
+        rt
