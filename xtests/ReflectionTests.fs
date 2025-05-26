@@ -1,13 +1,22 @@
 namespace XTests
 
 open System
+open System.Reflection
 open Regl.Program
 open Xunit
+open Xunit.Abstractions
 
 module ReflectionTests =
 
+    [<AttributeUsage(AttributeTargets.Property)>]
+    type Optional() =
+        inherit Attribute()
+
     type Arguments() =
+        [<Optional>]
         member val cmd: Commands = Copy with get, set
+
+        [<Optional>]
         member val f: bool = false with get, set
 
     and Commands =
@@ -18,11 +27,19 @@ module ReflectionTests =
 
     let True b = Assert.True b
 
-    let hasField field =
-        let fieldInfo = argType.GetField field
-        fieldInfo <> null
+    let flags = BindingFlags.NonPublic ||| BindingFlags.Public
 
-    [<Fact>]
-    let ``Tests Union Type`` () =
-        True(hasField "cmd")
-        ()
+    let hasField field =
+        argType.GetRuntimeFields()
+        |> Seq.tryFind(fun f -> f.Name = field)
+        |> Option.isSome
+
+    type Tests(output: ITestOutputHelper) =
+
+        let log a = output.WriteLine $"{a}"
+
+        [<Fact>]
+        let ``Tests Union Type`` () =
+            True(hasField "cmd@")
+            True(hasField "f@")
+            ()
