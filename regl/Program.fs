@@ -1,77 +1,69 @@
-﻿// For more information see https://aka.ms/fsharp-console-apps
-namespace Regl
-
-open System.IO
-open System.Text
-open System.Text.RegularExpressions
+﻿namespace Regl
 
 module Program =
+    /// Represents a builder for creating command line argument parsers
+    /// with support for required parameters, required arguments and optional arguments
+    type CommandBuilder(name: string) =
+        /// the name of the command
+        member this.name = name
+        /// the usage of the command
+        member val usage = None with get, set
+        /// mean to be in the first of all args and in order
+        member val requiredParamsCount = 0 with get, set
+        /// mean to be after params and in any order but required
+        member val requiredArgs = List<string>.Empty with get, set
+        /// mean to be after params and in any order but can be optionally given
+        member val optionalArgs = List<string>.Empty with get, set
 
-    open System
-    open Argu
-    open TextCopy
+        /// Makes tryParser to return Some or None
+        member private this.tryParse(argv: string array) =
+            /// Determines if the given argument is a flag by checking if it starts with - or --
+            let isFlag (arg: string) =
+                arg.StartsWith("-") || arg.StartsWith("--")
 
-    type Commands =
-        | [<AltCommandLine("copy")>] Copy
-        | [<AltCommandLine("split")>] Split of string
-        | [<AltCommandLine("match")>] Match of MatchOption
+            /// Gets the value associated with a flag at the given index, if one exists
+            let getFlagValue (argv: string array) (index: int) =
+                if index + 1 < argv.Length && not (isFlag argv[index + 1]) then
+                    Some argv[index + 1]
+                else
+                    None
 
-        interface IArgParserTemplate with
-            member s.Usage =
-                match s with
-                | Copy -> "Copies txt to clipboard."
-                | Split _ -> "Separates txt to lines."
-                | Match _ -> "Matches txt as lines and returns passed lines"
-
-    and MatchOption =
-        { Pattern: string
-          [<AltCommandLine("-f")>]
-          Format: string option }
-
-    let (?>) (flag: bool) (ifTrue, ifFalse) = if flag then ifTrue else ifFalse
-
-    [<EntryPoint>]
-    let Main args =
-        let mutable pipeIn = Console.In.ReadToEnd()
-
-        let rt =
-            if pipeIn |> String.IsNullOrEmpty then
-                printfn "regl must be used after a pipe to input txt..."
-                1
+            // Attempts to parse the command line arguments according to the command's requirements
+            if argv.Length < (1 + this.requiredParamsCount + this.requiredArgs.Length) then
+                None
+            else if argv[0] <> name then
+                None
+            else if
+                not (
+                    this.requiredArgs
+                    |> List.forall (fun name -> argv |> Array.exists (fun arg -> arg = name))
+                )
+            then
+                None
             else
-                let parser = ArgumentParser.Create<Commands>()
+                let rem = argv[1..]
+                let prmtrs = rem[.. this.requiredParamsCount - 1]
 
-                try
-                    let results = parser.ParseCommandLine args
+                let flags =
+                    rem[this.requiredParamsCount ..]
+                    |> Array.mapi (fun i arg ->
+                        if isFlag arg then
+                            (arg, getFlagValue rem[this.requiredParamsCount ..] i)
+                        else
+                            (arg, None))
+                    |> Array.filter (fun (arg, _) -> isFlag arg)
 
-                    for cmd in results |> _.GetAllResults() do
-                        match cmd with
-                        | Copy -> ClipboardService.SetText pipeIn
-                        | Split dlmt -> // dlmt as delimiter
-                            pipeIn <- pipeIn |> _.Split(dlmt) |> Array.reduce (fun a b -> $"{a}\n{b}")
-                        | Match opts -> // ptrn as pattern
-                            let sb = StringBuilder()
-                            let lines = pipeIn.Replace("\r", "").Split("\n")
-                            let regex = (opts.Pattern |> String.IsNullOrEmpty) ?> (".*", opts.Pattern) |> Regex
+                Some({ prmtrs = prmtrs; args = flags })
 
-                            for line in lines do
-                                let m = regex.Match line
+        member this.build() = this.tryParse
 
-                                if m.Success then
-                                    if opts.Format.IsSome then
-                                        let mutable buffer = opts.Format.Value
-                                        m.Groups |> Seq.iteri (fun i g -> buffer <- buffer.Replace($"${i}", g.Value))
-                                    else
-                                        sb.AppendLine m.Value |> ignore
-                                else
-                                    ()
+    /// Represents the result of parsing command line arguments
+    /// containing both positional parameters and named arguments
+    and ParseResult =
+        { prmtrs: string array  // Array of positional parameters
+          args: (string * string option) array }  // Array of named arguments with their values
 
-                            pipeIn <- sb.ToString()
-
-                    Console.Write(pipeIn)
-                with :? ArguParseException as ex ->
-                    printfn $"%s{ex.Message}"
-
-                0
-
-        rt
+    /// Entry point for the application
+    /// Returns 0 to indicate successful execution
+    [<EntryPoint>]
+    let Main args = 0
