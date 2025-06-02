@@ -13,16 +13,18 @@
     <ItemGroup>
         <PackageReference Include="TextCopy" Version="6.2.1"/>
     </ItemGroup>
-    
+
     <ItemGroup>
+        <Compile Include="Builders.Source.fs" />
+        <Compile Include="Commands.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
     <ItemGroup>
-      <Content Include="..\.dockerignore">
-        <Link>.dockerignore</Link>
-      </Content>
-      <Content Include="Dockerfile" />
+        <Content Include="Dockerfile"/>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
     </ItemGroup>
 
 </Project>
