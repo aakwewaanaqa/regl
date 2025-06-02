@@ -1,6 +1,9 @@
 #!/bin/bash
 
-cd ../regl/bin/Release/net9.0/linux-x64/ || return 1
+case "$OSTYPE" in
+  darwin*) cd ../regl/bin/Release/net9.0/osx-arm64/ || return 1
+esac
+
 PATH=$PATH:$(pwd)
 
 if [[ -e "$(pwd)/regl" ]]
@@ -12,6 +15,3 @@ else
 fi
 
 echo "Hello World!" | regl copy
-echo "${PATH}" | regl split :
-
-cat regl.deps.json | regl match "System"
