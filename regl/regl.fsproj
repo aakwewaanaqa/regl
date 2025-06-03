@@ -16,6 +16,8 @@
 
     <ItemGroup>
         <Compile Include="Builders.Source.fs" />
+        <Compile Include="Commands.Shared.fs" />
+        <Compile Include="Commands.Gen.fs" />
         <Compile Include="Commands.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
