@@ -1,29 +1,28 @@
 ﻿namespace regl
 
 open System
+open regl.Commands
 
 module Program =
     /// Entry point for the application
     /// Returns 0 to indicate successful execution
     [<EntryPoint>]
     let main argv =
-        let commands = [ Commands.copyCmd
-                         Commands.splitCmd
-                         Commands.matchCmd
-                         Commands.removeEmptyCmd
-                         Commands.toFileCmd ]
-
         try
-            commands
-            |> List.tryPick (fun cmd -> cmd.parse argv)
-            |> Option.iter (fun result ->
-                commands
+            let matchedCommand = 
+                cmds
                 |> List.tryFind (fun cmd -> cmd.parse argv |> Option.isSome)
-                |> Option.iter (fun cmd -> cmd.execute (cmd.parse argv)))
 
-            Console.WriteLine Commands.pIn
-
-            0
+            match matchedCommand with
+            | Some cmd ->
+                cmd.execute (cmd.parse argv)
+                0
+            | None ->
+                printfn "Available commands:"
+                cmds
+                |> List.choose _.usage
+                |> List.iter (printfn "%s")
+                1
         with ex ->
             printfn $"Error: {ex}"
             1

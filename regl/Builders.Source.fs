@@ -91,9 +91,11 @@ type CommandBuilder(name: string, execution: ParseResult option -> unit) =
                   flags = flagArgs |> parseFlags }
             )
 
-    member this.build() =
-        { parse = this.parser
-          execute = execution }
+    member this.build() = {
+            parse = this.parser
+            usage = this.usage
+            execute = execution
+        }
 
 /// Represents the result of parsing command line arguments
 /// containing both positional parameters and named arguments
@@ -101,6 +103,8 @@ and ParseResult =
     { parameters: string array // Array of positional parameters
       flags: IFlag array } // Array of named flags with their values
 
-and CommandBody =
-    { parse: string array -> ParseResult option
-      execute: ParseResult option -> unit }
+and CommandBody = {
+      parse: string array -> ParseResult option
+      execute: ParseResult option -> unit
+      usage: string option
+    }
