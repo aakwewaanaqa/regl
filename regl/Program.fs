@@ -7,7 +7,11 @@ module Program =
     /// Returns 0 to indicate successful execution
     [<EntryPoint>]
     let main argv =
-        let commands = [ Commands.copyCmd; Commands.splitCmd; Commands.matchCmd ]
+        let commands = [ Commands.copyCmd
+                         Commands.splitCmd
+                         Commands.matchCmd
+                         Commands.removeEmptyCmd
+                         Commands.toFileCmd ]
 
         try
             commands
