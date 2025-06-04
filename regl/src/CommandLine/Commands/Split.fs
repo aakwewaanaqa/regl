@@ -2,6 +2,7 @@ module Regl.CommandLine.Commands.Split
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.IO
 open TextCopy
 open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
@@ -12,7 +13,7 @@ let exe (result: ParseResult option) =
     | Some result ->
         let out =
             Regex(result.parameters[0])
-            |> _.Split(readIn ())
+            |> _.Split(LinesReader.allLines ())
             |> Array.reduce (fun a b -> $"{a}\n{b}")
 
         writeOut out

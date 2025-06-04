@@ -2,8 +2,6 @@ module Regl.CommandLine.Shared
 
 open System
 
-let readIn () = Console.In.ReadToEnd()
-
 /// This function takes a string as an argument and directly writes it to the standard output stream of the Console.
 let writeOut (a: string) = Console.Out.Write(a)
 

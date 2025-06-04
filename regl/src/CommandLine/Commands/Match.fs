@@ -2,6 +2,7 @@ module Regl.CommandLine.Commands.Match
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.IO
 open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
@@ -18,7 +19,7 @@ let exe (result: ParseResult option) =
 
         let out =
             let regex = Regex(result.parameters[0])
-            let matches = regex.Matches(readIn ())
+            let matches = regex.Matches(LinesReader.allLines ())
 
             matches
             |> Seq.map (fun m ->

@@ -1,6 +1,7 @@
 module Regl.CommandLine.Commands.Gen
 
 open System.IO
+open Regl.CommandLine.IO
 open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
@@ -24,8 +25,7 @@ let exe (result: ParseResult option) =
 
     let genCmds = [ copyLineCmd ]
 
-    readIn ()
-    |> _.Split("\n")
+    LinesReader.lines
     |> Array.iteri (fun i line ->
 
         if i = 0 then

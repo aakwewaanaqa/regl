@@ -45,6 +45,11 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="src\CommandLine\IO\LinesReader.fsi" />
+        <Compile Include="src\CommandLine\IO\LinesReader.fs" />
+    </ItemGroup>
+    
+    <ItemGroup>
         <Compile Include="src\CommandLine\Commands\Copy.fsi"/>
         <Compile Include="src\CommandLine\Commands\Copy.fs"/>
 
