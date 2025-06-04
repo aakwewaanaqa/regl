@@ -6,5 +6,5 @@ open Regl.CommandLine.Types
 type GenCommandBody = {
     parse   : string array -> ParseResult option
     usage   : string
-    execute : StringReader -> unit
+    execute : ParseResult option -> StringReader -> unit
 }

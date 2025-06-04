@@ -1,17 +1,16 @@
 module Regl.CommandLine.Commands.Gen.Copy
 
-open System
-open Regl.CommandLine.Shared
+open System.IO
 open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
 open Regl.CommandLine.Types.Shared
+open Regl.CommandLine.Commands.Gen.Types
 
 let mutable lineCount : int = 0
 
-let exe (result: ParseResult option) =
+let exe (result: ParseResult option) (sourceFile: StringReader) =
     lineCount <- getParam result 0 |> int
 
 let cmd =
-    let builder = CommandBuilder("copy", exe)
-    builder.requiredParamsCount <- 1
-    builder.build ()
+    let builder = GenCommandBuilder("copy", exe)
+    builder._requiredParamCount <- 1
+    builder :> ICommandBuilder<GenCommandBody> |> _.build()

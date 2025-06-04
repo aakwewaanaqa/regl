@@ -4,7 +4,7 @@ open System.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.Shared
 
-type GenCommandBuilder(name: string, exe: StringReader -> unit) =
+type GenCommandBuilder(name: string, exe: ParseResult option -> StringReader -> unit) =
     member val _optionalFlags = list<IFlag>.Empty with get, set
     member val _requiredFlags = list<IFlag>.Empty with get, set
     member val _requiredParamCount = 0 with get, set
