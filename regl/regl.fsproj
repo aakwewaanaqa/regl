@@ -8,25 +8,39 @@
         <PublishSingleFile>true</PublishSingleFile>
         <Configurations>Release</Configurations>
         <Platforms>AnyCPU</Platforms>
+        <RootNamespace>Regl</RootNamespace>
     </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="TextCopy" Version="6.2.1"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Include="Builders.Source.fs" />
-        <Compile Include="Commands.Shared.fs" />
-        <Compile Include="Commands.Gen.fs" />
-        <Compile Include="Commands.fs" />
-        <Compile Include="Program.fs"/>
-    </ItemGroup>
 
     <ItemGroup>
         <Content Include="Dockerfile"/>
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
+        <Folder Include="Commands\Shell\"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="TextCopy" Version="6.2.1"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="src\CommandLine\Shared.fs"/>
+
+        <Compile Include="src\CommandLine\Types\IFlag.fsi"/>
+        <Compile Include="src\CommandLine\Types\IInFlag.fsi"/>
+        <Compile Include="src\CommandLine\Types\IFlag.fs"/>
+        <Compile Include="src\CommandLine\Types\IInFlag.fs"/>
+
+        <Compile Include="src\CommandLine\Types\OnFlag.fs"/>
+        <Compile Include="src\CommandLine\Types\InStringFlag.fs"/>
+        <Compile Include="src\CommandLine\Types\ParseResult.fs"/>
+        <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
+        <Compile Include="src\CommandLine\Types\Shared.fs"/>
+        <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="Program.fs"/>
     </ItemGroup>
 
 </Project>

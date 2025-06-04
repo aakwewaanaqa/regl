@@ -1,7 +1,7 @@
 public async UniTask<Response<$TResult>> $Name($Dto dto) =>
     await new RequestBuilder()
-        .AddAuthorization()     # if $isAuth #
-        .AddQuery(dto)          # if $isDto  #
-        .AddBody(dto)           # if $isBody #
+        .AddAuthorization()     # has-envar $isAuth #
+        .AddQuery(dto)          # has-envar $isDto  #
+        .AddBody(dto)           # has-envar $isBody #
         .SetEndpoint($EndPoint)
         .Send<$Result>();

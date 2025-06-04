@@ -1,41 +1,28 @@
-module regl.Commands
+/// <summary>
+/// This is the module to deal with common commands from the command line.
+/// </summary>
+/// <remarks>
+///     The following commands are supported:
+///     - copy: Copy piped input to clipboard
+///     - split: Split input text using specified delimiter
+///     - match: Match text using regex with optional output format
+///     - remove-empty: Remove empty lines from piped input
+///     - ls: List files in the current directory with optional recursive search
+///     - to-file: Write input content to a specified file with optional append mode
+///     - gen: Generic command for generating content based on piped in a source file and commands inside the file
+/// </remarks>
+module Regl.CommandLine.Commands
 
-open System.Text
-open System.Text.RegularExpressions
-open Builders.Source
 open System
 open System.IO
+open System.Text.RegularExpressions
 open TextCopy
-open regl.Builders.Source
+open Regl.CommandLine.Shared
+open Regl.CommandLine.Builders
+open Regl.CommandLine.Types
+open Regl.CommandLine.Types.Shared
 
-let readIn () = Console.In.ReadToEnd()
-
-/// Writes the specified string to the console's standard output stream.
-/// This function takes a string as an argument and directly writes it to the standard output stream of the Console.
-let writeOut (a: string) = Console.Out.Write(a)
-
-/// This function takes a string argument and writes it to the standard output stream of the console, appending a new line at the end.
-let writeOutLine (a: string) = Console.Out.WriteLine(a)
-
-(*
-      zh-TW: 將輸入的內容複製到剪貼簿
-      en-US: Copy input content to clipboard
-    *)
-let copyCmd =
-    let copyExe (result: ParseResult option) =
-        match result with
-        | Some result -> ClipboardService.SetText(readIn ())
-        | None -> raise (Exception "copy can't be executed...")
-
-    let builder = CommandBuilder("copy", copyExe)
-    builder.usage <- Some "regl copy"
-    builder.build ()
-
-
-(*
-      zh-TW: 使用指定的分隔符將輸入文本分割
-      en-US: Split input text using specified delimiter
-    *)
+/// Split input text using specified delimiter
 let splitCmd =
     let splitExe (result: ParseResult option) =
         match result with
@@ -53,10 +40,7 @@ let splitCmd =
     builder.usage <- Some "regl split <DELIMITER>"
     builder.build ()
 
-(*
-      zh-TW: 使用正則表達式匹配文本並可選擇輸出格式
-      en-US: Match text using regex with optional output format
-    *)
+/// Match text using regex with optional output format
 let matchCmd =
     let matchExe (result: ParseResult option) =
         match result with
@@ -91,10 +75,7 @@ let matchCmd =
     builder.usage <- Some "regl match <REGEX> [--format <FORMAT>]"
     builder.build ()
 
-(*
-      zh-TW: 移除文本中的空行
-      en-US: Remove empty lines from text
-    *)
+/// Remove empty lines from piped input
 let removeEmptyCmd =
     let removeEmptyExe (result: ParseResult option) =
         match result with
@@ -111,15 +92,15 @@ let removeEmptyCmd =
     builder.usage <- Some "regl remove-empty"
     builder.build ()
 
-(*
-      zh-TW: 列出當前目錄中的文件，可選遞迴搜索
-      en-US: List files in current directory with optional recursive search
-    *)
+/// List files in the current directory with optional recursive search
 let lsCmd =
     let lsExe (result: ParseResult option) =
+
         match result with
-        | Some result ->
-            let isRecursive = result.flags |> Array.tryFind (fun f -> f.name = "-R") |> _.IsSome
+        | Some _ ->
+
+            let hasPattern = tryGetFlagValue result "--pattern"
+            let isRecursive = hasFlag result "-R"
 
             let searchOption =
                 if isRecursive then
@@ -127,23 +108,29 @@ let lsCmd =
                 else
                     SearchOption.TopDirectoryOnly
 
+            let pattern = hasPattern |> Option.defaultValue ""
+
             let out =
                 Directory.GetCurrentDirectory()
-                |> (fun pwd -> Directory.GetFiles(pwd, "", searchOption))
+                |> (fun pwd -> Directory.GetFiles(pwd, pattern, searchOption))
                 |> Array.reduce (fun a b -> $"{a}\n{b}")
 
             writeOut out
         | None -> raise (Exception "ls can't be executed...")
 
     let builder = CommandBuilder("ls", lsExe)
-    builder.optionalFlags <- [ OnFlag("-R") ]
-    builder.usage <- Some "regl ls [-R]"
+    builder.optionalFlags <- [ OnFlag("-R"); InString("--pattern") ]
+
+    builder.usage <-
+        Some
+            "regl ls [-R] [--pattern <PATTERN>]
+    List files directory from the current directory.
+    -R: Recursively search the current directory.
+    --pattern: Apply pattern to search method."
+
     builder.build ()
 
-(*
-      zh-TW: 將輸入內容寫入指定文件，可選追加模式
-      en-US: Write input content to specified file with optional append mode
-    *)
+/// Write input content to a specified file with optional append mode
 let toFileCmd =
     let toFileExe (result: ParseResult option) =
         match result with
@@ -160,14 +147,11 @@ let toFileCmd =
         | None -> raise (Exception "to-file can't be executed...")
 
     let builder = CommandBuilder("to-file", toFileExe)
-    builder.usage <- Some "regl to-file <FILEPATH>"
+    builder.usage <- Some "regl to-file [--append] <FILEPATH>"
     builder.requiredParamsCount <- 1
     builder.build ()
 
-(*
-      zh-TW: 根據特定格式生成內容的通用命令
-      en-US: Generic command for generating content based on specific format
-    *)
+/// Generic command for generating content based on specific format
 let genCmd =
     let genExe (result: ParseResult option) =
 

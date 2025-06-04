@@ -51,8 +51,9 @@ let ctxVarCmd =
     builder.requiredParamsCount <- 3
     builder.build ()
 
+/// ctxCmd or context command is the command in the source file for generation.
+/// This command consists of a form of
 let ctxCmd =
-
     let ctxExe (result: ParseResult option) =
         let ctx = readLine source (getParam result 0 |> int)
         matchers |> List.iter (fun m -> m.doMatch ctx)
@@ -65,16 +66,23 @@ let ctxCmd =
             Regex("[$]([a-zA-Z0-9_])")
             |> _.Replace(line, fun m -> getEnvar m.Groups[1].Value)
 
-        let rec exeTemplate () =
+        let rec templateRec () =
             let mutable read = readLine tFile 1
             read <- replaceVars read
+            if read.EndsWith("#") then
+                let commands = read.Split("#")[1]
+            else
+                writeOutLine read
             ()
 
-        exeTemplate ()
+        templateRec ()
 
     let builder = CommandBuilder("ctx", ctxExe)
     builder.requiredParamsCount <- 1
     builder.optionalFlags <- [ InString("--template-path") ]
+    builder.usage <- "
+    
+    "
     builder.build ()
 
 let copyCmd =

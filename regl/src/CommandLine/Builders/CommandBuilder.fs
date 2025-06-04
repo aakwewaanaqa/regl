@@ -1,48 +1,30 @@
-module regl.Builders.Source
+namespace Regl.CommandLine.Builders
 
-type IFlag =
-    abstract member name: string
+open Regl.CommandLine.Types
 
-type IInFlag<'a> =
-    inherit IFlag
-    abstract member value: 'a
-    abstract member tryParse: string -> string -> IInFlag<'a> option
-
-and OnFlag(name) =
-    interface IFlag with
-        member f.name = name
-
-and InString(name, value) =
-    interface IInFlag<string> with
-        member f.name = name
-        member f.value: string = value
-
-        member f.tryParse arg1 arg2 =
-            if arg1 <> name then None else Some(InString(name, arg2))
-
-    new(name) = InString(name, "")
-
-/// Represents a builder for creating command line argument parsers
-/// with support for required parameters, required arguments and optional arguments
+/// <summary>
+/// 表示创建命令行参数解析器的构建器
+/// 支持必需参数、必需参数和可选参数
+/// </summary>
 type CommandBuilder(name: string, execution: ParseResult option -> unit) =
-    /// the name of the command
+    /// 命令名称
     member this.name = name
-    /// the usage of the command
+    /// 命令用法
     member val usage = None with get, set
-    /// mean to be in the first of all flags and by order
+    /// 按顺序排在所有标志之前的必需参数数量
     member val requiredParamsCount = 0 with get, set
-    /// mean to be after params and in any order but required
-    member val requiredFlags = List<IFlag>.Empty with get, set
-    /// mean to be after params and in any order but can be optionally given
-    member val optionalFlags = List<IFlag>.Empty with get, set
+    /// 在参数之后以任意顺序出现但必需的标志
+    member val requiredFlags = list<IFlag>.Empty with get, set
+    /// 在参数之后以任意顺序出现但可选的标志
+    member val optionalFlags = list<IFlag>.Empty with get, set
 
-    /// Makes tryParser to return Some or None
+    /// 使tryParser返回Some或None
     member private this.parser(argv: string array) =
-        /// Determines if the given argument is a flag by checking if it starts with - or --
+        /// 通过检查参数是否以-或--开头来确定它是否为标志
         let isFlag (arg: string) =
             arg.StartsWith("-") || arg.StartsWith("--")
 
-        /// Gets the value associated with a flag at the given index, if one exists
+        /// 获取给定索引处标志的关联值（如果存在）
         let getFlagValue (argv: string array) (index: int) =
             if index + 1 < argv.Length && not (isFlag argv[index + 1]) then
                 Some argv[index + 1]
@@ -69,7 +51,7 @@ type CommandBuilder(name: string, execution: ParseResult option -> unit) =
                     None)
             |> Array.choose id
 
-        // Attempts to parse the command line arguments according to the command's requirements
+        // 根据命令的要求尝试解析命令行参数
         if argv.Length < (1 + this.requiredParamsCount + this.requiredFlags.Length) then
             None
         else if argv[0] <> name then
@@ -96,15 +78,3 @@ type CommandBuilder(name: string, execution: ParseResult option -> unit) =
             usage = this.usage
             execute = execution
         }
-
-/// Represents the result of parsing command line arguments
-/// containing both positional parameters and named arguments
-and ParseResult =
-    { parameters: string array // Array of positional parameters
-      flags: IFlag array } // Array of named flags with their values
-
-and CommandBody = {
-      parse: string array -> ParseResult option
-      execute: ParseResult option -> unit
-      usage: string option
-    }
