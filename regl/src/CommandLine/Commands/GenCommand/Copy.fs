@@ -1,9 +1,9 @@
-module Regl.CommandLine.Commands.Gen.Copy
+module Regl.CommandLine.Commands.GenCommand.Copy
 
 open System.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.Shared
-open Regl.CommandLine.Commands.Gen.Types
+open Regl.CommandLine.Commands.GenCommand.Types
 
 let mutable lineCount : int = 0
 

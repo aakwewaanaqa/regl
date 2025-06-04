@@ -68,16 +68,16 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBody.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBody.fs"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBody.fsi" />
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBody.fs" />
 
-        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBuilder.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBuilder.fs"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBuilder.fsi" />
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBuilder.fs" />
 
-        <Compile Include="src\CommandLine\Commands\Gen\Copy.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Gen\Copy.fs"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fsi" />
+        <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fs" />
 
-        <Content Include="src\CommandLine\Commands\Gen\README.md"/>
+        <Content Include="src\CommandLine\Commands\GenCommand\README.md" />
     </ItemGroup>
 
     <ItemGroup>

@@ -1,4 +1,4 @@
-namespace Regl.CommandLine.Commands.Gen.Types
+namespace Regl.CommandLine.Commands.GenCommand.Types
 
 open System.IO
 open Regl.CommandLine.Types
