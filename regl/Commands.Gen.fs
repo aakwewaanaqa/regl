@@ -9,7 +9,7 @@ open regl.Builders.Source
 open regl.Commands.Shared
 
 let mutable source: TextReader = null
-let mutable template: TextReader = null
+let mutable tFile: TextReader = null
 
 let readLine (reader: TextReader) count =
     let builder = StringBuilder()
@@ -18,7 +18,7 @@ let readLine (reader: TextReader) count =
         if count > 0 && not (isNull (reader)) then
             let line = reader.ReadLine()
 
-            if not (isNull (line)) then
+            if not (isNull line) then
                 builder.Append(line) |> ignore
                 read (count - 1)
             else
@@ -49,6 +49,32 @@ let ctxVarCmd =
 
     let builder = CommandBuilder("ctx-var", ctxVarExe)
     builder.requiredParamsCount <- 3
+    builder.build ()
+
+let ctxCmd =
+
+    let ctxExe (result: ParseResult option) =
+        let ctx = readLine source (getParam result 0 |> int)
+        matchers |> List.iter (fun m -> m.doMatch ctx)
+
+        match tryGetFlagValue result "--template-path" with
+        | Some v -> tFile <- new StringReader(File.ReadAllText v)
+        | None -> ()
+
+        let replaceVars (line: string) =
+            Regex("[$]([a-zA-Z0-9_])")
+            |> _.Replace(line, fun m -> getEnvar m.Groups[1].Value)
+
+        let rec exeTemplate () =
+            let mutable read = readLine tFile 1
+            read <- replaceVars read
+            ()
+
+        exeTemplate ()
+
+    let builder = CommandBuilder("ctx", ctxExe)
+    builder.requiredParamsCount <- 1
+    builder.optionalFlags <- [ InString("--template-path") ]
     builder.build ()
 
 let copyCmd =
