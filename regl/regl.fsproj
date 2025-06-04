@@ -27,16 +27,57 @@
         <Compile Include="src\CommandLine\Shared.fs"/>
 
         <Compile Include="src\CommandLine\Types\IFlag.fsi"/>
-        <Compile Include="src\CommandLine\Types\IInFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IFlag.fs"/>
+
+        <Compile Include="src\CommandLine\Types\IInFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IInFlag.fs"/>
 
         <Compile Include="src\CommandLine\Types\OnFlag.fs"/>
         <Compile Include="src\CommandLine\Types\InStringFlag.fs"/>
         <Compile Include="src\CommandLine\Types\ParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
-        <Compile Include="src\CommandLine\Types\Shared.fs"/>
+
+        <Compile Include="src\CommandLine\Types\ICommandBuilder.fsi"/>
+        <Compile Include="src\CommandLine\Types\ICommandBuilder.fs"/>
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
+
+        <Compile Include="src\CommandLine\Types\Shared.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="src\CommandLine\Commands\Copy.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Copy.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\Split.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Split.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\Ls.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Ls.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\ToFile.fsi"/>
+        <Compile Include="src\CommandLine\Commands\ToFile.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\Match.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Match.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\RemoveEmpty.fsi"/>
+        <Compile Include="src\CommandLine\Commands\RemoveEmpty.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\Gen.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Gen.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBody.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBody.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBuilder.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Gen\Types\GenCommandBuilder.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\Gen\Copy.fsi"/>
+        <Compile Include="src\CommandLine\Commands\Gen\Copy.fs"/>
+
+        <Content Include="src\CommandLine\Commands\Gen\README.md"/>
     </ItemGroup>
 
     <ItemGroup>

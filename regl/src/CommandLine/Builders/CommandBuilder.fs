@@ -17,8 +17,6 @@ type CommandBuilder(name: string, execution: ParseResult option -> unit) =
     member val requiredFlags = list<IFlag>.Empty with get, set
     /// 在参数之后以任意顺序出现但可选的标志
     member val optionalFlags = list<IFlag>.Empty with get, set
-
-    /// 使tryParser返回Some或None
     member private this.parser(argv: string array) =
         /// 通过检查参数是否以-或--开头来确定它是否为标志
         let isFlag (arg: string) =
@@ -72,7 +70,6 @@ type CommandBuilder(name: string, execution: ParseResult option -> unit) =
                 { parameters = parameters
                   flags = flagArgs |> parseFlags }
             )
-
     member this.build() = {
             parse = this.parser
             usage = this.usage

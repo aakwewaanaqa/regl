@@ -6,13 +6,12 @@ open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
-/// Copy piped input to clipboard
-let copyCmd =
-    let copyExe (result: ParseResult option) =
-        match result with
-        | Some result -> ClipboardService.SetText(readIn ())
-        | None -> raise (Exception "copy can't be executed...")
+let exe (result: ParseResult option) =
+    match result with
+    | Some result -> ClipboardService.SetText(readIn ())
+    | None -> raise (Exception "copy can't be executed...")
 
-    let builder = CommandBuilder("copy", copyExe)
+let cmd =
+    let builder = CommandBuilder("copy", exe)
     builder.usage <- Some "regl copy"
     builder.build ()
