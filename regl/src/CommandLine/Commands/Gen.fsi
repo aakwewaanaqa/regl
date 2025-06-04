@@ -13,7 +13,4 @@ val public cmd : CommandBody
 /// </summary>
 val private exe : result : ParseResult option -> unit
 
-/// <summary>
-/// The source text which was pipe in...
-/// </summary>
-val mutable public sourceFile: StringReader
+val public isCmd : string -> bool

@@ -6,7 +6,10 @@ open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
-let mutable sourceFile : StringReader = null
+let mutable commandIdentifier = ""
+
+let isCmd (atLine: string) =
+    atLine.TrimStart().StartsWith(commandIdentifier)
 
 let exe (result: ParseResult option) =
 

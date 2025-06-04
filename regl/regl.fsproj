@@ -45,8 +45,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\CommandLine\IO\LinesReader.fsi" />
-        <Compile Include="src\CommandLine\IO\LinesReader.fs" />
+        <Compile Include="src\CommandLine\IO\LinesBuffer.fs" />
+        <Compile Include="src\CommandLine\IO\InOut.fs" />
     </ItemGroup>
     
     <ItemGroup>
