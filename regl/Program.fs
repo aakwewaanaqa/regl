@@ -8,7 +8,7 @@ module Program =
     [<EntryPoint>]
     let main argv =
 
-        LinesReader.setFromIn ()
+        InOut.In <- LinesBuffer(ByConsoleIn)
 
         0
 //

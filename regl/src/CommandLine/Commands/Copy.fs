@@ -9,7 +9,7 @@ open Regl.CommandLine.Builders
 
 let exe (result: ParseResult option) =
     match result with
-    | Some result -> ClipboardService.SetText(LinesReader.allLines ())
+    | Some _ -> ClipboardService.SetText (InOut.In.all())
     | None -> raise (Exception "copy can't be executed...")
 
 let cmd =

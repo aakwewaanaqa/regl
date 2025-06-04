@@ -13,7 +13,7 @@ let exe (result: ParseResult option) =
     | Some result ->
         let out =
             Regex(result.parameters[0])
-            |> _.Split(LinesReader.allLines ())
+            |> _.Split(InOut.In.all())
             |> Array.reduce (fun a b -> $"{a}\n{b}")
 
         writeOut out

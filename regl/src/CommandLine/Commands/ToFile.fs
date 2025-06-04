@@ -16,9 +16,9 @@ let exe (result: ParseResult option) =
         let path = result.parameters[0]
 
         if isAppend then
-            File.AppendAllText(path, LinesReader.allLines ())
+            File.AppendAllText(path, InOut.In.all())
         else
-            File.WriteAllText(path, LinesReader.allLines ())
+            File.WriteAllText(path, InOut.In.all())
     | None -> raise (Exception "to-file can't be executed...")
 
 let cmd =

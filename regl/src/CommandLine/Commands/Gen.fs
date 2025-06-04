@@ -28,8 +28,8 @@ let exe (result: ParseResult option) =
 
     let genCmds = [ copyLineCmd ]
 
-    LinesReader.lines
-    |> Array.iteri (fun i line ->
+    InOut.In.rest()
+    |> Seq.iteri (fun i line ->
 
         if i = 0 then
             beginning <- line

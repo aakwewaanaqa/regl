@@ -73,11 +73,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBody.fsi" />
-        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBody.fs" />
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBuilder.fsi" />
-        <Compile Include="src\CommandLine\Commands\GenCommand\Types\GenCommandBuilder.fs" />
 
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fsi" />
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fs" />
