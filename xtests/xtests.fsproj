@@ -7,7 +7,14 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="ShellTests.fs" />
         <Compile Include="Program.fs"/>
+        <Content Include="shell-test-1.sh">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="shell-test-2.sh">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
     <ItemGroup>
