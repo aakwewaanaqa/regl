@@ -16,7 +16,6 @@
         <Content Include="..\.dockerignore">
             <Link>.dockerignore</Link>
         </Content>
-        <Folder Include="Commands\Shell\"/>
     </ItemGroup>
 
     <ItemGroup>
@@ -42,6 +41,9 @@
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
 
         <Compile Include="src\CommandLine\Types\Shared.fs"/>
+        
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\EnvironmentVariableContextMatcher.fsi" />
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\EnvironmentVariableContextMatcher.fs" />
     </ItemGroup>
 
     <ItemGroup>
@@ -78,6 +80,19 @@
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fs" />
 
         <Content Include="src\CommandLine\Commands\GenCommand\README.md" />
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\Tpl.fsi" />
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\Tpl.fs" />
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\SetEnvar.fsi" />
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\AddEvcm.fsi" />
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\UnsetEnvar.fsi" />
+
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\AddEvcm.fs" />
     </ItemGroup>
 
     <ItemGroup>

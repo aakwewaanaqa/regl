@@ -1,15 +1,20 @@
 module Regl.CommandLine.Commands.Gen
 
 open System.IO
+open Regl.CommandLine.Commands.GenCommand.Types
 open Regl.CommandLine.IO
 open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
-let mutable commandIdentifier = ""
+let mutable commandIdentifier : string = ""
+let mutable evcms : EnvironmentVariableContextMatcher list = []
 
 let isCmd (atLine: string) =
     atLine.TrimStart().StartsWith(commandIdentifier)
+
+let isNotCmd (atLine: string) =
+    not (atLine.TrimStart().StartsWith(commandIdentifier))
 
 let exe (result: ParseResult option) =
 
