@@ -2,75 +2,106 @@ namespace Regl.CommandLine.IO
 
 open System
 open System.IO
-open System.Collections
-open System.Collections.Generic
 
 type BufferSource =
     | ByNone
     | ByFile of FileInfo
+    | ByFilePath of string
     | BySeq of string seq
+    | ByList of string list
     | ByConsoleIn
 
 and ReadonlyLinesBuffer(source: BufferSource) =
-    member val _lines: string list = [] with get, set
-    member val _index: int = 0 with get, set
-    member this.all: string =
-        match source with
-        | ByNone -> ""
-        | ByFile fileInfo ->
-            let all = fileInfo.OpenText().ReadToEnd()
-            this._lines <- all.Split("\n") |> List.ofArray
-            all
-        | BySeq sequence ->
-            this._lines <- sequence |> List.ofSeq
-            sequence |> Seq.reduce(fun a b -> $"{a}\n{b}")
-        | ByConsoleIn ->
-            let all = Console.In.ReadToEnd()
-            this._lines <- all.Split("\n") |> List.ofArray
-            all
+    abstract member all: string with get, set
 
-    member this.length = this._lines.Length
+    default this.all
+        with get () =
+            match source with
+            | ByNone -> ""
+            | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd()
+            | ByFilePath path -> File.ReadAllText(path)
+            | BySeq sequence -> sequence |> Seq.reduce (fun a b -> $"{a}\n{b}")
+            | ByList list -> list |> List.reduce (fun a b -> $"{a}\n{b}")
+            | ByConsoleIn -> Console.In.ReadToEnd()
+        and set _ = raise (InvalidOperationException "Hey! No touchy! This is read-only! 🙈")
+
+    abstract member lines: string list with get, set
+
+    default this.lines
+        with get () = this.all.Split("\n") |> List.ofArray
+        and set _ = raise (InvalidOperationException "Hey! No touchy! This is read-only! 🙈")
+
+    member val index: int = 0 with get, set
+
+    member this.length = this.lines.Length
 
     member this.filterRest (filter: string -> bool) (count: int) =
-        let startIndex = this._index
+        let startIndex = this.index
 
         let endIndex =
-            if this._index + count < this.length then
-                this._index + count
+            if this.index + count < this.length then
+                this.index + count
             else
                 this.length - 1
 
         seq {
             for i in startIndex..endIndex do
-                let lineText = this._lines[i]
+                let lineText = this.lines[i]
 
                 if filter lineText then
                     yield lineText
         }
 
-    member this.rest () =
-        let startIndex = this._index
+    member this.reset() = this.index <- 0
+
+    member this.rest() =
+        let startIndex = this.index
         let endIndex = this.length - 1
 
         seq {
             for i in startIndex..endIndex do
-                yield this._lines[i]
+                yield this.lines[i]
         }
 
-    member this.rest (count: int) =
-        let startIndex = this._index
+    member this.rest(count: int) =
+        let startIndex = this.index
 
         let endIndex =
-            if this._index + count < this.length then
-                this._index + count
+            if this.index + count < this.length then
+                this.index + count
             else
                 this.length - 1
 
         seq {
             for i in startIndex..endIndex do
-                yield this._lines[i]
+                yield this.lines[i]
         }
 
-and LinesBuffer(source: BufferSource) =
+and LinesBuffer(source) =
     inherit ReadonlyLinesBuffer(source)
-    member this.appendLine line = this._lines <- this._lines @ [ line ]
+
+    member val private _lines: string list =
+        match source with
+        | ByNone -> []
+        | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd().Split("\n") |> List.ofArray
+        | ByFilePath path -> File.ReadAllText(path).Split("\n") |> List.ofArray
+        | BySeq sequence -> sequence |> List.ofSeq
+        | ByList list -> list
+        | ByConsoleIn -> Console.In.ReadToEnd().Split("\n") |> List.ofArray with get, set
+
+    override this.lines
+        with get () = this._lines
+        and set v = this._lines <- v
+
+    override this.all
+        with get () = this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
+        and set v = this.lines <- v.Split("\n") |> List.ofArray
+
+    member this.appendLine line = this.lines <- this.lines @ [ line ]
+
+    member this.mapRest (mapper: string -> string) =
+        let startIndex = this.index
+        let rest = this.lines |> List.skip startIndex
+        let mapped = rest |> List.map mapper
+        this.lines <- (this.lines |> List.take startIndex) @ mapped
+        this
