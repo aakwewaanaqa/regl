@@ -5,7 +5,7 @@ open System.IO
 open TextCopy
 open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
-open Regl.CommandLine.Types.Shared
+open Regl.CommandLine.Types.Utility
 open Regl.CommandLine.Builders
 
 let exe (result: ParseResult option) =

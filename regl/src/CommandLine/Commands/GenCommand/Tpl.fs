@@ -7,7 +7,7 @@ open Regl.CommandLine.Builders
 open Regl.CommandLine.Commands
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types
-open Regl.CommandLine.Types.Shared
+open Regl.CommandLine.Types.Utility
 
 let echoIdentifier = "#>"
 

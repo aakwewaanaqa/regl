@@ -5,7 +5,7 @@ open Regl.CommandLine.Builders
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.GenCommand.Types
 open Regl.CommandLine.Types
-open Regl.CommandLine.Types.Shared
+open Regl.CommandLine.Types.Utility
 
 
 let exe (result: ParseResult option) : unit =

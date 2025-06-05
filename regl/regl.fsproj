@@ -24,75 +24,38 @@
 
     <ItemGroup>
         <Compile Include="src\CommandLine\Shared.fs"/>
-
+        <!--Bash Command Types-->
         <Compile Include="src\CommandLine\Types\IFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IFlag.fs"/>
-
         <Compile Include="src\CommandLine\Types\IInFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IInFlag.fs"/>
-
         <Compile Include="src\CommandLine\Types\OnFlag.fs"/>
         <Compile Include="src\CommandLine\Types\InStringFlag.fs"/>
         <Compile Include="src\CommandLine\Types\ParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
-
-        <Compile Include="src\CommandLine\Types\ICommandBuilder.fsi"/>
-        <Compile Include="src\CommandLine\Types\ICommandBuilder.fs"/>
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
-
-        <Compile Include="src\CommandLine\Types\Shared.fs"/>
-        
-        <Compile Include="src\CommandLine\Commands\GenCommand\Types\EnvironmentVariableContextMatcher.fsi" />
-        <Compile Include="src\CommandLine\Commands\GenCommand\Types\EnvironmentVariableContextMatcher.fs" />
+        <Compile Include="src\CommandLine\Types\Utility.fs" />
+        <!--Gen Command Types-->
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fsi"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fs"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\CommandLine\IO\LinesBuffer.fs" />
-        <Compile Include="src\CommandLine\IO\InOut.fs" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Compile Include="src\CommandLine\Commands\Copy.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Copy.fs"/>
-
-        <Compile Include="src\CommandLine\Commands\Split.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Split.fs"/>
-
-        <Compile Include="src\CommandLine\Commands\Ls.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Ls.fs"/>
-
-        <Compile Include="src\CommandLine\Commands\ToFile.fsi"/>
-        <Compile Include="src\CommandLine\Commands\ToFile.fs"/>
-
-        <Compile Include="src\CommandLine\Commands\Match.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Match.fs"/>
-
-        <Compile Include="src\CommandLine\Commands\RemoveEmpty.fsi"/>
-        <Compile Include="src\CommandLine\Commands\RemoveEmpty.fs"/>
-
-        <Compile Include="src\CommandLine\Commands\Gen.fsi"/>
-        <Compile Include="src\CommandLine\Commands\Gen.fs"/>
+        <Compile Include="src\CommandLine\IO\LinesBuffer.fs"/>
+        <Compile Include="src\CommandLine\IO\InOut.fs"/>
     </ItemGroup>
 
     <ItemGroup>
+        <!--Gen Commands-->
+        <Compile Include="src\CommandLine\Commands\GenCommand\*.fsi"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\*.fs"/>
+        <Content Include="src\CommandLine\Commands\GenCommand\README.md"/>
+    </ItemGroup>
 
-        <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fsi" />
-        <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fs" />
-
-        <Content Include="src\CommandLine\Commands\GenCommand\README.md" />
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\Tpl.fsi" />
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\Tpl.fs" />
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\SetEnvar.fsi" />
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\AddEvcm.fsi" />
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\UnsetEnvar.fsi" />
-
-
-        <Compile Include="src\CommandLine\Commands\GenCommand\AddEvcm.fs" />
+    <ItemGroup>
+        <!--Bash Commands-->
+        <Compile Include="src\CommandLine\Commands\*.fsi"/>
+        <Compile Include="src\CommandLine\Commands\*.fs"/>
     </ItemGroup>
 
     <ItemGroup>

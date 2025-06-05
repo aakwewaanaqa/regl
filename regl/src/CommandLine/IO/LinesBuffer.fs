@@ -35,6 +35,24 @@ and ReadonlyLinesBuffer(source: BufferSource) =
 
     member this.length = this.lines.Length
 
+
+    member this.reset() = this.index <- 0
+
+    member this.rest() =
+        let startIndex = this.index
+        let endIndex = this.length - 1
+
+        seq {
+            for i in startIndex..endIndex do
+                yield this.lines[i]
+        }
+
+    member this.iteriRest (iter : int -> string -> unit) =
+        let startIndex = this.index
+        let endIndex = this.length - 1
+        for i in startIndex..endIndex do
+            iter i this.lines[i]
+
     member this.filterRest (filter: string -> bool) (count: int) =
         let startIndex = this.index
 
@@ -50,31 +68,6 @@ and ReadonlyLinesBuffer(source: BufferSource) =
 
                 if filter lineText then
                     yield lineText
-        }
-
-    member this.reset() = this.index <- 0
-
-    member this.rest() =
-        let startIndex = this.index
-        let endIndex = this.length - 1
-
-        seq {
-            for i in startIndex..endIndex do
-                yield this.lines[i]
-        }
-
-    member this.rest(count: int) =
-        let startIndex = this.index
-
-        let endIndex =
-            if this.index + count < this.length then
-                this.index + count
-            else
-                this.length - 1
-
-        seq {
-            for i in startIndex..endIndex do
-                yield this.lines[i]
         }
 
 and LinesBuffer(source) =
@@ -105,3 +98,6 @@ and LinesBuffer(source) =
         let mapped = rest |> List.map mapper
         this.lines <- (this.lines |> List.take startIndex) @ mapped
         this
+
+    member this.sendToPipe () =
+        Console.Out.Write this.all
