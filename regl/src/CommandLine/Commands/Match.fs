@@ -19,7 +19,7 @@ let exe (result: ParseResult option) =
 
         let out =
             let regex = Regex(result.parameters[0])
-            let matches = regex.Matches(InOut.In.all())
+            let matches = regex.Matches(InOut.In.all)
 
             matches
             |> Seq.map (fun m ->

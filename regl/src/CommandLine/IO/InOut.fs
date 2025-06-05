@@ -10,5 +10,5 @@ let readFromPipe () =
     In <- ReadonlyLinesBuffer(ByConsoleIn)
 
 let writeToPipe () =
-    Out._lines
+    Out.lines
     |> List.iter Console.Out.WriteLine

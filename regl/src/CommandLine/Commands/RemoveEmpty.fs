@@ -10,7 +10,7 @@ open Regl.CommandLine.Builders
 let exe (result: ParseResult option) =
     match result with
     | Some _ ->
-        In._lines
+        In.lines
         |> List.filter (fun l -> not (l |> String.IsNullOrEmpty))
         |> List.iter (fun l -> Out.appendLine l)
 
