@@ -2,7 +2,7 @@
 
 open Regl.CommandLine.Commands
 open Regl.CommandLine.IO
-open Regl.CommandLine.Types.Utility
+open Regl.CommandLine.Commands.Shared
 
 module Program =
     /// Entry point for the application

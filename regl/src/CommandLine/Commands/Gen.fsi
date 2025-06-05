@@ -13,11 +13,3 @@ val cmd : CommandBody
 /// Execute the gen command
 /// </summary>
 val private exe : result : ParseResult option -> unit
-
-val isCmd : string -> bool
-
-val isNotCmd : string -> bool
-
-val mutable commandIdentifier : string
-
-val mutable evcms : EnvironmentVariableContextMatcher list

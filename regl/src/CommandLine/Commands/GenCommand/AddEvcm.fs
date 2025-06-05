@@ -1,11 +1,11 @@
 module Regl.CommandLine.Commands.GenCommand.AddEvcm
 
 open System.Text.RegularExpressions
-open Regl.CommandLine.Builders
-open Regl.CommandLine.Commands
-open Regl.CommandLine.Commands.GenCommand.Types
 open Regl.CommandLine.Types
-open Regl.CommandLine.Types.Utility
+open Regl.CommandLine.Builders
+open Regl.CommandLine.Commands.Shared
+open Regl.CommandLine.Commands.GenCommand.Types
+open Regl.CommandLine.Commands.GenCommand.Shared
 
 
 let exe (result: ParseResult option) : unit =
@@ -13,7 +13,7 @@ let exe (result: ParseResult option) : unit =
     let format = getParam result 1
     let envarName = getParam result 2
     let newOne = EnvironmentVariableContextMatcher(pattern, format, envarName)
-    Gen.evcms <- Gen.evcms @ [ newOne ]
+    evcms <- evcms @ [ newOne ]
 
 let cmd: CommandBody =
     let builder = CommandBuilder("add-evcm", exe)

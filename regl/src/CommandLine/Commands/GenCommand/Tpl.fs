@@ -4,10 +4,10 @@ open System
 open System.Diagnostics
 open System.IO
 open Regl.CommandLine.Builders
-open Regl.CommandLine.Commands
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types
-open Regl.CommandLine.Types.Utility
+open Regl.CommandLine.Commands.Shared
+open Regl.CommandLine.Commands.GenCommand.Shared
 
 let echoIdentifier = "#>"
 
@@ -37,10 +37,10 @@ let exe (result: ParseResult option) =
             prcs.StandardOutput.ReadToEnd()
 
     do
-        InOut.In.filterRest Gen.isNotCmd (getParam result 0 |> int)
+        InOut.In.filterRest isNotCmd (getParam result 0 |> int)
         |> fun sequence -> ReadonlyLinesBuffer(BySeq sequence)
         |> _.all
-        |> fun ctx -> Gen.evcms |> List.iter (fun m -> m.doMatch ctx)
+        |> fun ctx -> evcms |> List.iter (fun m -> m.doMatch ctx)
 
     do
         getParam result 1

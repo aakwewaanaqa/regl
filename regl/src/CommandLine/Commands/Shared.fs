@@ -1,6 +1,7 @@
-module Regl.CommandLine.Types.Utility
+module Regl.CommandLine.Commands.Shared
 
 open System
+open Regl.CommandLine.Types
 
 let tryCommands (argv: string array) (cmds: CommandBody array) =
     try

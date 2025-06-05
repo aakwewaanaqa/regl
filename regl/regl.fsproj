@@ -34,7 +34,6 @@
         <Compile Include="src\CommandLine\Types\ParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
-        <Compile Include="src\CommandLine\Types\Utility.fs" />
         <!--Gen Command Types-->
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fs"/>
@@ -46,13 +45,16 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="src\CommandLine\Commands\Shared.fs"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Shared.fsi"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Shared.fs"/>
         <!--Gen Commands-->
         <Compile Include="src\CommandLine\Commands\GenCommand\*.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\*.fs"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Implementation.fsi"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Implementation.fs"/>
         <Content Include="src\CommandLine\Commands\GenCommand\README.md"/>
-    </ItemGroup>
 
-    <ItemGroup>
         <!--Bash Commands-->
         <Compile Include="src\CommandLine\Commands\*.fsi"/>
         <Compile Include="src\CommandLine\Commands\*.fs"/>
