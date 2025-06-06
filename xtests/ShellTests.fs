@@ -1,4 +1,4 @@
-module xtests.ShellTests
+module XTests.ShellTests
 
 open System
 open System.IO

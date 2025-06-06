@@ -1,7 +1,7 @@
-module xtests.GenTests
+module XTests.GenTests
 
 open Xunit
-open xtests.Shared
+open XTests.Shared
 
 [<Fact>]
 let ``test copy and output`` () =

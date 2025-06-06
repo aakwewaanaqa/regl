@@ -2,41 +2,33 @@ module Regl.CommandLine.Commands.Match
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
-open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+let usage = "regl match <REGEX> [--format <FORMAT>]"
+
 let exe (result: ParseResult option) =
     match result with
-    | Some result ->
-        let format =
-            result.flags
-            |> Array.tryFind (fun arg -> arg.name = "--format")
-            |> Option.map (fun f -> f :?> IInFlag<string>)
-            |> Option.bind (fun f -> Some f.value)
-            |> Option.defaultValue "$0"
+    | Some v when v.parameters.Length >= 1 ->
 
-        let out =
-            let regex = Regex(result.parameters[0])
-            let matches = regex.Matches(InOut.In.all)
+        let pattern = getParam result 0
 
-            matches
-            |> Seq.map (fun m ->
-                let mutable result = format
+        let format = tryGetFlagValue result "--format" |> Option.defaultValue "$0"
 
-                for i = 0 to m.Groups.Count - 1 do
-                    result <- result.Replace($"${i}", m.Groups[i].Value)
-
-                result)
-            |> Seq.reduce (fun a b -> $"{a}\n{b}")
-
-        writeOut out
-    | None -> raise (Exception "match can't be executed...")
+        pattern
+        |> Regex
+        |> _.Matches(InOut.In.all)
+        |> Seq.map (fun m -> formatMatch m format)
+        |> List.ofSeq
+        |> fun lines -> InOut.Out.lines <- lines
+    | Some _ -> raise (Exception usage)
+    | None -> raise (Exception usage)
 
 let cmd =
     let builder = CommandBuilder("match", exe)
     builder.requiredParamsCount <- 1
     builder.optionalFlags <- [ InStringFlag("--format") ]
-    builder.usage <- Some "regl match <REGEX> [--format <FORMAT>]"
+    builder.usage <- Some usage
     builder.build ()

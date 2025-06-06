@@ -1,4 +1,4 @@
-module xtests.Shared
+module XTests.Shared
 
 open System.Diagnostics
 

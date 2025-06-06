@@ -2,21 +2,19 @@ module Regl.CommandLine.Commands.Split
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
 open TextCopy
-open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
 let exe (result: ParseResult option) =
     match result with
-    | Some result ->
-        let out =
-            Regex(result.parameters[0])
-            |> _.Split(InOut.In.all)
-            |> Array.reduce (fun a b -> $"{a}\n{b}")
-
-        writeOut out
+    | Some _ ->
+        Regex(getParam result 0)
+        |> _.Split(InOut.In.all)
+        |> List.ofArray
+        |> fun lines -> InOut.Out.lines <- lines
     | None -> raise (Exception "split can't be executed...")
 
 let cmd =

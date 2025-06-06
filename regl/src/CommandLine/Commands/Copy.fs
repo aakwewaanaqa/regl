@@ -3,7 +3,6 @@ module Regl.CommandLine.Commands.Copy
 open System
 open TextCopy
 open Regl.CommandLine.IO
-open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 

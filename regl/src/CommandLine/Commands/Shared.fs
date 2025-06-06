@@ -1,7 +1,10 @@
 module Regl.CommandLine.Commands.Shared
 
 open System
+open System.Text.RegularExpressions
 open Regl.CommandLine.Types
+
+let ternary (flag: bool) a b = if flag then a else b
 
 let tryCommands (argv: string array) (cmds: CommandBody array) =
     try
@@ -42,3 +45,12 @@ let getParam (result: ParseResult option) (index: int) =
 
         r.parameters[index]
     | None -> raise (Exception "No parse result available")
+
+let formatMatch (m: Match) (format: string) =
+    let mutable formatted = format
+    m.Groups
+    |> Seq.iteri (fun i g ->
+        if g.Success then
+            formatted <- formatted.Replace($"${i}", g.Value)
+        )
+    formatted

@@ -2,8 +2,8 @@ module Regl.CommandLine.Commands.Ls
 
 open System
 open System.IO
+open Regl.CommandLine.IO
 open TextCopy
-open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Builders
@@ -14,21 +14,14 @@ let exe (result: ParseResult option) =
 
         let hasPattern = tryGetFlagValue result "--pattern"
         let isRecursive = hasFlag result "-R"
-
-        let searchOption =
-            if isRecursive then
-                SearchOption.AllDirectories
-            else
-                SearchOption.TopDirectoryOnly
-
+        let searchOption = ternary isRecursive SearchOption.AllDirectories SearchOption.TopDirectoryOnly
         let pattern = hasPattern |> Option.defaultValue ""
 
-        let out =
-            Directory.GetCurrentDirectory()
-            |> (fun pwd -> Directory.GetFiles(pwd, pattern, searchOption))
-            |> Array.reduce (fun a b -> $"{a}\n{b}")
+        Directory.GetCurrentDirectory()
+        |> fun pwd -> Directory.GetFiles(pwd, pattern, searchOption)
+        |> List.ofArray
+        |> fun lines -> InOut.Out.lines <- lines
 
-        writeOut out
     | None -> raise (Exception "ls can't be executed...")
 
 let cmd =

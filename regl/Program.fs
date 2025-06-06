@@ -1,7 +1,7 @@
 ﻿namespace Regl
 
-open Regl.CommandLine.Commands
 open Regl.CommandLine.IO
+open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
 
 module Program =
@@ -14,12 +14,12 @@ module Program =
 
         [|
             Copy.cmd
-            Gen.cmd
             Ls.cmd
             Match.cmd
             RemoveEmpty.cmd
             Split.cmd
             ToFile.cmd
+            GenCommand.Implementation.cmd
         |]
         |> tryCommands argv
         |> function

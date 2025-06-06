@@ -3,7 +3,6 @@ module Regl.CommandLine.Commands.RemoveEmpty
 open System
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
-open Regl.CommandLine.Shared
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 

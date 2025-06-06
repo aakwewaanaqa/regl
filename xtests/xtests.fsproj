@@ -4,6 +4,7 @@
         <TargetFramework>net9.0</TargetFramework>
         <IsPackable>false</IsPackable>
         <GenerateProgramFile>false</GenerateProgramFile>
+        <RootNamespace>XTests</RootNamespace>
     </PropertyGroup>
 
     <ItemGroup>
@@ -18,7 +19,9 @@
     <ItemGroup>
         <Compile Include="Shared.fs" />
         <Compile Include="*Tests.fs" />
+        <Compile Include="SubDomain\*Tests.fs" />
         <Compile Include="Program.fs"/>
+        
     </ItemGroup>
 
     <ItemGroup>
