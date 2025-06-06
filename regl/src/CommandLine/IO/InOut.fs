@@ -5,10 +5,3 @@ open System
 let mutable In : ReadonlyLinesBuffer = ReadonlyLinesBuffer(ByNone)
 
 let mutable Out : LinesBuffer = LinesBuffer(ByNone)
-
-let readFromPipe () =
-    In <- ReadonlyLinesBuffer(ByConsoleIn)
-
-let writeToPipe () =
-    Out.lines
-    |> List.iter Console.Out.WriteLine

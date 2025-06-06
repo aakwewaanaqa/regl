@@ -1,5 +1,6 @@
 ﻿namespace Regl
 
+open System
 open Regl.CommandLine.IO
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
@@ -9,9 +10,6 @@ module Program =
     /// Returns 0 to indicate successful execution
     [<EntryPoint>]
     let main argv =
-
-        InOut.In <- LinesBuffer(ByConsoleIn)
-
         [|
             Copy.cmd
             Ls.cmd

@@ -7,6 +7,7 @@ open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
 let exe (result: ParseResult option) =
+    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     match result with
     | Some result ->
         let isAppend =

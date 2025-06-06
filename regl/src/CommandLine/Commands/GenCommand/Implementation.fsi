@@ -2,8 +2,8 @@ module Regl.CommandLine.Commands.GenCommand.Implementation
 
 open Regl.CommandLine.Types
 
-val subCmds : CommandBody array
+val public subCmds : CommandBody array
 
-val exe : result: ParseResult option -> unit
+val public exe : result: ParseResult option -> unit
 
-val cmd : CommandBody
+val public cmd : CommandBody

@@ -2,18 +2,18 @@ module Regl.CommandLine.Commands.RemoveEmpty
 
 open System
 open Regl.CommandLine.IO
-open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
 let exe (result: ParseResult option) =
+    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     match result with
     | Some _ ->
-        In.lines
+        InOut.In.lines
         |> List.filter (fun l -> not (l |> String.IsNullOrEmpty))
-        |> List.iter (fun l -> Out.appendLine l)
+        |> List.iter (fun l -> InOut.Out.appendLine l)
 
-        writeToPipe()
+        InOut.Out.sendToPipe()
     | None -> raise (Exception "remove-empty can't be executed...")
 
 let cmd =

@@ -10,6 +10,7 @@ open Regl.CommandLine.Builders
 let usage = "regl match <REGEX> [--format <FORMAT>]"
 
 let exe (result: ParseResult option) =
+    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     match result with
     | Some v when v.parameters.Length >= 1 ->
 

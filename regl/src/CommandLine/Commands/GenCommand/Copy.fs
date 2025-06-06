@@ -1,14 +1,15 @@
 module Regl.CommandLine.Commands.GenCommand.Copy
 
+open System
 open Regl.CommandLine.Builders
-open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand.Shared
 
 let exe (result: ParseResult option) =
-    for atLine in In.filterRest isNotCmd (getParam result 0 |> int) do
-        Out.appendLine atLine
+    for atLine in InOut.In.filterRest isNotCmd (getParam result 0 |> int) do
+        InOut.Out.appendLine atLine
 
 let cmd =
     let builder = CommandBuilder("copy", exe)

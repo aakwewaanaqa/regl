@@ -12,23 +12,27 @@ type BufferSource =
     | ByConsoleIn
 
 and ReadonlyLinesBuffer(source: BufferSource) =
+    let _all =
+        match source with
+        | ByNone -> ""
+        | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd()
+        | ByFilePath path -> File.ReadAllText(path)
+        | BySeq sequence -> sequence |> Seq.reduce (fun a b -> $"{a}\n{b}")
+        | ByList list -> list |> List.reduce (fun a b -> $"{a}\n{b}")
+        | ByConsoleIn -> Console.In.ReadToEnd()
+
+    let _lines = _all.Split("\n") |> List.ofArray
+
     abstract member all: string with get, set
 
     default this.all
-        with get () =
-            match source with
-            | ByNone -> ""
-            | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd()
-            | ByFilePath path -> File.ReadAllText(path)
-            | BySeq sequence -> sequence |> Seq.reduce (fun a b -> $"{a}\n{b}")
-            | ByList list -> list |> List.reduce (fun a b -> $"{a}\n{b}")
-            | ByConsoleIn -> Console.In.ReadToEnd()
+        with get () = _all
         and set _ = raise (InvalidOperationException "Hey! No touchy! This is read-only! 🙈")
 
     abstract member lines: string list with get, set
 
     default this.lines
-        with get () = this.all.Split("\n") |> List.ofArray
+        with get () = _lines
         and set _ = raise (InvalidOperationException "Hey! No touchy! This is read-only! 🙈")
 
     member val index: int = 0 with get, set
@@ -47,11 +51,13 @@ and ReadonlyLinesBuffer(source: BufferSource) =
                 yield this.lines[i]
         }
 
-    member this.iteriRest (iter : int -> string -> unit) =
+    member this.iteriRest(iter: int -> string -> unit) =
         let startIndex = this.index
-        let endIndex = this.length - 1
+        let endIndex = (this.length - 1)
+
         for i in startIndex..endIndex do
-            iter i this.lines[i]
+            if i < this.length then
+                iter i this.lines[i]
 
     member this.filterRest (filter: string -> bool) (count: int) =
         let startIndex = this.index
@@ -92,12 +98,11 @@ and LinesBuffer(source) =
 
     member this.appendLine line = this.lines <- this.lines @ [ line ]
 
-    member this.mapRest (mapper: string -> string) =
+    member this.mapRest(mapper: string -> string) =
         let startIndex = this.index
         let rest = this.lines |> List.skip startIndex
         let mapped = rest |> List.map mapper
         this.lines <- (this.lines |> List.take startIndex) @ mapped
         this
 
-    member this.sendToPipe () =
-        Console.Out.Write this.all
+    member this.sendToPipe() = Console.Out.Write this.all
