@@ -66,9 +66,13 @@
 
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fs"/>
+        
+        <Compile Include="src\CommandLine\Commands\GenCommand\Echo.fsi"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Echo.fs"/>
 
         <Compile Include="src\CommandLine\Commands\GenCommand\SetEnvar.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\SetEnvar.fs"/>
+        
         <Compile Include="src\CommandLine\Commands\GenCommand\UnsetEnvar.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\UnsetEnvar.fs"/>
 

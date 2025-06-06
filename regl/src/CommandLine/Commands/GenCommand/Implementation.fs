@@ -17,7 +17,11 @@ let exe (result: ParseResult option) =
         if i = 0 then
             identifier <- line.TrimEnd()
         elif line.Trim().StartsWith(identifier) then
-            let genArgv = line.Trim().Substring(identifier.Length).Split(" ")
+            let genArgv =
+                line
+                |> _.Trim()
+                |> _.Substring(identifier.Length)
+                |> parseCommandLineArgs
 
             subCmds
             |> tryCommands genArgv
@@ -28,8 +32,7 @@ let exe (result: ParseResult option) =
     tryGetFlagValue result "--file"
     |> function
         | Some path -> InOut.In <- ReadonlyLinesBuffer(ByFilePath path)
-        | None ->
-            InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
+        | None -> InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
 
     InOut.In.iteriRest iteri
 
