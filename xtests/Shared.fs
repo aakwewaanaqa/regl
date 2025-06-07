@@ -1,5 +1,6 @@
 module XTests.Shared
 
+open System.IO
 open Xunit
 open Xunit.Abstractions
 open System.Diagnostics
@@ -7,9 +8,11 @@ open System.Diagnostics
 type ShellResult = { code: int; output: string }
 
 let doShellCmd (cmd: string) =
+    File.WriteAllText("tmp.sh", $"#!/bin/bash\n{cmd}")
+
     let startInfo = ProcessStartInfo()
     startInfo.FileName <- "/bin/bash"
-    startInfo.Arguments <- $"-c \"{cmd}\""
+    startInfo.Arguments <- "tmp.sh"
     startInfo.RedirectStandardOutput <- true
     startInfo.UseShellExecute <- false
     let ``process`` = Process.Start startInfo

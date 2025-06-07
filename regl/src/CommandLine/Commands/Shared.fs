@@ -4,9 +4,12 @@ open System
 open System.Text.RegularExpressions
 open Regl.CommandLine.Types
 
-let ternary (flag: bool) a b = if flag then a else b
+let ternary (flag : bool) a b = if flag then a else b
 
-let tryCommands (argv: string array) (cmds: CommandBody array) =
+let isQuoted (str : string) =
+    str.StartsWith ('"') && str.EndsWith ('"')
+
+let tryCommands (argv : string array) (cmds : CommandBody array) =
     try
         cmds
         |> Array.tryFind (fun cmd -> cmd.parse argv |> Option.isSome)
@@ -22,18 +25,24 @@ let tryCommands (argv: string array) (cmds: CommandBody array) =
         printfn $"Error: {ex}"
         1
 
-let formatMatch (m: Match) (format: string) =
+let formatMatch (m : Match) (format : string) =
     let mutable formatted = format
 
     m.Groups
     |> Seq.iteri (fun i g ->
         if g.Success then
-            formatted <- formatted.Replace($"${i}", g.Value))
+            formatted <- formatted.Replace ($"${i}", g.Value))
 
     formatted
 
-let parseCommandLineArgs (commandLine: string) =
-    let rec parseQuoted (chars: char list) (current: string) (result: string list) (inQuote: bool) (escaping: bool) =
+let parseCommandLineArgs (commandLine : string) =
+    let rec parseQuoted
+        (chars : char list)
+        (current : string)
+        (result : string list)
+        (inQuote : bool)
+        (escaping : bool)
+        =
         match chars, escaping, inQuote with
         // 结束条件：没有更多字符
         | [], false, false ->
@@ -62,5 +71,5 @@ let parseCommandLineArgs (commandLine: string) =
         // 常规字符
         | c :: rest, false, _ -> parseQuoted rest (current + string c) result inQuote false
 
-    parseQuoted (commandLine.ToCharArray() |> List.ofArray) "" [] false false
+    parseQuoted (commandLine.ToCharArray () |> List.ofArray) "" [] false false
     |> Array.ofList

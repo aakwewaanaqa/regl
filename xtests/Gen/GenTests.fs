@@ -14,7 +14,7 @@ type GenTestsImpl(output: ITestOutputHelper) =
         Directory.SetCurrentDirectory("Gen")
         File.OpenText "genesis.txt" :> TextReader |> Console.SetIn
 
-        GenCommand.Implementation.cmd.parse [| "regl"; "gen" |]
+        GenCommand.Implementation.cmd.parse [| "gen" |]
         |> GenCommand.Implementation.exe
 
         InOut.Out.lines[0].StartsWith("4") |> Assert.True
@@ -28,7 +28,7 @@ type GenTestsImpl(output: ITestOutputHelper) =
         Directory.SetCurrentDirectory("Gen")
         File.OpenText "controller.cs" :> TextReader |> Console.SetIn
 
-        GenCommand.Implementation.cmd.parse [| "regl"; "gen" |]
+        GenCommand.Implementation.cmd.parse [| "gen" |]
         |> GenCommand.Implementation.exe
 
         ("[FromBody]", InOut.Out.lines[0]) |> Assert.Equal<string>
