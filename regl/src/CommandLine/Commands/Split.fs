@@ -28,10 +28,11 @@ let exe (result : ParseResult option) =
         if r.hasFlag "--array" then
             splits
             |> List.mapi (fun i e ->
-                if i = 0 then $"({e}\\"
-                elif i = splits.Length then $" {e})"
-                else $" {e}\\"
-                )
+                match i with
+                | 0 -> $"({e}\\"
+                | n when n = (List.length splits - 1) -> $" {e})"
+                | _ -> $" {e}\\"
+            )
             |> fun e -> InOut.Out.lines <- e
         else
             splits
