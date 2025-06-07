@@ -2,8 +2,21 @@ module Regl.CommandLine.Commands.GenCommand.Implementation
 
 open Regl.CommandLine.Types
 
-val public subCmds : CommandBody array
+/// <summary>
+/// All the commands that belongs to gen command
+/// which can be used in the source file
+/// </summary>
+val subCmds : CommandBody array
 
-val public exe : result: ParseResult option -> unit
+/// <summary>
+/// Execution of the gen command
+/// </summary>
+val exe : result: ParseResult option -> unit
 
-val public cmd : CommandBody
+/// <summary>
+/// The gen command
+/// </summary>
+/// <usage>
+/// regl gen [--file &lt;FILE-PATH&gt;]
+/// </usage>
+val cmd : CommandBody

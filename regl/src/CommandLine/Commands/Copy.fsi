@@ -3,8 +3,11 @@ module Regl.CommandLine.Commands.Copy
 open Regl.CommandLine.Types
 
 /// <summary>
-/// Copy piped input to clipboard
+/// Copies piped input to clipboard
 /// </summary>
+/// <usage>
+/// regl copy
+/// </usage>
 val public cmd : CommandBody
 
 /// <summary>

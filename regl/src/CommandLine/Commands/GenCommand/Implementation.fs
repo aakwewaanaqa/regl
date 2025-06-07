@@ -29,10 +29,13 @@ let exe (result: ParseResult option) =
                 | 0 -> ()
                 | n -> ()
 
-    tryGetFlagValue result "--file"
-    |> function
-        | Some path -> InOut.In <- ReadonlyLinesBuffer(ByFilePath path)
-        | None -> InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
+    match result with
+    | Some r ->
+        r.tryGetFlagValue "--file"
+        |> function
+            | Some path -> InOut.In <- ReadonlyLinesBuffer(ByFilePath path)
+            | None -> InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
+    | None -> raise (NotImplementedException "needs gen usage here...")
 
     InOut.In.iteriRest iteri
 

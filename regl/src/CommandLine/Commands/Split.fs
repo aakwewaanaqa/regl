@@ -8,19 +8,27 @@ open TextCopy
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+let usage = "regl split <DELIMITER>
+    Splits piped input using specified delimiter
+    then outputs them into lines"
+
 let exe (result: ParseResult option) =
+    // Reads piped input
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
+
     match result with
-    | Some _ ->
-        Regex(getParam result 0)
+    | Some r ->
+        r.getParam 0
+        |> Regex
         |> _.Split(InOut.In.all)
         |> List.ofArray
         |> fun lines -> InOut.Out.lines <- lines
-    | None -> raise (Exception "split can't be executed...")
+    | None -> raise (Exception usage)
 
 let cmd =
 
     let builder = CommandBuilder("split", exe)
     builder.requiredParamsCount <- 1
-    builder.usage <- Some "regl split <DELIMITER>"
+    builder.optionalFlags <- [ OnFlag("--array") ]
+    builder.usage <- Some usage
     builder.build ()

@@ -6,10 +6,14 @@ open Regl.CommandLine.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+let usage = "regl copy
+    Copies piped input to clipboard"
+
 let exe (result: ParseResult option) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
+
     match result with
-    | Some _ -> ClipboardService.SetText (InOut.In.all)
+    | Some r -> ClipboardService.SetText (InOut.In.all)
     | None -> raise (Exception "copy can't be executed...")
 
 let cmd =

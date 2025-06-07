@@ -10,4 +10,13 @@ val private exe: result: ParseResult option -> unit
 /// <summary>
 /// This echos the input text to Out
 /// </summary>
+/// <usage>
+/// //#!echo 'some text for output'
+/// </usage>
+/// <remarks>
+/// //#! is just the common way to mark
+/// a line of regl gen source file command.
+/// It can be anything. If it is the first line
+/// of a source file
+/// </remarks>
 val public cmd: CommandBody

@@ -17,19 +17,22 @@ type GenTestsImpl(output: ITestOutputHelper) =
         GenCommand.Implementation.cmd.parse [| "regl"; "gen" |]
         |> GenCommand.Implementation.exe
 
+        InOut.Out.lines[0].StartsWith("4") |> Assert.True
+
+        InOut.Out.lines[1].StartsWith("5") |> Assert.True
+
         InOut.Out.all |> testLog output
 
     [<Fact>]
-    let ``test evcm cmd`` () =
+    let ``test evcm cmd and tpl cmd`` () =
         Directory.SetCurrentDirectory("Gen")
         File.OpenText "controller.cs" :> TextReader |> Console.SetIn
 
         GenCommand.Implementation.cmd.parse [| "regl"; "gen" |]
         |> GenCommand.Implementation.exe
 
-        Environment.GetEnvironmentVariable("TResult")
-        |> fun var -> Assert.Equal("object", var)
+        ("[FromBody]", InOut.Out.lines[0]) |> Assert.Equal<string>
+        ("[FromQuery]", InOut.Out.lines[0]) |> Assert.NotEqual<string>
+        ("[FromBody] FirestoreDocDto dto", InOut.Out.lines[1]) |> Assert.Equal<string>
 
-        InOut.Out.all
-        |> testLog output
-        |> fun txt -> File.WriteAllText("test_evcm_cmd.txt", txt)
+        InOut.Out.all |> testLog output

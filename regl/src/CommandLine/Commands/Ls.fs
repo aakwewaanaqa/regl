@@ -8,12 +8,16 @@ open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Builders
 
+let usage = "regl ls [-R] [--pattern <PATTERN>]
+    Lists fils in current's directory.
+        -R        : Recursively searches the current directory.
+        --pattern : Applies pattern to search method."
+
 let exe (result: ParseResult option) =
     match result with
-    | Some _ ->
-
-        let hasPattern = tryGetFlagValue result "--pattern"
-        let isRecursive = hasFlag result "-R"
+    | Some r ->
+        let hasPattern = r.tryGetFlagValue"--pattern"
+        let isRecursive = r.hasFlag "-R"
         let searchOption = ternary isRecursive SearchOption.AllDirectories SearchOption.TopDirectoryOnly
         let pattern = hasPattern |> Option.defaultValue ""
 
@@ -22,18 +26,11 @@ let exe (result: ParseResult option) =
         |> List.ofArray
         |> fun lines -> InOut.Out.lines <- lines
 
-    | None -> raise (Exception "ls can't be executed...")
+    | None -> raise (Exception usage)
 
 let cmd =
 
     let builder = CommandBuilder("ls", exe)
     builder.optionalFlags <- [ OnFlag("-R"); InStringFlag("--pattern") ]
-
-    builder.usage <-
-        Some
-            "regl ls [-R] [--pattern <PATTERN>]
-    List fils in current's directory.
-    -R: Recursively search the current directory.
-    --pattern: Apply pattern to search method."
-
+    builder.usage <- Some usage
     builder.build ()

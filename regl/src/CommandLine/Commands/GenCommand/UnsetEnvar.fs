@@ -4,19 +4,21 @@ open System
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+let usage = "//#!unset-envar <ENVAR-NAME>
+    Unsets (removes) the specified environment variable"
+
 let exe (result: ParseResult option) =
     match result with
     | Some result when result.parameters.Length >= 1 ->
         let varName = result.parameters[0]
         Environment.SetEnvironmentVariable(varName, null)
     | Some _ ->
-        raise (Exception "unset-envar requires one parameter: variable name")
+        raise (Exception usage)
     | None -> 
-        raise (Exception "unset-envar can't be executed...")
+        raise (Exception usage)
 
 let cmd =
     let builder = CommandBuilder("unset-envar", exe)
     builder.requiredParamsCount <- 1
-    builder.usage <- Some "regl unset-envar <VARIABLE_NAME>
-    Unsets (removes) the specified environment variable"
+    builder.usage <- Some usage
     builder.build ()

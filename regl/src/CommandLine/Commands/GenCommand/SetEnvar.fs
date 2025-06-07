@@ -4,20 +4,20 @@ open System
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+let usage = "set-envar <ENVAR-NAME> <VALUE>
+    Sets the environmental variable to a value"
+
 let exe (result: ParseResult option) =
     match result with
-    | Some result when result.parameters.Length >= 2 ->
-        let varName = result.parameters[0]
-        let varValue = result.parameters[1]
+    | Some r ->
+        let varName = r.getParam 0
+        let varValue = r.getParam 1
         Environment.SetEnvironmentVariable(varName, varValue)
-    | Some _ ->
-        raise (Exception "set-envar requires two parameters: variable name and value")
     | None -> 
-        raise (Exception "set-envar can't be executed...")
+        raise (Exception usage)
 
 let cmd =
     let builder = CommandBuilder("set-envar", exe)
     builder.requiredParamsCount <- 2
-    builder.usage <- Some "regl set-envar <VARIABLE_NAME> <VALUE>
-    Sets an environment variable to the specified value"
+    builder.usage <- Some usage
     builder.build ()
