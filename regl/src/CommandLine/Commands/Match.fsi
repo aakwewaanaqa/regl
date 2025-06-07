@@ -15,4 +15,4 @@ val private exe : result : ParseResult option -> unit
 /// <summary>
 /// Match piped input with a regex pattern
 /// </summary>
-val public cmd : CommandBody
+val cmd : CommandBody

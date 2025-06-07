@@ -8,7 +8,7 @@ open Regl.CommandLine.Types
 val private exe: result: ParseResult option -> unit
 
 /// <summary>
-/// This adds an environmental variable matcher for tpl command when reading the source file
+/// Adds an environmental variable matcher for tpl command when reading the source file
 /// </summary>
 /// <usage>
 /// //#!add-evcm &lt;REGEX&gt; &lt;MATCH-OUTPUT-FORMAT&gt; &lt;ENVAR-NAME&gt;

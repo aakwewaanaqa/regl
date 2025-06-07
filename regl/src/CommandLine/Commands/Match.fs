@@ -12,11 +12,9 @@ let usage = "regl match <REGEX> [--format <FORMAT>]"
 let exe (result: ParseResult option) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     match result with
-    | Some v when v.parameters.Length >= 1 ->
-
-        let pattern = getParam result 0
-
-        let format = tryGetFlagValue result "--format" |> Option.defaultValue "$0"
+    | Some r ->
+        let pattern = r.getParam 1
+        let format = r.tryGetFlagValue "--format" |> Option.defaultValue "$0"
 
         pattern
         |> Regex
@@ -24,7 +22,6 @@ let exe (result: ParseResult option) =
         |> Seq.map (fun m -> formatMatch m format)
         |> List.ofSeq
         |> fun lines -> InOut.Out.lines <- lines
-    | Some _ -> raise (Exception usage)
     | None -> raise (Exception usage)
 
 let cmd =

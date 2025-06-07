@@ -23,6 +23,10 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="src\*.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <!--IO-->
         <Compile Include="src\CommandLine\IO\LinesBuffer.fs"/>
         <Compile Include="src\CommandLine\IO\InOut.fs"/>

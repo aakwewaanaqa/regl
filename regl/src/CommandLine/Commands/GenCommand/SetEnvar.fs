@@ -9,12 +9,10 @@ let usage = "set-envar <ENVAR-NAME> <VALUE>
 
 let exe (result: ParseResult option) =
     match result with
-    | Some result when result.parameters.Length >= 2 ->
-        let varName = result.parameters[0]
-        let varValue = result.parameters[1]
+    | Some r ->
+        let varName = r.getParam 0
+        let varValue = r.getParam 1
         Environment.SetEnvironmentVariable(varName, varValue)
-    | Some _ ->
-        raise (Exception usage)
     | None -> 
         raise (Exception usage)
 
