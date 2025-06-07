@@ -1,17 +1,26 @@
 # README
 
-# Commands Reference
+## DESIGN CONCEPT
 
-## add-evcm
+### Api Source Code Generation
 
-Adds environment variable context matcher with specified pattern, format and environment variable name.
+This project is aiming to become a helpful tool for dealing with
+front-end api generation. For syncing front-end's protocol and
+back-end's sometimes requires time to validate and testing.
+So this project aims to generate code by text reading,
+or a sick idea, writing command inside the comment.
 
-Usage: `add-evcm <PATTERN> <FORMAT> <ENVAR-NAME>`
+### The Vision and The Sick Idea
 
-## tpl
+The idea is to read the source file that means the back-end's code,
+and then to pass it to a bash script for templating,
+and finally to output the echoed lines to a generated file.
 
-Process template file using specified context, replacing echo identifiers with shell echo commands.
+#### Source File Gen Commands
 
-Usage: `tpl <LINE-COUNT> <TEMPLATE-FILE-PATH>`
-
-Echo identifier: `#>`
+- `copy <LINE-COUNT>` → Copies lines of a source file
+- `evcm <LINE-COUNT> <REGEX> <FORMAT> <ENVAR-NAME>` → 
+  Reads lines of the source file
+  , and matches them with regex
+  , and formats the match with `$0` or `$1` any `$<NUMBER>` as groups
+  , and sets to a environment variable for later use.
