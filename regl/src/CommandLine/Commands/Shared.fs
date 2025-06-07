@@ -15,8 +15,8 @@ let tryCommands (argv: string array) (cmds: CommandBody array) =
                 cmd.execute (cmd.parse argv)
                 0
             | None ->
-                printfn "Available commands:"
-                cmds |> Array.choose _.usage |> Array.iter (printfn "%s")
+                printfn "Available commands:\n"
+                cmds |> Array.choose _.usage |> Array.iter (printfn "%s\n")
                 1
     with ex ->
         printfn $"Error: {ex}"

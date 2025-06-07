@@ -24,7 +24,7 @@ type GenTestsImpl(output: ITestOutputHelper) =
         InOut.Out.all |> testLog output
 
     [<Fact>]
-    let ``test evcm cmd`` () =
+    let ``test evcm cmd and tpl cmd`` () =
         Directory.SetCurrentDirectory("Gen")
         File.OpenText "controller.cs" :> TextReader |> Console.SetIn
 

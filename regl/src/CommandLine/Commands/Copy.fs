@@ -6,6 +6,9 @@ open Regl.CommandLine.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+let usage = "regl copy
+    Copies piped input to clipboard"
+
 let exe (result: ParseResult option) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     match result with
