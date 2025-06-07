@@ -46,6 +46,9 @@ let getParam (result: ParseResult option) (index: int) =
         r.parameters[index]
     | None -> raise (Exception "No parse result available")
 
+let getParamT<'a> (result: ParseResult option) (index: int) =
+    getParam result index |> (fun x -> Convert.ChangeType(x, typeof<'a>) :?> 'a)
+
 let formatMatch (m: Match) (format: string) =
     let mutable formatted = format
 

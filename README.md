@@ -1,22 +1,17 @@
 # README
 
-## How to use
-You can see examples in ./shtests
+# Commands Reference
 
-### Copying txt
-```sh
-echo "Hello World!" | regl copy
-```
+## add-evcm
 
-### Splitting to lines
-```sh
-echo $PATH | regl split :
-```
+Adds environment variable context matcher with specified pattern, format and environment variable name.
 
-> Commands can be queued, like:
-> ```sh
-> echo $PATH | regl split : copy
-> ```
-> It will split by : into lines then copy the whole lines.
+Usage: `add-evcm <PATTERN> <FORMAT> <ENVAR-NAME>`
 
-### 
+## tpl
+
+Process template file using specified context, replacing echo identifiers with shell echo commands.
+
+Usage: `tpl <LINE-COUNT> <TEMPLATE-FILE-PATH>`
+
+Echo identifier: `#>`

@@ -11,7 +11,6 @@ open Regl.CommandLine.Commands.GenCommand.Shared
 
 let echoIdentifier = "#>"
 
-
 let exe (result: ParseResult option) =
     let echoMapper (line: string) =
         if line.TrimStart().StartsWith(echoIdentifier) then

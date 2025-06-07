@@ -1,5 +1,7 @@
 //#!
-//#!add-evcm Task<Response<([a-zA-Z]+?)>> $1 TResult
+//#!add-evcm [[]FromBody[]] $0 IsFromBody
+//#!add-evcm [[]FromQuery[]] $0 IsFromQuery
+//#!add-evcm [(](.+?)[)] $1 Args
     /// <summary>
     ///     讀取在 firestore 中 users 路徑以下的資料
     /// </summary>
