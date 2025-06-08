@@ -19,30 +19,16 @@ let exe (result : ParseResult option) =
 
     match result with
     | Some r ->
-        let splits =
-            r.getParam 0
-            |> Regex
-            |> _.Split(InOut.In.all)
-            |> List.ofArray
-
-        if r.hasFlag "--array" then
-            splits
-            |> List.mapi (fun i e ->
-                match i with
-                | 0 -> $"({e}\\"
-                | n when n = (List.length splits - 1) -> $" {e})"
-                | _ -> $" {e}\\"
-            )
-            |> fun e -> InOut.Out.lines <- e
-        else
-            splits
-            |> fun e -> InOut.Out.lines <- e
+        r.getParam 0
+        |> Regex
+        |> _.Split(InOut.In.all)
+        |> List.ofArray
+        |> fun e -> InOut.Out.lines <- e
     | None -> raise (Exception usage)
 
 let cmd =
-
     let builder = CommandBuilder ("split", exe)
     builder.requiredParamsCount <- 1
-    builder.optionalFlags <- [ OnFlag ("--array") ]
+    builder.optionalFlags <- [ OnFlag("--quote") ]
     builder.usage <- Some usage
     builder.build ()

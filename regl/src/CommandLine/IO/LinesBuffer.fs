@@ -124,4 +124,4 @@ and LinesBuffer (source) =
         this.lines <- (this.lines |> List.take startIndex) @ mapped
         this
 
-    member this.sendToPipe() = Console.Out.Write this.all
+    member this.sendToPipe() = Console.Out.WriteLine this.all
