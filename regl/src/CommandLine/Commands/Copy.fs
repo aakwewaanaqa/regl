@@ -9,14 +9,11 @@ open Regl.CommandLine.Builders
 let usage = "regl copy
     Copies piped input to clipboard"
 
-let exe (result: ParseResult option) =
+let exe (_: CommandParseResult) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
-
-    match result with
-    | Some r -> ClipboardService.SetText (InOut.In.all)
-    | None -> raise (Exception "copy can't be executed...")
+    ClipboardService.SetText InOut.In.all
 
 let cmd =
     let builder = CommandBuilder("copy", exe)
-    builder.usage <- Some "regl copy"
+    builder.usage <- "regl copy"
     builder.build ()

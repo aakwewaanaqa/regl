@@ -23,12 +23,13 @@ let exe (result : ParseResult option) =
         |> Regex
         |> _.Split(InOut.In.all)
         |> List.ofArray
+        |> List.map (fun l -> ternary (r.hasFlag "--quote") $"\"{l}\"" l)
         |> fun e -> InOut.Out.lines <- e
     | None -> raise (Exception usage)
 
 let cmd =
     let builder = CommandBuilder ("split", exe)
-    builder.requiredParamsCount <- 1
+    builder.parameters <- 1
     builder.optionalFlags <- [ OnFlag("--quote") ]
-    builder.usage <- Some usage
+    builder.usage <- usage
     builder.build ()

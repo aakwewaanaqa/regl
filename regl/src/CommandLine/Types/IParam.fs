@@ -1,7 +1,6 @@
 namespace Regl.CommandLine.Types
 
-type IFlag =
-    /// The name of the flag
+type IParam =
     abstract member name : string
-    /// The explanation of the flag to be used like
     abstract member usage : string
+    abstract member parse : string -> string
