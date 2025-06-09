@@ -22,8 +22,9 @@
 
     <ItemGroup>
         <Compile Include="Shared.fs"/>
-        <Compile Include="Commands\*\*Tests.fs" />
-        <Compile Include="Commands\*\*\*Tests.fs" />
+        <Compile Include="*\*Tests.fs" />
+        <Compile Include="*\*\*Tests.fs" />
+        <Compile Include="*\*\*\*Tests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

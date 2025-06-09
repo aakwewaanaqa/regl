@@ -8,7 +8,14 @@ open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand
 open Regl.CommandLine.Commands.GenCommand.Shared
 
-let subCmds = [ AddEvcm.cmd; Copy.cmd; SetEnvar.cmd; Tpl.cmd; UnsetEnvar.cmd ]
+let subCmds = [
+    AddEvcm.cmd
+    Copy.cmd
+    Echo.cmd
+    SetEnvar.cmd
+    Tpl.cmd
+    UnsetEnvar.cmd
+]
 
 let exe (r : CommandParseResult) =
     let iteri i (line: string) =

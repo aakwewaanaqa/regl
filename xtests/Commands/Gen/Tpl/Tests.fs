@@ -17,3 +17,11 @@ type Tests (helper : ITestOutputHelper) =
         ("[FromBody]", InOut.Out.lines[0]) |> Assert.Equal<string>
         ("[FromQuery]", InOut.Out.lines[0]) |> Assert.NotEqual<string>
         ("[FromBody] FirestoreDocDto dto", InOut.Out.lines[1]) |> Assert.Equal<string>
+
+    [<Fact>]
+    let ``test of UserDto.cs`` () =
+        cd "Commands/Gen/Tpl"
+        setIn (File.ReadAllText("UserDto.cs"))
+        Implementation.cmd.parse [ "gen" ] |> Implementation.exe
+
+        InOut.Out.all |> testLog helper
