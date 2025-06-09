@@ -39,7 +39,6 @@
         <Compile Include="src\CommandLine\Types\Param.fs" />
 
         <Compile Include="src\CommandLine\Types\FlagParseResult.fs" />
-        
         <Compile Include="src\CommandLine\Types\IFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IFlag.fs"/>
         <Compile Include="src\CommandLine\Types\OnFlag.fs"/>

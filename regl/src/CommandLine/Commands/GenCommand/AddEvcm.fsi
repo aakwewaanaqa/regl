@@ -5,7 +5,7 @@ open Regl.CommandLine.Types
 /// <summary>
 /// This executes the add-evcm command
 /// </summary>
-val private exe: result: ParseResult option -> unit
+val private exe: CommandParseResult -> unit
 
 /// <summary>
 /// Adds an environmental variable matcher for tpl command when reading the source file

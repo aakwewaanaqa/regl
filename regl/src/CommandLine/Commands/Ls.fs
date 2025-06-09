@@ -13,24 +13,20 @@ let usage = "regl ls [-R] [--pattern <PATTERN>]
         -R        : Recursively searches the current directory.
         --pattern : Applies pattern to search method."
 
-let exe (result: ParseResult option) =
-    match result with
-    | Some r ->
-        let hasPattern = r.tryGetFlagValue"--pattern"
-        let isRecursive = r.hasFlag "-R"
-        let searchOption = ternary isRecursive SearchOption.AllDirectories SearchOption.TopDirectoryOnly
-        let pattern = hasPattern |> Option.defaultValue ""
+let exe (r: CommandParseResult) =
+    let hasPattern = r.tryGetFlagValue "--pattern"
+    let isRecursive = r.hasFlag "-R"
+    let searchOption = ternary isRecursive SearchOption.AllDirectories SearchOption.TopDirectoryOnly
+    let pattern = hasPattern |> FlagOption.defaultString ""
 
-        Directory.GetCurrentDirectory()
-        |> fun pwd -> Directory.GetFiles(pwd, pattern, searchOption)
-        |> List.ofArray
-        |> fun lines -> InOut.Out.lines <- lines
-
-    | None -> raise (Exception usage)
+    Directory.GetCurrentDirectory()
+    |> fun pwd -> Directory.GetFiles(pwd, pattern, searchOption)
+    |> List.ofArray
+    |> fun lines -> InOut.Out.lines <- lines
 
 let cmd =
 
     let builder = CommandBuilder("ls", exe)
     builder.optionalFlags <- [ OnFlag("-R"); InStringFlag("--pattern") ]
-    builder.usage <- Some usage
+    builder.usage <- usage
     builder.build ()

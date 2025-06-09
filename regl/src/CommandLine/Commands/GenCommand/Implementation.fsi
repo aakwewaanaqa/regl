@@ -6,12 +6,12 @@ open Regl.CommandLine.Types
 /// All the commands that belongs to gen command
 /// which can be used in the source file
 /// </summary>
-val subCmds : CommandBody array
+val subCmds : CommandBody list
 
 /// <summary>
 /// Execution of the gen command
 /// </summary>
-val exe : result: ParseResult option -> unit
+val exe : CommandParseResult -> unit
 
 /// <summary>
 /// The gen command

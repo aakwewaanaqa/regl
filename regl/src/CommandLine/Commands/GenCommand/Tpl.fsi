@@ -5,7 +5,7 @@ open Regl.CommandLine.Types
 /// <summary>
 /// This executes the tpl command
 /// </summary>
-val private exe : result : ParseResult option -> unit
+val exe : CommandParseResult -> unit
 
 /// <summary>
 /// This reads the following lines as context to do template writing by input file path.
@@ -22,5 +22,5 @@ val private exe : result : ParseResult option -> unit
 /// It can be anything. If it is the first line
 /// of a source file
 /// </remarks>
-val public cmd : CommandBody
+val cmd : CommandBody
 

@@ -73,6 +73,7 @@ type CommandBuilder (name : string, exe : CommandParseResult -> unit) =
 
             { parameters = paramters; flags = flags }
 
-        { usage = b.usage
+        { name = name
+          usage = b.usage
           parse = parse
           execute = exe }

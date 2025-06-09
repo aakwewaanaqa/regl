@@ -9,18 +9,12 @@ let ternary (flag : bool) a b = if flag then a else b
 let isQuoted (str : string) =
     str.StartsWith ('"') && str.EndsWith ('"')
 
-let tryCommands (argv : string array) (cmds : CommandBody array) =
+let tryCommands (argv : string list) (cmds : CommandBody list) =
     try
         cmds
-        |> Array.tryFind (fun cmd -> cmd.parse argv |> Option.isSome)
-        |> function
-            | Some cmd ->
-                cmd.execute (cmd.parse argv)
-                0
-            | None ->
-                printfn "Available commands:\n"
-                cmds |> Array.choose _.usage |> Array.iter (printfn "%s\n")
-                1
+        |> List.find (fun cmd -> cmd.name.Equals argv[0])
+        |> fun cmd -> cmd.execute (cmd.parse argv)
+        0
     with ex ->
         printfn $"Error: {ex}"
         1
@@ -72,4 +66,3 @@ let parseCommandLineArgs (commandLine : string) =
         | c :: rest, false, _ -> parseQuoted rest (current + string c) result inQuote false
 
     parseQuoted (commandLine.ToCharArray () |> List.ofArray) "" [] false false
-    |> Array.ofList

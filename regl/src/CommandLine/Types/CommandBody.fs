@@ -1,9 +1,8 @@
 namespace Regl.CommandLine.Types
-/// <summary>
-/// 表示命令的执行体
-/// </summary>
+
 type CommandBody = {
+      name: string
       parse: string list -> CommandParseResult
-      execute: CommandParseResult option -> unit
+      execute: CommandParseResult -> unit
       usage: string
     }

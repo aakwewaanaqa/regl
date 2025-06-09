@@ -11,22 +11,19 @@ let usage = "regl to-file <FILE-PATH> [--append]
         --append : Appends writing
 "
 
-let exe (result: ParseResult option) =
+let exe (r: CommandParseResult) =
     // Reads piped input
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
 
-    match result with
-    | Some r ->
-        let path = r.getParam 0
+    let path = r.getParam 0
 
-        if r.hasFlag "--append" then
-            File.AppendAllText(path, InOut.In.all)
-        else
-            File.WriteAllText(path, InOut.In.all)
-    | None -> raise (Exception usage)
+    if r.hasFlag "--append" then
+        File.AppendAllText(path, InOut.In.all)
+    else
+        File.WriteAllText(path, InOut.In.all)
 
 let cmd =
     let builder = CommandBuilder("to-file", exe)
-    builder.usage <- Some usage
-    builder.requiredParamsCount <- 1
+    builder.usage <- usage
+    builder.parameters <- [ Param("<FILE>") ]
     builder.build ()

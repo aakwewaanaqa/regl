@@ -5,7 +5,7 @@ open Regl.CommandLine.Types
 /// <summary>
 /// This executes the copy command
 /// </summary>
-val private exe: result: ParseResult option -> unit
+val private exe : CommandParseResult -> unit
 
 /// <summary>
 /// This copies the following count of lines to Out

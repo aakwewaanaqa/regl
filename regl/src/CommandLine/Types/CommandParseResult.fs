@@ -2,10 +2,6 @@ namespace Regl.CommandLine.Types
 
 open System
 
-/// <summary>
-/// 表示命令行参数解析的结果
-/// 包含位置参数和命名参数
-/// </summary>
 type CommandParseResult =
     { parameters: string list
       flags: FlagParseResult list }
