@@ -17,6 +17,8 @@ let tryCommands (argv : string list) (cmds : CommandBody list) =
         |> fun cmd -> cmd.execute (cmd.parse argv.Tail)
 
         0
+    // TODO: this printf will be printed in gen command ...
+    // that causes the output to be weird...
     with ex ->
         printfn $"Error: {ex}"
         1
