@@ -22,7 +22,7 @@ type Tests (helper : ITestOutputHelper) =
         |> Match.cmd.execute
 
         ("object", InOut.Out.lines[0]) |> Assert.Equal
-        
+
     [<Fact>]
     let ``/bin/bash test match --format`` () =
         let cmd = $"""{reglPathInCmd}

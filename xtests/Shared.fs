@@ -49,3 +49,6 @@ let is0 (result : ShellResult) =
 
 let setIn (text : string) =
     Console.SetIn (new StringReader (text) :> TextReader)
+
+let cd (path : string) =
+    Directory.SetCurrentDirectory path
