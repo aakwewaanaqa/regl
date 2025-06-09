@@ -11,7 +11,7 @@ let usage = "regl match <REGEX> [--format <FORMAT>]"
 
 let exe (r: CommandParseResult) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
-    let pattern = r.getParam 1
+    let pattern = r.getParam 0
     let format = r.tryGetFlagValue "--format" |> FlagOption.defaultString "$0"
 
     pattern

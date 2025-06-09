@@ -33,12 +33,13 @@
         <Content Include="Gen\*.cs">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Compile Include="Split\Tests.fs"/>
+        <Folder Include="Split\" />
         <Compile Include="Buffer\Tests.fs"/>
         <Compile Include="Builders\Tests.fs"/>
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="Commands\*\*Tests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
