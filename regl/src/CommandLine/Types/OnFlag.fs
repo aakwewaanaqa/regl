@@ -1,8 +1,16 @@
 namespace Regl.CommandLine.Types
 
-/// <summary>
-/// 开关类型标志，没有额外值
-/// </summary>
-type OnFlag(name) =
+open System
+
+type OnFlag (name, ?usage) =
+    let usage = usage |> Option.defaultValue ""
+    member f.name = name
+    member f.parse(arg : string) =
+        if name.Equals arg then
+            { name = name; value = OfBool true }
+        else
+            raise (Exception usage)
+
     interface IFlag with
         member f.name = name
+        member f.usage = usage

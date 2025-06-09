@@ -3,9 +3,9 @@ module Regl.CommandLine.Commands.Split
 open Regl.CommandLine.Types
 
 /// <summary>
-/// Execute the split command
+/// Executes the split command
 /// </summary>
-val private exe : result : ParseResult option -> unit
+val exe : CommandParseResult -> unit
 
 /// <summary>
 /// Splits piped input using specified delimiter
@@ -14,4 +14,4 @@ val private exe : result : ParseResult option -> unit
 /// <usage>
 /// regl split &lt;DELIMITER&gt;
 /// </usage>
-val public cmd : CommandBody
+val cmd : CommandBody

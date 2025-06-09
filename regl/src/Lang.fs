@@ -29,6 +29,13 @@ let tplUsage = $"tpl <LINE-COUNT> <TEMPLATE-BASH-FILE>
         <TEMPLATE-BASH-FILE> : {templateBashFileExplanation}
 "
 
+module CommandLang =
+    let splitUsage = "regl split <delimiter>
+    
+    "
+
 module ExceptionLang =
+    let parametersNotEnough : Exception =
+        Exception("The parameters was not enough to be parsed...")
     let bashCrash (code : int) : Exception =
         SystemException($"/bin/bash crashed... crash code is {code}")

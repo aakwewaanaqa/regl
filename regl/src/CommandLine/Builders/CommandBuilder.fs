@@ -1,77 +1,79 @@
 namespace Regl.CommandLine.Builders
 
 open Regl.CommandLine.Types
+open Regl.Lang.ExceptionLang
 
-/// <summary>
-/// 表示创建命令行参数解析器的构建器
-/// 支持必需参数、必需参数和可选参数
-/// </summary>
-type CommandBuilder(name: string, execution: ParseResult option -> unit) =
-    /// 命令名称
-    member this.name = name
-    /// 命令用法
-    member val usage = None with get, set
-    /// 按顺序排在所有标志之前的必需参数数量
-    member val requiredParamsCount = 0 with get, set
-    /// 在参数之后以任意顺序出现但必需的标志
-    member val requiredFlags = list<IFlag>.Empty with get, set
-    /// 在参数之后以任意顺序出现但可选的标志
-    member val optionalFlags = list<IFlag>.Empty with get, set
-    member private this.parser(argv: string array) =
-        /// 通过检查参数是否以-或--开头来确定它是否为标志
-        let isFlag (arg: string) =
-            arg.StartsWith("-") || arg.StartsWith("--")
+module CommandBuilder =
+    let parseParameters (parameters : IParam list) (argv : string list) =
+        let rec parse (parameters : IParam list) (argv : string list) (result : string list) =
+            match parameters, argv with
+            | p :: parameters, arg :: argv -> parse parameters argv (result @ [ p.parse arg ])
+            | [], argv -> result, argv
+            | parameters, [] -> raise parametersNotEnough
 
-        /// 获取给定索引处标志的关联值（如果存在）
-        let getFlagValue (argv: string array) (index: int) =
-            if index + 1 < argv.Length && not (isFlag argv[index + 1]) then
-                Some argv[index + 1]
-            else
-                None
+        parse parameters argv []
 
-        let parseFlags (args: string array) =
-            args
-            |> Array.mapi (fun i arg ->
-                if isFlag arg then
-                    match getFlagValue args i with
-                    | Some value ->
-                        match this.requiredFlags @ this.optionalFlags |> List.tryFind (fun f -> f.name = arg) with
-                        | Some flag ->
-                            match flag with
-                            | :? IInFlag<string> as inString ->
-                                match inString.tryParse arg value with
-                                | Some parsedFlag -> Some(parsedFlag :> IFlag)
-                                | None -> None
-                            | _ -> Some(OnFlag(arg))
-                        | None -> None
-                    | None -> Some(OnFlag(arg))
-                else
-                    None)
-            |> Array.choose id
+    let parseFlags (flags : IFlag list) (argv : string list) =
+        let rec parse (flags : IFlag list) (argv : string list) (result : FlagParseResult list) =
+            match flags with
+            | :? OnFlag as f :: flags ->
+                argv
+                |> List.tryFindIndex (fun a -> a.Equals f.name)
+                |> function
+                    | Some index ->
+                        let rest = argv |> List.removeAt index
+                        let parsed = f.parse argv[index]
+                        parse flags rest (result @ [ parsed ])
+                    | None -> result, argv
+            | :? InStringFlag as f :: flags ->
+                argv
+                |> List.tryFindIndex (fun a -> a.Equals f.name)
+                |> Option.filter (fun index -> index + 1 < argv.Length)
+                |> Option.filter (fun index -> not (argv[index + 1].StartsWith ("-")))
+                |> function
+                    | Some index ->
+                        let rest = argv |> List.removeManyAt index 2
+                        let parsed = f.parse argv[index] argv[index + 1]
+                        parse flags rest (result @ [ parsed ])
+                    | None -> result, argv
+            | [] -> result, argv
 
-        // 根据命令的要求尝试解析命令行参数
-        if argv.Length < (1 + this.requiredParamsCount + this.requiredFlags.Length) then
-            None
-        else if argv[0] <> name then
-            None
-        else if
-            not (
-                this.requiredFlags
-                |> List.forall (fun f -> argv |> Array.exists (fun arg -> arg = f.name))
-            )
-        then
-            None
-        else
+        parse flags argv []
 
-            let parameters = argv[1..][.. this.requiredParamsCount - 1]
-            let flagArgs = argv[1..][this.requiredParamsCount ..]
+type CommandBuilder (name : string, exe : CommandParseResult -> unit) =
+    member b.name = name
+    member val usage : string = "" with get, set
+    member val parameters : IParam list = [] with get, set
+    member val flags : IFlag list = [] with get, set
+    member val optionalFlags : IFlag list = [] with get, set
 
-            Some(
-                { parameters = parameters
-                  flags = flagArgs |> parseFlags }
-            )
-    member this.build() = {
-            parse = this.parser
-            usage = this.usage
-            execute = execution
-        }
+    member b.build() =
+        let parse (argv : string list) =
+            let mutable argv = argv
+            let mutable paramters : string list = []
+            let mutable flags : FlagParseResult list = []
+
+            if b.parameters.Length > 0 then
+                CommandBuilder.parseParameters b.parameters argv
+                |> fun (ps, rest) ->
+                    paramters <- ps
+                    argv <- rest
+
+            if b.flags.Length > 0 then
+                CommandBuilder.parseFlags b.flags argv
+                |> fun (fs, rest) ->
+                    flags <- fs
+                    argv <- rest
+
+            if b.optionalFlags.Length > 0 then
+                CommandBuilder.parseFlags b.optionalFlags argv
+                |> fun (fs, rest) ->
+                    flags <- flags @ fs
+                    argv <- rest
+
+            { parameters = paramters; flags = flags }
+
+        { name = name
+          usage = b.usage
+          parse = parse
+          execute = exe }

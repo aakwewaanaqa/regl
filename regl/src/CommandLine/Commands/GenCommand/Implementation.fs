@@ -8,9 +8,9 @@ open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand
 open Regl.CommandLine.Commands.GenCommand.Shared
 
-let subCmds = [| AddEvcm.cmd; Copy.cmd; SetEnvar.cmd; Tpl.cmd; UnsetEnvar.cmd |]
+let subCmds = [ AddEvcm.cmd; Copy.cmd; SetEnvar.cmd; Tpl.cmd; UnsetEnvar.cmd ]
 
-let exe (result: ParseResult option) =
+let exe (r : CommandParseResult) =
     let iteri i (line: string) =
         InOut.In.index <- i
 
@@ -29,18 +29,14 @@ let exe (result: ParseResult option) =
                 | 0 -> ()
                 | n -> ()
 
-    match result with
-    | Some r ->
-        r.tryGetFlagValue "--file"
-        |> function
-            | Some path -> InOut.In <- ReadonlyLinesBuffer(ByFilePath path)
-            | None -> InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
-    | None -> raise (NotImplementedException "needs gen usage here...")
+    r.tryGetFlagValue "--file"
+    |> function
+        | Some path -> InOut.In <- ReadonlyLinesBuffer(ByFilePath (path.ToString()))
+        | None -> InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
 
     InOut.In.iteriRest iteri
 
 let cmd =
     let builder = CommandBuilder("gen", exe)
-    builder.usage <- Some "regl gen"
     builder.optionalFlags <- [ InStringFlag("--file") ]
     builder.build ()

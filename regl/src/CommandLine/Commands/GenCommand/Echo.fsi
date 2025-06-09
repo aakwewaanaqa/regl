@@ -5,13 +5,13 @@ open Regl.CommandLine.Types
 /// <summary>
 /// This executes the echo command
 /// </summary>
-val private exe: result: ParseResult option -> unit
+val private exe : CommandParseResult -> unit
 
 /// <summary>
 /// This echos the input text to Out
 /// </summary>
 /// <usage>
-/// //#!echo 'some text for output'
+/// //#!echo &lt;text&gt;
 /// </usage>
 /// <remarks>
 /// //#! is just the common way to mark

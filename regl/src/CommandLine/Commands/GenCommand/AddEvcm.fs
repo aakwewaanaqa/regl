@@ -9,17 +9,14 @@ open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand.Types
 open Regl.CommandLine.Commands.GenCommand.Shared
 
-let exe (result : ParseResult option) : unit =
-    match result with
-    | Some r ->
-        let pattern = r.getParam 0 |> Regex
-        let format = r.getParam 1
-        let envarName = r.getParam 2
-        let newOne = EnvironmentVariableContextMatcher (pattern, format, envarName)
-        evcms <- evcms @ [ newOne ]
-    | None -> raise(Exception addEvcmUsage)
+let exe (r : CommandParseResult) : unit =
+    let pattern = r.getParam 0 |> Regex
+    let format = r.getParam 1
+    let envarName = r.getParam 2
+    let newOne = EnvironmentVariableContextMatcher (pattern, format, envarName)
+    evcms <- evcms @ [ newOne ]
 
 let cmd : CommandBody =
     let builder = CommandBuilder ("add-evcm", exe)
-    builder.requiredParamsCount <- 3
+    builder.parameters <- [ Param("<regex>"); Param("<format>"); Param("<envar-name>") ]
     builder.build ()

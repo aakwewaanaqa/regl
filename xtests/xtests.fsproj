@@ -8,31 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <Content Include="*.sh">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        <ProjectReference Include="..\regl\regl.fsproj"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="Commands\*\*\*.cs">
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Content Include="*.txt">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Gen\*.sh">
+        <Content Include="Commands\*\*\*.sh">
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\regl\regl.fsproj" />
-    </ItemGroup>
-    
-    <ItemGroup>
-        <Compile Include="Shared.fs" />
-        <Compile Include="*Tests.fs" />
-        <Compile Include="Gen\GenTests.fs" />
-        <Content Include="Gen\*.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <Content Include="Gen\*.cs">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
+        <Compile Include="Shared.fs"/>
+        <Compile Include="Commands\*\*Tests.fs" />
+        <Compile Include="Commands\*\*\*Tests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

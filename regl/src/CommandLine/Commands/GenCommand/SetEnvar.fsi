@@ -5,7 +5,7 @@ open Regl.CommandLine.Types
 /// <summary>
 /// Executes the set-envar command
 /// </summary>
-val private exe : result : ParseResult option -> unit
+val private exe : CommandParseResult -> unit
 
 /// <summary>
 /// Sets the environmental variable to a value
