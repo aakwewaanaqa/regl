@@ -13,7 +13,7 @@ let tryCommands (argv : string list) (cmds : CommandBody list) =
     try
         cmds
         |> List.find (fun cmd -> cmd.name.Equals argv[0])
-        |> fun cmd -> cmd.execute (cmd.parse argv)
+        |> fun cmd -> cmd.execute (cmd.parse argv.Tail)
         0
     with ex ->
         printfn $"Error: {ex}"

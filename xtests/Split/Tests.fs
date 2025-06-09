@@ -10,25 +10,10 @@ open Xunit.Abstractions
 
 type Tests (helper : ITestOutputHelper) =
     [<Fact>]
-    let ``test normal split`` () =
+    let ``test split`` () =
         Console.SetIn (new StringReader ("192.168.0.255") :> TextReader)
-
-        Split.cmd.parse [| "split" ; "[.]" |] |> Split.exe
-
-        helper.WriteLine $"{InOut.Out.all}"
-        
-    [<Fact>]
-    let ``test split to array`` () =
-        Console.SetIn (new StringReader ("192.168.0.255") :> TextReader)
-
-        Split.cmd.parse [| "split" ; "[.]"; "--array" |] |> Split.exe
-
-        helper.WriteLine $"{InOut.Out.all}"
-        
-        let buffer = LinesBuffer(ByNone)
-        buffer.appendLine "#!/bin/bash"
-        buffer.appendLine "array=$(echo 192.168.0.255 | regl split [.] --array)"
-        buffer.appendLine "echo ${array[3]}"
-        let output = buffer.executeInBash()
-        
-        ("255", output) |> Assert.Equal
+        Split.cmd.parse [ "[.]" ] |> Split.exe
+        ("192", InOut.Out.lines[0]) |> Assert.Equal
+        ("168", InOut.Out.lines[1]) |> Assert.Equal
+        ("0", InOut.Out.lines[2]) |> Assert.Equal
+        ("255", InOut.Out.lines[3]) |> Assert.Equal

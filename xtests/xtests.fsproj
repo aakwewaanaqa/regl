@@ -15,26 +15,30 @@
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="Gen\*.sh">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\regl\regl.fsproj" />
+        <ProjectReference Include="..\regl\regl.fsproj"/>
     </ItemGroup>
-    
+
     <ItemGroup>
-        <Compile Include="Shared.fs" />
-        <Compile Include="*Tests.fs" />
-        <Compile Include="Gen\GenTests.fs" />
+        <Compile Include="Shared.fs"/>
+        <Compile Include="*Tests.fs"/>
+        <Compile Include="Gen\GenTests.fs"/>
         <Content Include="Gen\*.txt">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="Gen\*.cs">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <Compile Include="Split\Tests.fs" />
-        <Compile Include="Buffer\Tests.fs" />
+        <Compile Include="Split\Tests.fs"/>
+        <Compile Include="Buffer\Tests.fs"/>
+        <Compile Include="Builders\Tests.fs"/>
+    </ItemGroup>
+
+    <ItemGroup>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 
