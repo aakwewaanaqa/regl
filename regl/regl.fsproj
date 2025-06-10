@@ -34,17 +34,17 @@
 
         <!--Types-->
         <!--Bash Command Types-->
-        <Compile Include="src\CommandLine\Types\IParam.fsi" />
-        <Compile Include="src\CommandLine\Types\IParam.fs" />
-        <Compile Include="src\CommandLine\Types\Param.fs" />
+        <Compile Include="src\CommandLine\Types\IParam.fsi"/>
+        <Compile Include="src\CommandLine\Types\IParam.fs"/>
+        <Compile Include="src\CommandLine\Types\Param.fs"/>
 
-        <Compile Include="src\CommandLine\Types\FlagParseResult.fs" />
+        <Compile Include="src\CommandLine\Types\FlagParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\IFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IFlag.fs"/>
         <Compile Include="src\CommandLine\Types\OnFlag.fs"/>
         <Compile Include="src\CommandLine\Types\InStringFlag.fs"/>
 
-        <Compile Include="src\CommandLine\Types\CommandParseResult.fs" />
+        <Compile Include="src\CommandLine\Types\CommandParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
         <!--Bash Command Types-->
@@ -74,18 +74,21 @@
 
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Copy.fs"/>
-        
+
         <Compile Include="src\CommandLine\Commands\GenCommand\Echo.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Echo.fs"/>
 
         <Compile Include="src\CommandLine\Commands\GenCommand\SetEnvar.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\SetEnvar.fs"/>
-        
+
         <Compile Include="src\CommandLine\Commands\GenCommand\UnsetEnvar.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\UnsetEnvar.fs"/>
 
         <Compile Include="src\CommandLine\Commands\GenCommand\Tpl.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Tpl.fs"/>
+
+        <Compile Include="src\CommandLine\Commands\GenCommand\Import.fsi"/>
+        <Compile Include="src\CommandLine\Commands\GenCommand\Import.fs"/>
 
         <Compile Include="src\CommandLine\Commands\GenCommand\Implementation.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Implementation.fs"/>

@@ -4,24 +4,29 @@ open System
 open Regl.CommandLine.IO
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
+open Regl.CommandLine.IO.InOut
 
 module Program =
     /// Entry point for the application
     /// Returns 0 to indicate successful execution
     [<EntryPoint>]
     let main (argv : string array) =
-        let argv = argv |> List.ofArray
+        let cmds =
+            [ Copy.cmd
+              Ls.cmd
+              Match.cmd
+              RemoveEmpty.cmd
+              Split.cmd
+              ToFile.cmd
+              GenCommand.Implementation.cmd ]
 
-        [ Copy.cmd
-          Ls.cmd
-          Match.cmd
-          RemoveEmpty.cmd
-          Split.cmd
-          ToFile.cmd
-          GenCommand.Implementation.cmd ]
-        |> tryCommands argv
+        argv
+        |> List.ofArray
+        |> tryCommands cmds
         |> function
             | Ok () ->
-                InOut.Out.sendToPipe ()
+                Out.sendToPipe ()
                 0
-            | Error ex -> 1
+            | Error ex ->
+                debugLog ex
+                1

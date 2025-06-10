@@ -9,7 +9,7 @@ let ternary (flag : bool) a b = if flag then a else b
 let isQuoted (str : string) =
     str.StartsWith '"' && str.EndsWith '"'
 
-let tryCommands (argv : string list) (cmds : CommandBody list) =
+let tryCommands (cmds : CommandBody list) (argv : string list) =
     try
         cmds
         |> List.find (fun cmd -> cmd.name.Equals argv[0])
