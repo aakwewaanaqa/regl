@@ -11,6 +11,7 @@ module Program =
     [<EntryPoint>]
     let main (argv : string array) =
         let argv = argv |> List.ofArray
+
         [ Copy.cmd
           Ls.cmd
           Match.cmd
@@ -20,7 +21,7 @@ module Program =
           GenCommand.Implementation.cmd ]
         |> tryCommands argv
         |> function
-            | 0 ->
+            | Ok () ->
                 InOut.Out.sendToPipe ()
                 0
-            | n -> n
+            | Error ex -> 1

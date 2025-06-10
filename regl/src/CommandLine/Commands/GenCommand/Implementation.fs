@@ -33,8 +33,8 @@ let exe (r : CommandParseResult) =
             subCmds
             |> tryCommands genArgv
             |> function
-                | 0 -> ()
-                | n -> ()
+                | Ok () -> ()
+                | Error ex -> ()
 
     r.tryGetFlagValue "--file"
     |> function

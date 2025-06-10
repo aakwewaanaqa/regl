@@ -5,7 +5,7 @@ open Regl.CommandLine.Types
 /// <summary>
 /// Execute the ls command
 /// </summary>
-val exe : result : CommandParseResult -> unit
+val exe : CommandParseResult -> unit
 
 /// <summary>
 /// List fils in current's directory.

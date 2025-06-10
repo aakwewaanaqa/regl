@@ -112,8 +112,12 @@ and LinesBuffer (source) =
         and set v = this._lines <- v
 
     override this.all
-        with get () = this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
-        and set v = this.lines <- v.Split ("\n") |> List.ofArray
+        with get () =
+            if this.lines.Length > 0 then
+                this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
+            else
+                ""
+        and set v = this.lines <- v.Split "\n" |> List.ofArray
 
     member this.appendLine line = this.lines <- this.lines @ [ line ]
 

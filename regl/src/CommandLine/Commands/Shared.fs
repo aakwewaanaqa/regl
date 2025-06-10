@@ -15,12 +15,9 @@ let tryCommands (argv : string list) (cmds : CommandBody list) =
         |> List.find (fun cmd -> cmd.name.Equals argv[0])
         |> fun cmd -> cmd.execute (cmd.parse argv.Tail)
 
-        0
-    // TODO: this printf will be printed in gen command ...
-    // that causes the output to be weird...
+        Ok ()
     with ex ->
-        printfn $"Error: {ex}"
-        1
+        Error ex.Message
 
 let formatMatch (m : Match) (format : string) =
     let mutable formatted = format
