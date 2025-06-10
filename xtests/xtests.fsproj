@@ -9,6 +9,7 @@
 
     <ItemGroup>
         <ProjectReference Include="..\regl\regl.fsproj"/>
+        <ProjectReference Include="..\reglex\reglex.fsproj"/>
     </ItemGroup>
 
     <ItemGroup>
