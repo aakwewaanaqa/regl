@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.Copy
 
-open System
 open TextCopy
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types

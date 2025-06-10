@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.Shared
 
-open System
 open System.Text
 open System.Text.RegularExpressions
 open Regl.CommandLine.Types
@@ -8,7 +7,7 @@ open Regl.CommandLine.Types
 let ternary (flag : bool) a b = if flag then a else b
 
 let isQuoted (str : string) =
-    str.StartsWith ('"') && str.EndsWith ('"')
+    str.StartsWith '"' && str.EndsWith '"'
 
 let tryCommands (argv : string list) (cmds : CommandBody list) =
     try
@@ -37,47 +36,62 @@ let parseCommandLineArgs (commandLine : string) =
     let mutable result : string list = []
     let mutable quoting : char = ' '
     let mutable escaping : bool = false
-    let mutable builder = StringBuilder ()
+    let builder = StringBuilder ()
 
+    let isLongFlag () = builder.ToString().StartsWith("--")
     let isInQuote () = quoting = ''' || quoting = '"'
     let isOfQuote (c : char) = quoting = c
 
     let rec parse (chars : char list) =
         match chars with
+        | '\t'
         | ' ' as c :: rest ->
-            if isInQuote () || escaping then
+            if escaping || isInQuote () then
                 builder.Append c |> ignore
-                parse rest
+                escaping <- false
             else if builder.Length > 0 then
                 result <- result @ [ builder.ToString () ]
                 builder.Clear () |> ignore
-                parse rest
-            else
-                parse rest
-        | ''' as c :: rest ->
-            if isOfQuote c then
-                if escaping then
-                    builder.Append c |> ignore
-                    escaping <- false
-                else
-                    quoting <- ' '
-            elif isInQuote () then
+
+            parse rest
+        | '=' as c :: rest ->
+            if escaping then
                 builder.Append c |> ignore
+                escaping <- false
+            elif isLongFlag() then
+                if isInQuote () then
+                    builder.Append c |> ignore
+                else
+                    result <- result @ [ builder.ToString () ]
+                    builder.Clear () |> ignore
             else
-                quoting <- c
+                builder.Append c |> ignore
+
+            parse rest
+        | ''' as c :: rest ->
+            if escaping then
+                builder.Append c |> ignore
+                escaping <- false
+            else
+                if isOfQuote c then
+                    quoting <- ' '
+                elif isInQuote () then
+                    builder.Append c |> ignore
+                else
+                    quoting <- c
 
             parse rest
         | '"' as c :: rest ->
-            if isOfQuote c then
-                if escaping then
-                    builder.Append c |> ignore
-                    escaping <- false
-                else
-                    quoting <- ' '
-            elif isInQuote () then
+            if escaping then
                 builder.Append c |> ignore
+                escaping <- false
             else
-                quoting <- c
+                if isOfQuote c then
+                    quoting <- ' '
+                elif isInQuote () then
+                    builder.Append c |> ignore
+                else
+                    quoting <- c
 
             parse rest
         | '\\' as c :: rest ->
