@@ -29,7 +29,8 @@ let exe (r : CommandParseResult) =
     |> LinesBuffer
     |> _.mapRest(echoMapper)
     |> _.executeInBash()
-    |> fun output -> InOut.Out.all <- output
+    |> _.Split("\n")
+    |> Array.iter (fun l -> InOut.Out.appendLine l)
 
 let cmd =
     let builder = CommandBuilder ("tpl", exe)

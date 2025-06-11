@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.ToFile
 
-open System
 open System.IO
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types

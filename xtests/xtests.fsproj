@@ -13,17 +13,18 @@
 
     <ItemGroup>
         <Content Include="Commands\*\*\*.cs">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
         <Content Include="Commands\*\*\*.sh">
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
     </ItemGroup>
 
     <ItemGroup>
         <Compile Include="Shared.fs"/>
-        <Compile Include="Commands\*\*Tests.fs" />
-        <Compile Include="Commands\*\*\*Tests.fs" />
+        <Compile Include="*\*Tests.fs"/>
+        <Compile Include="*\*\*Tests.fs"/>
+        <Compile Include="*\*\*\*Tests.fs"/>
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

@@ -8,7 +8,12 @@ module CommandBuilder =
         let rec parse (parameters : IParam list) (argv : string list) (result : string list) =
             match parameters, argv with
             | p :: parameters, arg :: argv -> parse parameters argv (result @ [ p.parse arg ])
-            | [], argv -> result, argv
+            | [], arg :: argv ->
+                if arg.StartsWith("-") then
+                    result, [arg] @ argv
+                else
+                    parse [] argv (result @ [arg])
+            | [], [] -> result, []
             | parameters, [] -> raise parametersNotEnough
 
         parse parameters argv []
@@ -24,7 +29,7 @@ module CommandBuilder =
                         let rest = argv |> List.removeAt index
                         let parsed = f.parse argv[index]
                         parse flags rest (result @ [ parsed ])
-                    | None -> result, argv
+                    | None -> parse flags argv result
             | :? InStringFlag as f :: flags ->
                 argv
                 |> List.tryFindIndex (fun a -> a.Equals f.name)
@@ -35,7 +40,7 @@ module CommandBuilder =
                         let rest = argv |> List.removeManyAt index 2
                         let parsed = f.parse argv[index] argv[index + 1]
                         parse flags rest (result @ [ parsed ])
-                    | None -> result, argv
+                    | None -> parse flags argv result
             | [] -> result, argv
 
         parse flags argv []
@@ -53,11 +58,10 @@ type CommandBuilder (name : string, exe : CommandParseResult -> unit) =
             let mutable paramters : string list = []
             let mutable flags : FlagParseResult list = []
 
-            if b.parameters.Length > 0 then
-                CommandBuilder.parseParameters b.parameters argv
-                |> fun (ps, rest) ->
-                    paramters <- ps
-                    argv <- rest
+            CommandBuilder.parseParameters b.parameters argv
+            |> fun (ps, rest) ->
+                paramters <- ps
+                argv <- rest
 
             if b.flags.Length > 0 then
                 CommandBuilder.parseFlags b.flags argv

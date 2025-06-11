@@ -52,6 +52,20 @@ and ReadonlyLinesBuffer (source : BufferSource) =
             for i in startIndex..endIndex do
                 yield this.lines[i]
         }
+    
+    member this.rest(count: int) =
+        let startIndex = this.index
+
+        let endIndex =
+            if this.index + count < this.length then
+                this.index + count
+            else
+                this.length - 1
+
+        seq {
+            for i in startIndex..endIndex do
+                yield this.lines[i]
+        }
 
     member this.iteriRest(iter : int -> string -> unit) =
         let startIndex = this.index
@@ -112,8 +126,12 @@ and LinesBuffer (source) =
         and set v = this._lines <- v
 
     override this.all
-        with get () = this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
-        and set v = this.lines <- v.Split ("\n") |> List.ofArray
+        with get () =
+            if this.lines.Length > 0 then
+                this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
+            else
+                ""
+        and set v = this.lines <- v.Split "\n" |> List.ofArray
 
     member this.appendLine line = this.lines <- this.lines @ [ line ]
 
