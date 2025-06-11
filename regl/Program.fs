@@ -13,6 +13,7 @@ module Program =
     let main (argv : string array) =
         let cmds =
             [ Copy.cmd
+              LexFix.cmd
               Ls.cmd
               Match.cmd
               RemoveEmpty.cmd

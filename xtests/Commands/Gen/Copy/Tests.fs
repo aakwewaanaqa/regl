@@ -10,8 +10,9 @@ open Xunit.Abstractions
 
 type Tests (helper : ITestOutputHelper) =
     [<Fact>]
-    let ``test copy`` () =
-        let sourceFile = "//#!
+    let ``test copy by line`` () =
+        let sourceFile =
+            "//#!
 1. Building a house?
     i.  On sand
     ii. On rock
@@ -27,3 +28,24 @@ type Tests (helper : ITestOutputHelper) =
         ("2. Build the house.", InOut.Out.lines[0]) |> Assert.Equal
         ("    i.  By listening", InOut.Out.lines[1]) |> Assert.Equal
         ("    ii. By actions", InOut.Out.lines[2]) |> Assert.Equal
+
+    [<Fact>]
+    let ``test copy by --start and --end`` () =
+        let sourceFile =
+            "//#!
+//#!copy --start
+1. Building a house?
+    i.  On sand
+    ii. On rock
+//#!copy --end
+2. Build the house.
+    i.  By listening
+    ii. By actions"
+
+        setIn sourceFile
+        Implementation.cmd.parse [] |> Implementation.exe
+
+        (3, InOut.Out.length) |> Assert.Equal
+        ("1. Building a house?", InOut.Out.lines[0]) |> Assert.Equal
+        ("    i.  On sand", InOut.Out.lines[1]) |> Assert.Equal
+        ("    ii. On rock", InOut.Out.lines[2]) |> Assert.Equal
