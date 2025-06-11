@@ -1,6 +1,7 @@
 module XTests.Commands.Gen.Tpl.Tests
 
 open System.IO
+open Regl.CommandLine.IO.InOut
 open Xunit
 open Xunit.Abstractions
 open Regl.CommandLine.Commands.GenCommand
@@ -25,3 +26,30 @@ type Tests (helper : ITestOutputHelper) =
         Implementation.cmd.parse [ "gen" ] |> Implementation.exe
 
         InOut.Out.all |> testLog helper
+        
+    [<Fact>]
+    let ``test tpl if envar is reverted`` () =
+        let srcFile = "//#!
+//#!add-evcm God $0 God
+//#!tpl 1 sh.sh
+God : Let there be light.
+//#!tpl 1 sh.sh
+And there is the light.
+        "
+        
+        let shFile = """
+if [[ -n "$God" ]]; then
+    echo "True"
+else
+    echo "False"
+fi
+"""
+        
+        File.WriteAllText("sh.sh", shFile)
+        setIn srcFile
+        
+        Implementation.cmd.parse [] |> Implementation.exe
+        
+        (4, Out.length) |> Assert.Equal
+        ("True", Out.lines[0]) |> Assert.Equal
+        ("False", Out.lines[2]) |> Assert.Equal
