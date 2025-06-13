@@ -76,20 +76,15 @@ and ReadonlyLinesBuffer (source : BufferSource) =
                 iter i this.lines[i]
 
     member this.filterRest (filter : string -> bool) (count : int) =
-        let startIndex = this.index
-
-        let endIndex =
-            if this.index + count < this.length then
-                this.index + count
-            else
-                this.length - 1
-
+        let mutable count = count
+        let mutable index = this.index
         seq {
-            for i in startIndex..endIndex do
-                let lineText = this.lines[i]
-
-                if filter lineText then
-                    yield lineText
+            while count > 0 && index < this.length do
+                let atLine = this.lines[index]
+                if filter atLine then
+                    count <- count - 1
+                    yield atLine
+                index <- index + 1
         }
 
     member buffer.executeInBash() =
@@ -131,7 +126,11 @@ and LinesBuffer (source) =
                 this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
             else
                 ""
-        and set v = this.lines <- v.Split "\n" |> List.ofArray
+        and set v =
+            if v |> String.IsNullOrEmpty then
+                this.lines <- []
+            else
+                this.lines <- v.Split "\n" |> List.ofArray
 
     member this.appendLine line = this.lines <- this.lines @ [ line ]
 

@@ -5,6 +5,7 @@ open System.Diagnostics
 open System.IO
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO
+open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand.Shared
@@ -31,6 +32,8 @@ let exe (r : CommandParseResult) =
     |> _.executeInBash()
     |> _.Split("\n")
     |> Array.iter (fun l -> InOut.Out.appendLine l)
+    
+    revertEnvars()
 
 let cmd =
     let builder = CommandBuilder ("tpl", exe)

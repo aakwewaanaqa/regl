@@ -1,33 +1,51 @@
 # README
 
-## DESIGN CONCEPT
+## FEATURE
 
-### Api Source Code Generation
+1. LF based statement
+2. Micro-command-based
+3. F# + Bash
+4. Can cope with any language style
 
-This project is aiming to become a helpful tool for dealing with
-front-end api generation. For syncing front-end's protocol and
-back-end's sometimes requires time to validate and testing.
-So this project aims to generate code by text reading,
-or a sick idea, writing command inside the comment.
+### How does it work like?
 
-### The Vision and The Sick Idea
+- Executes command in `source file` by line
+- Optionally executes `generating bash file`
+- Reads output from commands
+- Writes output to `generated file`
 
-The idea is to read the source file that means the back-end's code,
-and then to pass it to a bash script for templating,
-and finally to output the echoed lines to a generated file.
+### Main command
 
-The steps:
-- `cat <SOURCE-FILE> | regl gen`
-- Executes Command in Source File
-- Matches Environment Variables
-- Processes `<TEMPLATE-FILE>.sh`
-- Write Generated File
+```sh
 
-#### Source File Gen Commands
+# Mainly used
+regl gen
+```
 
-- `copy <LINE-COUNT>` <br> Copies lines of a source file
-- `evcm <LINE-COUNT> <REGEX> <FORMAT> <ENVAR-NAME>` <br>
-  Reads lines of the source file <br>
-  , and matches them with regex <br>
-  , and formats the match with `$0` or `$1` any `$<NUMBER>` as groups <br>
-  , and sets to a environment variable for later use. <br>
+```sh
+
+# It could be any source file
+# This line will output generated text
+< source-file.cs regl gen
+```
+
+## CODEBASE
+
+### IO
+
+The IO namespace provides core input/output functionality for the code generation system:
+
+- **LinesBuffer**: Manages buffered line operations for source code reading and manipulation
+- **InOut**: Handles file input/output operations and command line interactions
+
+These components form the foundation for reading source files, processing commands, and generating output files. The IO
+system is designed to efficiently handle both file-based operations and command-line interactions required for the code
+generation workflow.
+
+Key responsibilities:
+
+- Source file reading and parsing
+- Command execution output buffering
+- Generated file writing operations
+- Stream-based input/output handling
+

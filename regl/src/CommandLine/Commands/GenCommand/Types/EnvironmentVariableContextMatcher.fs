@@ -2,6 +2,7 @@ namespace Regl.CommandLine.Commands.GenCommand.Types
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.IO.InOut
 
 type EnvironmentVariableContextMatcher(pattern: Regex, format: string, envarName: string) =
     let formatMatch (m: Match) (format: string) =
@@ -14,5 +15,7 @@ type EnvironmentVariableContextMatcher(pattern: Regex, format: string, envarName
         formatted
 
     member this.doMatch(ctx: string) =
-        pattern.Matches ctx
-        |> Seq.iter (fun m -> Environment.SetEnvironmentVariable(envarName, formatMatch m format))
+        let matches = pattern.Matches ctx
+        for m in matches do
+            if m.Success then
+                setEnvar envarName (formatMatch m format)
