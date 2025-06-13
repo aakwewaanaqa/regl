@@ -1,12 +1,15 @@
 module XTests.Commands.Match.Tests
 
 open Regl.CommandLine.IO
+open XTests.Types
 open Xunit
 open Xunit.Abstractions
 open XTests.Shared
 open Regl.CommandLine.Commands
 
 type Tests (helper : ITestOutputHelper) =
+    inherit TestBase (helper)
+
     [<Fact>]
     let ``test match`` () =
         setIn "public async Task<Response<object>> GetDoc([FromBody] Firestore Dto)"
@@ -22,13 +25,3 @@ type Tests (helper : ITestOutputHelper) =
         |> Match.cmd.execute
 
         ("object", InOut.Out.lines[0]) |> Assert.Equal
-
-    [<Fact>]
-    let ``/bin/bash test match --format`` () =
-        let cmd = $"""{reglPathInCmd}
-line="public async Task<Response<object>> GetDoc([FromBody] Firestore Dto)"
-TResult=$(echo "$line" | regl match 'Task<Response<([a-zA-Z0-9]+?)>>' --format '$1')
-echo "$TResult" """
-        let result = doShellCmd cmd
-        (0, result.code) |> Assert.Equal
-        ("object\n", result.output) |> Assert.Equal

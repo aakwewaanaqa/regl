@@ -126,7 +126,11 @@ and LinesBuffer (source) =
                 this.lines |> List.reduce (fun a b -> $"{a}\n{b}")
             else
                 ""
-        and set v = this.lines <- v.Split "\n" |> List.ofArray
+        and set v =
+            if v |> String.IsNullOrEmpty then
+                this.lines <- []
+            else
+                this.lines <- v.Split "\n" |> List.ofArray
 
     member this.appendLine line = this.lines <- this.lines @ [ line ]
 

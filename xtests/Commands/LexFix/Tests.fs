@@ -2,11 +2,14 @@ module XTests.Commands.LexFix
 
 open Regl.CommandLine.IO.InOut
 open XTests.Shared
+open XTests.Types
 open Xunit
 open Xunit.Abstractions
 open Regl.CommandLine.Commands
 
 type LexFix (helper : ITestOutputHelper) =
+    inherit TestBase(helper)
+
     [<Theory>]
     [<InlineData("<<>>>", "<>", "<<>>")>]
     [<InlineData("((()))", "()", "((()))")>]

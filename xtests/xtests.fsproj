@@ -21,6 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="Types\TestBase.fs" />
         <Compile Include="Shared.fs"/>
         <Compile Include="*\*Tests.fs"/>
         <Compile Include="*\*\*Tests.fs"/>

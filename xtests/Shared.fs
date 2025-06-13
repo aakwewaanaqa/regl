@@ -11,9 +11,6 @@ type ShellResult = { code: int; output: string } with
     member this.lines =
         this.output.Split("\n")
 
-let reglPathInCmd =
-    "PATH=$PATH:/home/c0054/UnityProjects/regl/regl/bin/Release/net9.0/linux-x64"
-
 let doShell (filePath : string) =
     let startInfo = ProcessStartInfo()
     startInfo.FileName <- "/bin/bash"

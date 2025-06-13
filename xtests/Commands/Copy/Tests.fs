@@ -4,10 +4,13 @@ open System
 open Regl.CommandLine.Commands
 open TextCopy
 open XTests.Shared
+open XTests.Types
 open Xunit
 open Xunit.Abstractions
 
 type Tests(helper : ITestOutputHelper) =
+    inherit TestBase(helper)
+
     [<Fact>]
     let ``test copy no LF`` () =
         setIn "1 line is here"
