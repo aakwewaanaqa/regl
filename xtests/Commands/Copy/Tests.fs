@@ -1,6 +1,7 @@
 module XTests.Commands.Copy.Tests
 
 open System
+open Microsoft.VisualStudio.TestPlatform.ObjectModel
 open Regl.CommandLine.Commands
 open TextCopy
 open XTests.Shared
@@ -8,6 +9,7 @@ open XTests.Types
 open Xunit
 open Xunit.Abstractions
 
+[<Trait("github CI", "false")>]
 type Tests(helper : ITestOutputHelper) =
     inherit TestBase(helper)
 
