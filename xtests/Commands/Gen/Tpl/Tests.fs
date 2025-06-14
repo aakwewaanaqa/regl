@@ -6,7 +6,6 @@ open XTests.Types
 open Xunit
 open Xunit.Abstractions
 open Regl.CommandLine.Commands.GenCommand
-open Regl.CommandLine.IO
 open XTests.Shared
 
 type Tests (helper : ITestOutputHelper) =

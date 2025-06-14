@@ -19,6 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <PackageReference Include="FsToolkit.ErrorHandling" Version="5.0.0" />
         <PackageReference Include="TextCopy" Version="6.2.1"/>
     </ItemGroup>
 
@@ -46,6 +47,7 @@
 
         <Compile Include="src\CommandLine\Types\CommandParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
+        <Compile Include="src\CommandLine\Types\LineArgs.fs" />
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
         <!--Bash Command Types-->
 
@@ -54,6 +56,8 @@
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fs"/>
         <!--Bash Commands of Gen Command Types-->
         <!--Types-->
+
+        <Compile Include="src\CommandLine\Validations\ArgValidation.fs" />
 
         <!--Shared Functions-->
         <Compile Include="src\CommandLine\Commands\Shared.fs"/>
@@ -97,7 +101,6 @@
 
     <ItemGroup>
         <Compile Include="Program.fs"/>
-        <Content Include="src\CommandLine\Commands\GenCommand\README.md"/>
     </ItemGroup>
 
 </Project>

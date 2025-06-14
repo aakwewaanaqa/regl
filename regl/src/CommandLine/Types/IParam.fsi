@@ -1,7 +1,7 @@
 namespace Regl.CommandLine.Types
 
 /// <summary>
-/// The required parameter to be provided first with a command
+/// The required parameter to be provided with a command
 /// </summary>
 /// <remarks>
 /// Be noticed that, parameters are well-ordered

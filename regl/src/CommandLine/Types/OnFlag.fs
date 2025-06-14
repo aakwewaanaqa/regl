@@ -11,6 +11,9 @@ type OnFlag (name, ?usage) =
         else
             raise (Exception usage)
 
+    override f.ToString() =
+        f.name
+
     interface IFlag with
         member f.name = name
         member f.usage = usage
