@@ -18,9 +18,9 @@ type Tests (helper : ITestOutputHelper) =
         setIn (File.ReadAllText("controller.cs"))
         Implementation.cmd.parse [ "gen" ] |> Implementation.exe
 
-        ("[FromBody]", InOut.Out.lines[0]) |> Assert.Equal<string>
-        ("[FromQuery]", InOut.Out.lines[0]) |> Assert.NotEqual<string>
-        ("[FromBody] FirestoreDocDto dto", InOut.Out.lines[1]) |> Assert.Equal<string>
+        ("[FromBody]", Out.lines[0]) |> Assert.Equal<string>
+        ("[FromQuery]", Out.lines[0]) |> Assert.NotEqual<string>
+        ("[FromBody] FirestoreDocDto dto", Out.lines[1]) |> Assert.Equal<string>
 
     [<Fact>]
     let ``test tpl if envar is reverted`` () =

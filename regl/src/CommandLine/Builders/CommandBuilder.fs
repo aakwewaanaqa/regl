@@ -34,7 +34,7 @@ module CommandBuilder =
                 argv
                 |> List.tryFindIndex (fun a -> a.Equals f.name)
                 |> Option.filter (fun index -> index + 1 < argv.Length)
-                |> Option.filter (fun index -> not (argv[index + 1].StartsWith ("-")))
+                |> Option.filter (fun index -> not (argv[index + 1].StartsWith "-"))
                 |> function
                     | Some index ->
                         let rest = argv |> List.removeManyAt index 2

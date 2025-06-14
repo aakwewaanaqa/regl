@@ -37,5 +37,5 @@ and exe (r : CommandParseResult) =
 
 and cmd : CommandBody =
     let builder = CommandBuilder ("import", exe)
-    builder.parameters <- [ Param ("text") ]
+    builder.parameters <- [ Param "text" ]
     builder.build ()

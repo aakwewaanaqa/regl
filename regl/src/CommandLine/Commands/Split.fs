@@ -13,7 +13,7 @@ let usage =
 
 let exe (r : CommandParseResult) =
     // Reads piped input
-    InOut.In <- ReadonlyLinesBuffer (ByConsoleIn)
+    InOut.In <- ReadonlyLinesBuffer ByConsoleIn
 
     r.getParam 0
     |> Regex
