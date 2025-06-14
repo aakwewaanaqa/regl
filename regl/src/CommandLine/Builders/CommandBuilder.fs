@@ -4,8 +4,6 @@ open Regl.CommandLine.Types
 open Regl.Lang.ExceptionLang
 
 module CommandBuilder =
-    let parseArgs ()
-    
     let parseParameters (parameters : IParam list) (argv : string list) =
         let rec parse (parameters : IParam list) (argv : string list) (result : string list) =
             match parameters, argv with

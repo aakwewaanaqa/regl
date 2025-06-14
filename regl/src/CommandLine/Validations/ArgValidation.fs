@@ -11,12 +11,12 @@ type ArgValidation (name : string, ?info : string) =
     member val parameters : IParam list = []
     member val flags : IFlag list = []
 
-module ArgValidation =
-    let rec validate (va : ArgValidation) (args : LineArgs) =
-        let hasRequirements = va.parameters > 0 || va.flags > 0
-        if hasRequirements && args.length <= 0 then
-            Error $"validation named {va.name} has not enough args!"
-        elif hasRequirements then
-            if va.flags.Length > 0 then
-                match va.flags.Head with
-                | :? OnFlag f -> args.
+// module ArgValidation =
+    // let rec validate (va : ArgValidation) (args : LineArgs) =
+    //     let hasRequirements = va.parameters > 0 || va.flags > 0
+    //     if hasRequirements && args.length <= 0 then
+    //         Error $"validation named {va.name} has not enough args!"
+    //     elif hasRequirements then
+    //         if va.flags.Length > 0 then
+    //             match va.flags.Head with
+    //             | :? OnFlag f -> args.

@@ -3,7 +3,6 @@ namespace Regl.CommandLine.Types
 open System
 open System.Text
 open System.Text.RegularExpressions
-open FsToolkit.ErrorHandling
 
 type LineArgs (rawArg : string) =
     let parse () : string list =
@@ -12,14 +11,13 @@ type LineArgs (rawArg : string) =
         let mutable escaping : bool = false
         let builder = StringBuilder ()
 
-        let isLongFlag () = builder.ToString().StartsWith("--")
+        let isLongFlag () = builder.ToString().StartsWith ("--")
         let isInQuote () = quoting = ''' || quoting = '"'
         let isOfQuote (c : char) = quoting = c
 
         let rec loop (chars : char list) =
             match chars with
-            | '\t'
-            | ' ' as c :: rest ->
+            | '\t' | ' ' as c :: rest ->
                 if escaping || isInQuote () then
                     builder.Append c |> ignore
                     escaping <- false
@@ -32,7 +30,7 @@ type LineArgs (rawArg : string) =
                 if escaping then
                     builder.Append c |> ignore
                     escaping <- false
-                elif isLongFlag() then
+                elif isLongFlag () then
                     if isInQuote () then
                         builder.Append c |> ignore
                     else
@@ -46,26 +44,24 @@ type LineArgs (rawArg : string) =
                 if escaping then
                     builder.Append c |> ignore
                     escaping <- false
+                else if isOfQuote c then
+                    quoting <- ' '
+                elif isInQuote () then
+                    builder.Append c |> ignore
                 else
-                    if isOfQuote c then
-                        quoting <- ' '
-                    elif isInQuote () then
-                        builder.Append c |> ignore
-                    else
-                        quoting <- c
+                    quoting <- c
 
                 loop rest
             | '"' as c :: rest ->
                 if escaping then
                     builder.Append c |> ignore
                     escaping <- false
+                else if isOfQuote c then
+                    quoting <- ' '
+                elif isInQuote () then
+                    builder.Append c |> ignore
                 else
-                    if isOfQuote c then
-                        quoting <- ' '
-                    elif isInQuote () then
-                        builder.Append c |> ignore
-                    else
-                        quoting <- c
+                    quoting <- c
 
                 loop rest
             | '\\' as c :: rest ->
@@ -89,48 +85,68 @@ type LineArgs (rawArg : string) =
 
         result
 
-    member this.args = parse()
+    member val args = parse () with get, set
+
     member this.length = this.args.Length
 
-module LineArgs =
-    let isFlag (n : string) =
-        n.StartsWith("-")
-    let isShortFlag (n : string) =
-        let shortFlagPattern = Regex("-[a-zA-Z0-9]+")
-        shortFlagPattern.IsMatch(n)
-    let isLongFlag (n : string) =
-        let longFlagPattern  = Regex("--[a-zA-Z\-0-9]+")
-        longFlagPattern.IsMatch(n)
-    let guard (a : bool) (b : string) =
-        if a then raise (Exception b)
-        else ()
+    member this.Item
+        with get index = this.args[index]
 
-    let hasFlag (args : LineArgs) (should : IFlag) =
+    member this.Length = this.args.Length
+
+    new (args : string list) as this =
+        LineArgs ""
+        then this.args <- args
+
+module LineArgs =
+    let isFlag (n : string) = n.StartsWith "-"
+
+    let isShortFlag (n : string) =
+        let shortFlagPattern = Regex "^-[a-zA-Z0-9]+"
+        shortFlagPattern.IsMatch n
+
+    let isLongFlag (n : string) =
+        let longFlagPattern = Regex "^--[a-zA-Z\-0-9]+"
+        longFlagPattern.IsMatch n
+
+    let guard (a : bool) (b : string) = if a then raise (Exception b) else ()
+
+    let hasFlag (should : IFlag) (args : LineArgs) =
         try
             let args = args.args
             let argShortFlags = args |> List.filter isShortFlag
             guard (args.Length <= 0) "args was not provided..."
+
             if should.name |> isShortFlag then
-                    guard (argShortFlags |> List.isEmpty) $"provided args({args}) has not short flags"
-                    let flat = argShortFlags |> List.reduce (fun a b -> $"{a}{b}")
-                    let notInIndex = should.name |> Seq.tryFindIndex (fun c -> not (flat.Contains c))
-                    guard notInIndex.IsSome $"args({args}) lacks -{should.name[notInIndex.Value]}"
+                guard (argShortFlags |> List.isEmpty) $"provided args({args}) has not short flags"
+                let flat = argShortFlags |> List.reduce (fun a b -> $"{a}{b}")
+
+                for a in should.name do
+                    flat
+                    |> Seq.tryFindIndex (fun c -> c.Equals a)
+                    |> function
+                        | None -> guard true $"args({args}) lacks -{a}"
+                        | Some _ -> ()
             elif should.name |> isLongFlag then
-                guard (args |> List.exists (fun arg -> arg.Equals should)) ""
+                guard
+                    (args |> List.exists (fun arg -> arg.Equals should.name) |> not)
+                    $"flag({should}) is not in args({args})"
             else
-                raise (Exception $"flag({should}) is not a long flag or short flag neither")
+                guard true $"flag({should}) is not a long flag or short flag neither"
+
             Ok ()
         with ex ->
             Error ex
 
-    let hasValue (args : LineArgs) (should : IFlag) =
+    let hasValue (should : IFlag) (args : LineArgs) =
         try
             let args = args.args
-            guard (should.name |> isLongFlag |> not) $"flag({should}) should be a long flag"
+            // it could be a short flag also
+            // guard (should.name |> isLongFlag |> not) $"flag({should}) should be a long flag"
             let inIndex = args |> List.tryFindIndex (fun arg -> arg.Equals should.name)
             guard inIndex.IsNone $"flag({should}) was not in the args({args})"
             let inIndex = inIndex.Value
-            guard ((inIndex + 1) >= args.Length) $"args({args}) at index {inIndex + 1} should have val"
+            guard (inIndex + 1 >= args.Length) $"args({args}) at index {inIndex + 1} should have val"
             guard (args[inIndex + 1] |> isFlag) $"args({args}) at index {inIndex + 1} was a flag"
             Ok (args[inIndex + 1])
         with ex ->
