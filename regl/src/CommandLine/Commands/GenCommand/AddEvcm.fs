@@ -1,11 +1,8 @@
 module Regl.CommandLine.Commands.GenCommand.AddEvcm
 
-open System
 open System.Text.RegularExpressions
-open Regl.Lang
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
-open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand.Types
 open Regl.CommandLine.Commands.GenCommand.Shared
 

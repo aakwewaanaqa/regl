@@ -1,9 +1,6 @@
 module Regl.CommandLine.Commands.GenCommand.Copy
 
-open System
 open Regl.CommandLine.Builders
-open Regl.CommandLine.Commands
-open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared

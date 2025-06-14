@@ -1,10 +1,8 @@
 module Regl.CommandLine.Commands.Split
 
-open System
 open System.Text.RegularExpressions
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
-open TextCopy
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 

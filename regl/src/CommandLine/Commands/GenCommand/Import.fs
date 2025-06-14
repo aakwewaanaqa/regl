@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.GenCommand.Import
 
-open System.IO
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut

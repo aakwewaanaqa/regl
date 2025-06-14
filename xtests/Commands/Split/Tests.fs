@@ -1,7 +1,5 @@
 module XTests.Commands.Split.Tests
 
-open System
-open System.IO
 open Regl.CommandLine.Commands
 open Regl.CommandLine.IO
 open XTests.Shared

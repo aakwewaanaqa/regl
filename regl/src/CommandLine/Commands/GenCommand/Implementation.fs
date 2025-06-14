@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.GenCommand.Implementation
 
-open System
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types

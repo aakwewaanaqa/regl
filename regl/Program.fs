@@ -1,7 +1,5 @@
 ﻿namespace Regl
 
-open System
-open Regl.CommandLine.IO
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO.InOut

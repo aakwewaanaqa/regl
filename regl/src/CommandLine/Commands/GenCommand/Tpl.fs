@@ -1,13 +1,9 @@
 module Regl.CommandLine.Commands.GenCommand.Tpl
 
-open System
-open System.Diagnostics
-open System.IO
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
-open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand.Shared
 open Regl.Lang
 

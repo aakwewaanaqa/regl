@@ -1,6 +1,5 @@
 namespace Regl.CommandLine.Commands.GenCommand.Types
 
-open System
 open System.Text.RegularExpressions
 open Regl.CommandLine.IO.InOut
 
