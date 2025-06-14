@@ -36,9 +36,9 @@ type Tests (helper : ITestOutputHelper) =
             | None -> None
 
         let g = pGenericId { rem = "Task<Response>"; value = "" }
-        (g.IsSome) |> Assert.True
+        g.IsSome |> Assert.True
         (g.Value.value, "Task<Response>") |> Assert.Equal
         
         let g = pGenericId { rem = "Task<Response>>"; value = "" }
-        (g.IsSome) |> Assert.True
+        g.IsSome |> Assert.True
         (g.Value.value, "Task<Response>") |> Assert.Equal

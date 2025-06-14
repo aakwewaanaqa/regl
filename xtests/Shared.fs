@@ -2,7 +2,6 @@ module XTests.Shared
 
 open System
 open System.IO
-open Microsoft.VisualStudio.TestPlatform.PlatformAbstractions
 open Xunit
 open Xunit.Abstractions
 open System.Diagnostics

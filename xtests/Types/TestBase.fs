@@ -1,7 +1,6 @@
 namespace XTests.Types
 
 open Xunit
-open Xunit.Sdk
 open Xunit.Abstractions
 open Regl.CommandLine.IO
 

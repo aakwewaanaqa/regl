@@ -18,12 +18,12 @@ and ReadonlyLinesBuffer (source : BufferSource) =
         match source with
         | ByNone -> ""
         | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd ()
-        | ByFilePath path -> File.ReadAllText (path)
+        | ByFilePath path -> File.ReadAllText path
         | BySeq sequence -> sequence |> Seq.reduce (fun a b -> $"{a}\n{b}")
         | ByList list -> list |> List.reduce (fun a b -> $"{a}\n{b}")
         | ByConsoleIn -> Console.In.ReadToEnd ()
 
-    let _lines = _all.Split ("\n") |> List.ofArray
+    let _lines = _all.Split "\n" |> List.ofArray
 
     abstract member all : string with get, set
 
@@ -110,11 +110,11 @@ and LinesBuffer (source) =
     member val private _lines : string list =
         match source with
         | ByNone -> []
-        | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd().Split ("\n") |> List.ofArray
-        | ByFilePath path -> File.ReadAllText(path).Split ("\n") |> List.ofArray
+        | ByFile fileInfo -> fileInfo.OpenText().ReadToEnd().Split "\n" |> List.ofArray
+        | ByFilePath path -> File.ReadAllText(path).Split "\n" |> List.ofArray
         | BySeq sequence -> sequence |> List.ofSeq
         | ByList list -> list
-        | ByConsoleIn -> Console.In.ReadToEnd().Split ("\n") |> List.ofArray with get, set
+        | ByConsoleIn -> Console.In.ReadToEnd().Split "\n" |> List.ofArray with get, set
 
     override this.lines
         with get () = this._lines

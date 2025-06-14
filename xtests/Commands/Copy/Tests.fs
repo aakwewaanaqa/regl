@@ -1,7 +1,5 @@
 module XTests.Commands.Copy.Tests
 
-open System
-open Microsoft.VisualStudio.TestPlatform.ObjectModel
 open Regl.CommandLine.Commands
 open TextCopy
 open XTests.Shared

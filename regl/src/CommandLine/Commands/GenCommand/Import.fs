@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.GenCommand.Import
 
-open System.IO
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
@@ -38,5 +37,5 @@ and exe (r : CommandParseResult) =
 
 and cmd : CommandBody =
     let builder = CommandBuilder ("import", exe)
-    builder.parameters <- [ Param ("text") ]
+    builder.parameters <- [ Param "text" ]
     builder.build ()

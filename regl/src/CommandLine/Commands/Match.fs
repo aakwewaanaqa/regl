@@ -1,6 +1,5 @@
 module Regl.CommandLine.Commands.Match
 
-open System
 open System.Text.RegularExpressions
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO

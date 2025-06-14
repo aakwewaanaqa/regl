@@ -1,8 +1,5 @@
 module XTests.Commands.Gen.Copy.Tests
 
-open System
-open System.IO
-open Microsoft.VisualStudio.TestPlatform.ObjectModel
 open Regl.CommandLine.Commands.GenCommand
 open Regl.CommandLine.IO
 open XTests.Shared

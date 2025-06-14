@@ -1,9 +1,7 @@
 module Regl.CommandLine.Commands.Ls
 
-open System
 open System.IO
 open Regl.CommandLine.IO
-open TextCopy
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Builders

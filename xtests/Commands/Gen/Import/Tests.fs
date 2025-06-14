@@ -1,6 +1,5 @@
 module XTests.Commands.Gen.Import
 
-open System
 open System.IO
 open Regl.CommandLine.IO.InOut
 open XTests.Shared

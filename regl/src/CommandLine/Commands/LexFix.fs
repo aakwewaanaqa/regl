@@ -35,5 +35,5 @@ let exe (r : CommandParseResult) =
         Out.all <- result
 let cmd : CommandBody =
     let builder = CommandBuilder ("lex-fix", exe)
-    builder.optionalFlags <- [ InStringFlag ("--scope") ]
+    builder.optionalFlags <- [ InStringFlag "--scope" ]
     builder.build ()
