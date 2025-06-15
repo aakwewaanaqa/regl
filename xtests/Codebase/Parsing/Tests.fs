@@ -57,7 +57,7 @@ type Tests (output : ITestOutputHelper) =
 
         let flag = InStringFlag(flag)
         args |> LineArgs.hasFlag flag |> Result.isOk |> Assert.True
-        (value, args |> LineArgs.hasValue flag |> Result.defaultValue "") |> Assert.Equal
+        (value, args |> LineArgs.getValue flag |> Result.defaultValue "") |> Assert.Equal
 
     [<Theory>]
     [<InlineData("-f value", "-f", "value")>]
@@ -72,7 +72,7 @@ type Tests (output : ITestOutputHelper) =
 
             let flag = InStringFlag flag
             args |> LineArgs.hasFlag flag |> Result.isOk |> Assert.True
-            (value, args |> LineArgs.hasValue flag |> Result.defaultValue "") |> Assert.Equal
+            (value, args |> LineArgs.getValue flag |> Result.defaultValue "") |> Assert.Equal
         else
             (1, args.Length) |> Assert.Equal
             (flag, args[0]) |> Assert.Equal

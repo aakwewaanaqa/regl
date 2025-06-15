@@ -14,3 +14,7 @@ type InStringFlag (name, ?usage) =
     interface IFlag with
         member f.name = name
         member f.usage = usage
+        member f.hasVal = true
+        member f.getVal a = OfText a
+        member f.CompareTo (obj: obj): int =
+            $"{f}".CompareTo($"{obj}")

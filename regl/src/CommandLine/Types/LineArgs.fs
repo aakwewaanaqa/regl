@@ -3,6 +3,7 @@ namespace Regl.CommandLine.Types
 open System
 open System.Text
 open System.Text.RegularExpressions
+open Regl.Exts
 
 type LineArgs (rawArg : string) =
     let parse () : string list =
@@ -109,8 +110,6 @@ module LineArgs =
         let longFlagPattern = Regex "^--[a-zA-Z\-0-9]+"
         longFlagPattern.IsMatch n
 
-    let guard (a : bool) (b : string) = if a then raise (Exception b) else ()
-
     let hasFlag (should : IFlag) (args : LineArgs) =
         try
             let args = args.args
@@ -138,7 +137,7 @@ module LineArgs =
         with ex ->
             Error ex
 
-    let hasValue (should : IFlag) (args : LineArgs) =
+    let getValue (should : IFlag) (args : LineArgs) =
         try
             let args = args.args
             // it could be a short flag also

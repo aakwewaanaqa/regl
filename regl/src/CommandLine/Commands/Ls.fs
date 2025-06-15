@@ -15,7 +15,7 @@ let exe (r: CommandParseResult) =
     let hasPattern = r.tryGetFlagValue "--pattern"
     let isRecursive = r.hasFlag "-R"
     let searchOption = ternary isRecursive SearchOption.AllDirectories SearchOption.TopDirectoryOnly
-    let pattern = hasPattern |> FlagOption.defaultString ""
+    let pattern = hasPattern |> FlagVal.defaultString ""
 
     Directory.GetCurrentDirectory()
     |> fun pwd -> Directory.GetFiles(pwd, pattern, searchOption)
