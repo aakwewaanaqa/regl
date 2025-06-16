@@ -11,11 +11,11 @@ type OnFlag (name, ?usage) =
         else
             raise (Exception usage)
 
-    override f.ToString() = f.name
+    override f.ToString() = name
 
     interface IFlag with
         member f.name = name
         member f.usage = usage
         member f.needInput = false
         member f.getVal _ = OfBool true
-        member f.CompareTo(obj : obj) : int = $"{f}".CompareTo ($"{obj}")
+        member f.CompareTo(obj : obj) : int = $"{f}".CompareTo $"{obj}"

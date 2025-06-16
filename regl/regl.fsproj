@@ -46,7 +46,8 @@
 
         <Compile Include="src\CommandLine\Types\CommandParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\CommandBody.fs"/>
-        <Compile Include="src\CommandLine\Types\LineArgs.fs" />
+        <Compile Include="src\CommandLine\Types\Arguments\Args.fs" />
+        <Compile Include="src\CommandLine\Types\Arguments\ArgEntry.fs" />
         <Compile Include="src\CommandLine\Builders\CommandBuilder.fs"/>
         <!--Bash Command Types-->
 
@@ -55,8 +56,6 @@
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fs"/>
         <!--Bash Commands of Gen Command Types-->
         <!--Types-->
-
-        <Compile Include="src\CommandLine\Validations\ArgValidation.fs" />
 
         <!--Shared Functions-->
         <Compile Include="src\CommandLine\Commands\Shared.fs"/>

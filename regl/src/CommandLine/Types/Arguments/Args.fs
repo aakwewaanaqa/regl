@@ -5,7 +5,7 @@ open System.Text
 open System.Text.RegularExpressions
 open Regl.Exts
 
-type LineArgs (rawArg : string) =
+type Args (rawArg : string) =
     let parse () : string list =
         let mutable result : string list = []
         let mutable quoting : char = ' '
@@ -96,16 +96,16 @@ type LineArgs (rawArg : string) =
     member this.Length = this.args.Length
 
     new (args : string list) as this =
-        LineArgs ""
+        Args ""
         then this.args <- args
 
-and LineArgsGetFlag = {
+and ArgsDto = {
     flag : IFlag
     flagVal : FlagVal
-    rem : LineArgs
+    rem : Args
 }
 
-module LineArgs =
+module Args =
     let isFlag (n : string) = n.StartsWith "-"
 
     let isShortFlag (n : string) =
@@ -116,7 +116,7 @@ module LineArgs =
         let longFlagPattern = Regex "^--[a-zA-Z\-0-9]+"
         longFlagPattern.IsMatch n
 
-    let hasFlag (flag : IFlag) (args : LineArgs) =
+    let hasFlag (flag : IFlag) (args : Args) =
         try
             let args = args.args
             let argShortFlags = args |> List.filter isShortFlag
@@ -143,7 +143,7 @@ module LineArgs =
         with ex ->
             Error ex
 
-    let getValue (flag : IFlag) (args : LineArgs) =
+    let getValue (flag : IFlag) (args : Args) =
         try
             let args = args.args
             // it could be a short flag also
@@ -155,11 +155,11 @@ module LineArgs =
             guard (args[inIndex + 1] |> isFlag) $"args({args}) at index {inIndex + 1} was a flag"
             if flag.needInput then
                 let flagVal = flag.getVal args[inIndex + 1]
-                let rem = args |> List.removeManyAt inIndex 2 |> LineArgs
+                let rem = args |> List.removeManyAt inIndex 2 |> Args
                 Ok { flag = flag; flagVal = flagVal; rem = rem }
             else
                 let flagVal = flag.getVal ""
-                let rem = args |> List.removeAt inIndex |> LineArgs
+                let rem = args |> List.removeAt inIndex |> Args
                 Ok { flag = flag; flagVal = flagVal; rem = rem }
         with ex ->
             Error ex
