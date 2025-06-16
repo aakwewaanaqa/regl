@@ -16,6 +16,6 @@ type OnFlag (name, ?usage) =
     interface IFlag with
         member f.name = name
         member f.usage = usage
-        member f.hasVal = false
+        member f.needInput = false
         member f.getVal _ = OfBool true
         member f.CompareTo(obj : obj) : int = $"{f}".CompareTo ($"{obj}")
