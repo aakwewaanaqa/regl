@@ -1,5 +1,7 @@
 namespace Regl.CommandLine.Types
 
+open System
+
 /// <summary>
 /// The required parameter to be provided with a command
 /// </summary>
@@ -12,4 +14,9 @@ type IParam =
     /// The usage to provide explanation for the parameter
     abstract member usage : string
     /// The method to parse the parameter
+    [<Obsolete>]
     abstract member parse : string -> string
+    /// The method to parse the parameter
+    abstract member getVal : string -> FlagVal
+
+    inherit IComparable

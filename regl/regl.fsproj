@@ -34,11 +34,12 @@
 
         <!--Types-->
         <!--Bash Command Types-->
+        <Compile Include="src\CommandLine\Types\FlagParseResult.fs"/>
+
         <Compile Include="src\CommandLine\Types\IParam.fsi"/>
         <Compile Include="src\CommandLine\Types\IParam.fs"/>
         <Compile Include="src\CommandLine\Types\Param.fs"/>
 
-        <Compile Include="src\CommandLine\Types\FlagParseResult.fs"/>
         <Compile Include="src\CommandLine\Types\IFlag.fsi"/>
         <Compile Include="src\CommandLine\Types\IFlag.fs"/>
         <Compile Include="src\CommandLine\Types\OnFlag.fs"/>

@@ -4,7 +4,9 @@ open System
 
 type InStringFlag (name, ?usage) =
     let usage = usage |> Option.defaultValue ""
+    [<Obsolete>]
     member f.name = name
+    [<Obsolete>]
     member f.parse (argName : string) (argVal : string) =
         if name.Equals argName then
             { name = name ; value = OfText argVal }

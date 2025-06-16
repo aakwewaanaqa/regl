@@ -4,7 +4,9 @@ open System
 
 type OnFlag (name, ?usage) =
     let usage = usage |> Option.defaultValue ""
+    [<Obsolete>]
     member f.name = name
+    [<Obsolete>]
     member f.parse(arg : string) =
         if name.Equals arg then
             { name = name ; value = OfBool true }

@@ -1,4 +1,4 @@
-module XTests.Codebase.Parsing.Tests
+namespace XTests.Codebase.Parsing
 
 open System
 open Regl.CommandLine.Types
@@ -8,7 +8,7 @@ open Xunit
 open Xunit.Abstractions
 open Regl.CommandLine.Commands.Shared
 
-type Tests (output : ITestOutputHelper) =
+type ArgsTests (output : ITestOutputHelper) =
     inherit TestBase (output)
 
     [<Theory>]
