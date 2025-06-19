@@ -16,6 +16,8 @@ type OnFlag (name, ?usage) =
             raise (Exception usage)
 
     override f.ToString() = name
+    override f.GetHashCode() = HashCode.Combine name
+    override f.Equals(b : obj) = f.GetHashCode () = b.GetHashCode ()
 
     interface IFlag with
         member f.name = name
@@ -23,6 +25,3 @@ type OnFlag (name, ?usage) =
         member f.needInput = false
         member f.getVal _ = OfBool true
         member f.CompareTo(obj : obj) : int = $"{f}".CompareTo $"{obj}"
-
-    interface IEquatable<IFlag> with
-        member f.Equals(other : IFlag) : bool = name = other.name

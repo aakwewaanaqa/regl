@@ -9,5 +9,3 @@ type IFlag =
     abstract member getVal : string -> FlagVal
 
     inherit IComparable
-
-    inherit IEquatable<IFlag>
