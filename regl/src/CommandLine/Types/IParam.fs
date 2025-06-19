@@ -7,4 +7,5 @@ type IParam =
     abstract member usage : string
     abstract member parse : string -> string
     abstract member getVal : string -> FlagVal
+
     inherit IComparable

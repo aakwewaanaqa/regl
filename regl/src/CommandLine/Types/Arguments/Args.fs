@@ -5,92 +5,118 @@ open System.Text
 open System.Text.RegularExpressions
 open Regl.Exts
 
+module private Shared =
+    let isFlag (n : string) = n.StartsWith "-"
+
+    let isShortFlag (n : string) =
+        let shortFlagPattern = Regex "^-[a-zA-Z0-9]+"
+        shortFlagPattern.IsMatch n
+
+    let isLongFlag (n : string) =
+        let longFlagPattern = Regex "^--[a-zA-Z\-0-9]+"
+        longFlagPattern.IsMatch n
+
+    let isNotFlag (n : string) = n.StartsWith "-" |> not
+
+    let ofRawArg (rawArg : string) : string list =
+        let mutable result : string list = []
+        let mutable quoting : char = ' '
+        let mutable escaping : bool = false
+        let builder = StringBuilder()
+
+        let isLongFlag () = builder.ToString().StartsWith("--")
+        let isShortFlag () = builder.ToString().StartsWith("-") && not (isLongFlag())
+        let isInQuote () = quoting = ''' || quoting = '"'
+        let isOfQuote (c: char) = quoting = c
+
+        let printBuilder () =
+            let newList =
+                if isShortFlag() then
+                    builder.Remove(0, 1)
+                    |> _.ToString()
+                    |> Seq.map (fun c -> $"-{c}")
+                    |> List.ofSeq
+                else
+                    [ builder.ToString() ]
+            builder.Clear() |> ignore
+            newList
+
+        let rec loop (chars: char list) =
+            match chars with
+            | '\t' | ' ' as c :: rest ->
+                if escaping || isInQuote() then
+                    builder.Append c |> ignore
+                    escaping <- false
+                else if builder.Length > 0 then
+                    result <- result @ printBuilder()
+                    builder.Clear() |> ignore
+
+                loop rest
+            | '=' as c :: rest ->
+                if escaping then
+                    builder.Append c |> ignore
+                    escaping <- false
+                elif isLongFlag() then
+                    if isInQuote() then
+                        builder.Append c |> ignore
+                    else
+                        result <- result @ printBuilder()
+                        builder.Clear() |> ignore
+                else
+                    builder.Append c |> ignore
+
+                loop rest
+            | ''' as c :: rest ->
+                if escaping then
+                    builder.Append c |> ignore
+                    escaping <- false
+                else if isOfQuote c then
+                    quoting <- ' '
+                elif isInQuote() then
+                    builder.Append c |> ignore
+                else
+                    quoting <- c
+
+                loop rest
+            | '"' as c :: rest ->
+                if escaping then
+                    builder.Append c |> ignore
+                    escaping <- false
+                else if isOfQuote c then
+                    quoting <- ' '
+                elif isInQuote() then
+                    builder.Append c |> ignore
+                else
+                    quoting <- c
+
+                loop rest
+            | '\\' as c :: rest ->
+                if escaping then
+                    builder.Append c |> ignore
+                    escaping <- false
+                else
+                    escaping <- true
+
+                loop rest
+            | c :: rest ->
+                builder.Append c |> ignore
+                loop rest
+            | [] ->
+                if builder.Length > 0 then
+                    result <- result @ printBuilder()
+                else
+                    ()
+
+        loop (rawArg.ToCharArray() |> List.ofArray)
+        result
+
 [<Struct>]
 type Args =
     val args: string list
     new(rawArg: string) =
-        let parse () : string list =
-            let mutable result : string list = []
-            let mutable quoting : char = ' '
-            let mutable escaping : bool = false
-            let builder = StringBuilder()
+        { args = Shared.ofRawArg rawArg }
 
-            let isLongFlag () = builder.ToString().StartsWith("--")
-            let isInQuote () = quoting = ''' || quoting = '"'
-            let isOfQuote (c: char) = quoting = c 
-
-            let rec loop (chars: char list) =
-                match chars with
-                | '\t' | ' ' as c :: rest ->
-                    if escaping || isInQuote() then
-                        builder.Append c |> ignore
-                        escaping <- false
-                    else if builder.Length > 0 then
-                        result <- result @ [builder.ToString()]
-                        builder.Clear() |> ignore
-
-                    loop rest
-                | '=' as c :: rest ->
-                    if escaping then
-                        builder.Append c |> ignore
-                        escaping <- false
-                    elif isLongFlag() then
-                        if isInQuote() then
-                            builder.Append c |> ignore
-                        else
-                            result <- result @ [builder.ToString()]
-                            builder.Clear() |> ignore
-                    else
-                        builder.Append c |> ignore
-
-                    loop rest
-                | ''' as c :: rest ->
-                    if escaping then
-                        builder.Append c |> ignore
-                        escaping <- false
-                    else if isOfQuote c then
-                        quoting <- ' '
-                    elif isInQuote() then
-                        builder.Append c |> ignore
-                    else
-                        quoting <- c
-
-                    loop rest
-                | '"' as c :: rest ->
-                    if escaping then
-                        builder.Append c |> ignore
-                        escaping <- false
-                    else if isOfQuote c then
-                        quoting <- ' '
-                    elif isInQuote() then
-                        builder.Append c |> ignore
-                    else
-                        quoting <- c
-
-                    loop rest
-                | '\\' as c :: rest ->
-                    if escaping then
-                        builder.Append c |> ignore
-                        escaping <- false
-                    else
-                        escaping <- true
-
-                    loop rest
-                | c :: rest ->
-                    builder.Append c |> ignore
-                    loop rest
-                | [] ->
-                    if builder.Length > 0 then
-                        result <- result @ [builder.ToString()]
-                    else
-                        ()
-
-            loop (rawArg.ToCharArray() |> List.ofArray)
-            result
-
-        { args = parse() }
-
-    new(args: string list) =
+    internal new(args: string list) =
         { args = args }
 
     member this.length = this.args.Length
@@ -160,9 +186,9 @@ module Args =
             let inIndex = args |> List.tryFindIndex (fun arg -> arg.Equals flag.name)
             guard inIndex.IsNone $"flag({flag}) was not in the args({args})"
             let inIndex = inIndex.Value
-            guard (inIndex + 1 >= args.Length) $"args({args}) at index {inIndex + 1} should have val"
-            guard (args[inIndex + 1] |> isFlag) $"args({args}) at index {inIndex + 1} was a flag"
             if flag.needInput then
+                guard (inIndex + 1 >= args.Length) $"args({args}) at index {inIndex + 1} should have val"
+                guard (args[inIndex + 1] |> isFlag) $"args({args}) at index {inIndex + 1} was a flag"
                 let flagVal = flag.getVal args[inIndex + 1]
                 let rem = args |> List.removeManyAt inIndex 2 |> Args
                 Ok { flag = flag; flagVal = flagVal; rem = rem }

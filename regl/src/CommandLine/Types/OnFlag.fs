@@ -4,8 +4,10 @@ open System
 
 type OnFlag (name, ?usage) =
     let usage = usage |> Option.defaultValue ""
+
     [<Obsolete>]
     member f.name = name
+
     [<Obsolete>]
     member f.parse(arg : string) =
         if name.Equals arg then
@@ -21,3 +23,6 @@ type OnFlag (name, ?usage) =
         member f.needInput = false
         member f.getVal _ = OfBool true
         member f.CompareTo(obj : obj) : int = $"{f}".CompareTo $"{obj}"
+
+    interface IEquatable<IFlag> with
+        member f.Equals(other : IFlag) : bool = name = other.name

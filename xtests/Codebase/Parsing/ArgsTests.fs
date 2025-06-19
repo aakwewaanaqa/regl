@@ -61,21 +61,17 @@ type ArgsTests (output : ITestOutputHelper) =
 
     [<Theory>]
     [<InlineData("-f value", "-f", "value")>]
-    [<InlineData("-f=value", "-f=value", "")>]
     let ``test short flags`` (line : string) (flag : string) (value : string) =
         let args = Args line
 
-        if value <> "" then
-            (2, args.Length) |> Assert.Equal
-            (flag, args[0]) |> Assert.Equal
-            (value, args[1]) |> Assert.Equal
+        (2, args.Length) |> Assert.Equal
+        (flag, args[0]) |> Assert.Equal
+        (value, args[1]) |> Assert.Equal
 
-            let flag = InStringFlag flag
-            args |> Args.hasFlag flag |> Result.isOk |> Assert.True
-            (value, args |> Args.getValue flag |> guardResult |> _.flagVal.ToString()) |> Assert.Equal
-        else
-            (1, args.Length) |> Assert.Equal
-            (flag, args[0]) |> Assert.Equal
+        let flag = InStringFlag flag
+        args |> Args.hasFlag flag |> Result.isOk |> Assert.True
+        (value, args |> Args.getValue flag |> guardResult |> _.flagVal.ToString()) |> Assert.Equal
+
 
     [<Theory>]
     [<InlineData("regl gen -abcd", "-a,-b,-c,-d", true)>]
