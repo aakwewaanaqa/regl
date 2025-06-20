@@ -1,8 +1,9 @@
-namespace Regl.CommandLine.Types
+namespace Regl.CommandLine.Types.Arguments
 
 open System
 open System.Text
 open System.Text.RegularExpressions
+open Regl.CommandLine.Types
 open Regl.Exts
 
 module private Shared =

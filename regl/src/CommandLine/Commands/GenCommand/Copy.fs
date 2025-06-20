@@ -1,11 +1,14 @@
 module Regl.CommandLine.Commands.GenCommand.Copy
 
+open System
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand.Shared
 
+///TODO : remove
+[<Obsolete>]
 let rec exe (r: CommandParseResult) =
     if r.parameters.Length > 0 then
         for atLine in In.filterRest isNotCmd (r.getParamT<int> 0) do
@@ -44,3 +47,5 @@ and cmd =
         OnFlag("--end")
     ]
     builder.build()
+
+//TODO : write entry

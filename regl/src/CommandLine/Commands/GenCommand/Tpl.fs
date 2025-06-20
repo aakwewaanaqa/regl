@@ -1,5 +1,6 @@
 module Regl.CommandLine.Commands.GenCommand.Tpl
 
+open System
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
@@ -7,8 +8,12 @@ open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.GenCommand.Shared
 open Regl.Lang
 
+///TODO : remove
+[<Obsolete>]
 let echoIdentifier = "#>"
 
+///TODO : remove
+[<Obsolete>]
 let exe (r : CommandParseResult) =
     let echoMapper (line : string) =
         if line.TrimStart().StartsWith echoIdentifier then
@@ -31,8 +36,12 @@ let exe (r : CommandParseResult) =
     
     revertEnvars()
 
+///TODO : remove
+[<Obsolete>]
 let cmd =
     let builder = CommandBuilder ("tpl", exe)
     builder.parameters <- [ Param("line-count"); Param("template-file") ]
     builder.usage <- tplUsage
     builder.build ()
+
+//TODO : write entry

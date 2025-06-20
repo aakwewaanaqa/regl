@@ -1,13 +1,18 @@
 module Regl.CommandLine.Commands.Match
 
+open System
 open System.Text.RegularExpressions
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+///TODO : remove
+[<Obsolete>]
 let usage = "regl match <REGEX> [--format <FORMAT>]"
 
+///TODO : remove
+[<Obsolete>]
 let exe (r: CommandParseResult) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     let pattern = r.getParam 0
@@ -20,9 +25,13 @@ let exe (r: CommandParseResult) =
     |> List.ofSeq
     |> fun lines -> InOut.Out.lines <- lines
 
+///TODO : remove
+[<Obsolete>]
 let cmd =
     let builder = CommandBuilder("match", exe)
     builder.parameters <- [ Param("<REGEX>") ]
     builder.optionalFlags <- [ InStringFlag("--format") ]
     builder.usage <- usage
     builder.build ()
+
+//TODO : write entry

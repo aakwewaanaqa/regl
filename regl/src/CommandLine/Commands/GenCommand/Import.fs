@@ -1,11 +1,14 @@
 module Regl.CommandLine.Commands.GenCommand.Import
 
+open System
 open Regl.CommandLine.Builders
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
 open Regl.CommandLine.Commands.Shared
 
+///TODO : remove
+[<Obsolete>]
 let rec subCmds =
     [| AddEvcm.cmd
        Copy.cmd
@@ -39,3 +42,5 @@ and cmd : CommandBody =
     let builder = CommandBuilder ("import", exe)
     builder.parameters <- [ Param "text" ]
     builder.build ()
+
+//TODO : write entry

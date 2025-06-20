@@ -1,6 +1,7 @@
 namespace XTests.Codebase.Parsing.ArgEntryTests
 
 open System.Collections.Generic
+open Regl.CommandLine.Types.Arguments
 open Regl.Exts
 open XTests.Types
 open Xunit

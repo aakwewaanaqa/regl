@@ -1,7 +1,9 @@
-namespace Regl.CommandLine.Types
+namespace Regl.CommandLine.Types.Arguments
 
 open System.Collections.Generic
+open Regl.CommandLine.Types
 open Regl.Exts
+
 
 /// <summary>
 /// Used to validate a command's args provision.
@@ -13,12 +15,26 @@ type ArgEntry (name : string, ?info : string) =
     member this.info = info |> Option.defaultValue ""
     member val parameters : IParam list = [] with get, set
     member val flags : IFlag list = [] with get, set
+    member val behaviour : ArgBehaviour = ignore with get, set
 
-[<Struct>]
-type ArgValidateDto =
+    member e.addParameter parameter =
+        e.parameters <- e.parameters @ [ parameter ]
+        e
+
+    member e.addFlag flag =
+        e.flags <- e.flags @ [ flag ]
+        e
+
+    member e.addBehaviour behaviour =
+        e.behaviour <- behaviour
+        e
+
+and ArgValidateDto =
     { flags : Dictionary<IFlag, List<FlagVal>>
       parameters : Dictionary<IParam, FlagVal>
       rem : Args }
+
+and ArgBehaviour = ArgValidateDto -> unit
 
 module ArgEntry =
     let rec validate (args : Args) (va : ArgEntry) =
@@ -70,3 +86,9 @@ module ArgEntry =
                   rem = rem }
         with ex ->
             Error $"{ex}"
+
+    let printHelp (va : ArgEntry) =
+        $"""Entry {va.name} : {va.info} :
+->  requires parameters {va.parameters |> List.map (fun p -> $"<{p.name}>")}
+->  requires flags {va.flags |> List.map (fun p -> $"<{p.name}>")}
+"""

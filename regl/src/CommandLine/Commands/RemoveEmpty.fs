@@ -5,6 +5,8 @@ open Regl.CommandLine.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Builders
 
+///TODO : remove
+[<Obsolete>]
 let exe (result: CommandParseResult) =
     InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
     InOut.In.lines
@@ -13,6 +15,8 @@ let exe (result: CommandParseResult) =
 
     InOut.Out.sendToPipe()
 
+///TODO : remove
+[<Obsolete>]
 let cmd =
 
     let builder = CommandBuilder("remove-empty", exe)
@@ -20,3 +24,5 @@ let cmd =
     Execute the remove-empty command
     "
     builder.build ()
+
+// TODO : write entry

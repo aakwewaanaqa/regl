@@ -2,6 +2,7 @@ namespace XTests.Codebase.Parsing
 
 open System
 open Regl.CommandLine.Types
+open Regl.CommandLine.Types.Arguments
 open Regl.Exts
 open XTests.Types
 open Xunit

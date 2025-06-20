@@ -1,5 +1,6 @@
 module Regl.CommandLine.Commands.GenCommand.Implementation
 
+open System
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
@@ -18,6 +19,8 @@ let subCmds = [
     UnsetEnvar.cmd
 ]
 
+///TODO : remove
+[<Obsolete>]
 let exe (r : CommandParseResult) =
     let iteri i (line: string) =
         In.index <- i
@@ -41,7 +44,11 @@ let exe (r : CommandParseResult) =
 
     In.iteriRest iteri
 
+///TODO : remove
+[<Obsolete>]
 let cmd =
     let builder = CommandBuilder("gen", exe)
     builder.optionalFlags <- [ InStringFlag("--file") ]
     builder.build ()
+
+//TODO : write entry
