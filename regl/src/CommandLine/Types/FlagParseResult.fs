@@ -1,5 +1,8 @@
 namespace Regl.CommandLine.Types
 
+open System
+open Microsoft.FSharp.Core.LanguagePrimitives
+
 type FlagParseResult = {
     name : string
     value : FlagVal

@@ -29,6 +29,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
     [<Theory>]
     [<InlineData("-ab -c")>] 
     [<InlineData("-a -b -c")>]
+    [<InlineData("-abc")>]
     let ``test multiple clustered flags`` (argv : string) =
         let entry = ArgEntry("some entry")
         entry.flags <- [ OnFlag("-a"); OnFlag("-b"); OnFlag("-c") ]
@@ -50,14 +51,12 @@ type ArgEntryTests (helper : ITestOutputHelper) =
         | OfText t -> ("1337", t) |> Assert.Equal
         | _ -> Assert.Fail()
 
-    // TODO:
-    // [<Theory>]
-    // [<InlineData("-e foo -e bar")>]
-    // [<InlineData("-e foo -q -e bar")>]
-    // let ``test multiple flag values`` (argv : string) =
-    //     let entry = ArgEntry("some entry")
-    //     entry.flags <- [ InStringFlag("-e"); OnFlag("-q") ]
-    //     let result = entry |> ArgEntry.validate (Args argv) |> guardResult
-    //     match result.flags[InStringFlag("-e")] with
-    //     | OfText t -> ("bar", t) |> Assert.Equal
-    //     | _ -> Assert.Fail()
+    [<Theory>]
+    [<InlineData("-e foo -e bar -q")>]
+    [<InlineData("-e foo -q -e bar")>]
+    let ``test multiple flag values`` (argv : string) =
+        let entry = ArgEntry("some entry")
+        entry.flags <- [ InStringFlag("-e"); OnFlag("-q") ]
+        let result = entry |> ArgEntry.validate (Args argv) |> guardResult
+        Assert.Contains(OfText "foo", result.flags[InStringFlag("-e")])
+        Assert.Contains(OfText "bar", result.flags[InStringFlag("-e")])
