@@ -27,3 +27,18 @@ type Tests (helper : ITestOutputHelper) =
         ("\"168\"", InOut.Out.lines[1]) |> Assert.Equal
         ("\"0\"", InOut.Out.lines[2]) |> Assert.Equal
         ("\"255\"", InOut.Out.lines[3]) |> Assert.Equal
+
+    [<Theory>]
+    [<InlineData("192..168..0..255.")>]
+    [<InlineData(" 192 .. 168 .. 0..255.  ")>]
+    [<InlineData("192.. 168 . . 0  ..255  .  ")>]
+    [<InlineData("    192..168 . . 0  . .255  .  ")>]
+    [<InlineData("    192..168 . . 0   . .255....")>]
+    let ``test split --quote --trim`` (input : string) =
+        setIn " 192 .. 168 .. 0..255.  "
+        setIn input
+        Split.cmd.parse [ "[.]" ; "--quote" ; "--trim" ] |> Split.exe
+        ("\"192\"", InOut.Out.lines[0]) |> Assert.Equal
+        ("\"168\"", InOut.Out.lines[1]) |> Assert.Equal
+        ("\"0\"", InOut.Out.lines[2]) |> Assert.Equal
+        ("\"255\"", InOut.Out.lines[3]) |> Assert.Equal

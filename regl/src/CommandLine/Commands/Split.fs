@@ -24,6 +24,8 @@ let exe (r : CommandParseResult) =
     |> Regex
     |> _.Split(InOut.In.all)
     |> List.ofArray
+    |> List.map (fun l -> ternary (r.hasFlag "--trim") (l.Trim()) l)
+    |> List.filter (fun l -> String.IsNullOrEmpty l |> not)
     |> List.map (fun l -> ternary (r.hasFlag "--quote") $"\"{l}\"" l)
     |> fun e -> InOut.Out.lines <- e
 
@@ -32,7 +34,7 @@ let exe (r : CommandParseResult) =
 let cmd =
     let builder = CommandBuilder ("split", exe)
     builder.parameters <- [ Param ("<DELIMITER>") ]
-    builder.optionalFlags <- [ OnFlag ("--quote") ]
+    builder.optionalFlags <- [ OnFlag "--quote"; OnFlag "--trim" ]
     builder.usage <- usage
     builder.build ()
 
