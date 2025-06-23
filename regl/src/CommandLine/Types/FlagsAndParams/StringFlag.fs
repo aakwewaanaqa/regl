@@ -1,19 +1,18 @@
 namespace Regl.CommandLine.Types
 
 open System
+open Regl.CommandLine.Types.FlagsAndParams
 
-type InStringFlag (name, ?usage) =
+type StringFlag (name, ?usage) =
     let usage = usage |> Option.defaultValue ""
 
     [<Obsolete>]
-    member f.name = name
+    member f.name =
+        raise (InvalidOperationException "Obsolete")
 
     [<Obsolete>]
     member f.parse (argName : string) (argVal : string) =
-        if name.Equals argName then
-            { name = name ; value = OfText argVal }
-        else
-            raise (Exception usage)
+        raise (InvalidOperationException "Obsolete")
 
     override f.ToString() = name
     override f.GetHashCode() = HashCode.Combine name
@@ -23,5 +22,5 @@ type InStringFlag (name, ?usage) =
         member f.name = name
         member f.usage = usage
         member f.needInput = true
-        member f.getVal a = OfText a
+        member f.getVal a = OfString a
         member f.CompareTo(obj : obj) : int = $"{f}".CompareTo ($"{obj}")

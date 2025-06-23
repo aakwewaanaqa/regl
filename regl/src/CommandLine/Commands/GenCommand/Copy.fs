@@ -1,51 +1,66 @@
 module Regl.CommandLine.Commands.GenCommand.Copy
 
 open System
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Commands.GenCommand.Types.Lines
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
-open Regl.CommandLine.Commands.Shared
-open Regl.CommandLine.Commands.GenCommand.Shared
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
-///TODO : remove
-[<Obsolete>]
-let rec exe (r: CommandParseResult) =
-    if r.parameters.Length > 0 then
-        for atLine in In.filterRest isNotCmd (r.getParamT<int> 0) do
-            Out.appendLine atLine
-    elif r.hasFlag "--start" then
-        let rec loop (src : string list) =
-            match src with
-            | atLine :: rest ->
-                if isNotCmd atLine then
-                    Out.appendLine atLine
-                    loop rest
-                elif isCmd atLine then
-                    let argv =
-                        atLine.Trim().Substring(identifier.Length)
-                        |> parseCommandLineArgs
-                    if argv[0] = "copy" then
-                        let isEnd =
-                            argv.Tail
-                            |> cmd.parse
-                            |> _.hasFlag("--end")
-                        if isEnd then
-                            ()
-                        else
-                            loop rest
-                    else
-                        loop rest
-            | [] -> ()
-        loop (In.rest() |> List.ofSeq |> List.skip 1)
-    else
-        debugLog "regl gen -> copy -> needs [--start] or [--line-count]"
+let cmdName = "copy"
 
-and cmd =
-    let builder = CommandBuilder("copy", exe)
-    builder.optionalFlags <- [
-        OnFlag("--start")
-        OnFlag("--end")
-    ]
-    builder.build()
+let cmdInfo = "Copies context to stdout"
 
-//TODO : write entry
+let entry =
+    let startFlag = BoolFlag ("--start", "starts copying to stdout")
+    let endFlag = BoolFlag ("--end", "stop copying to stdout")
+
+    let lineCountParam =
+        IntParam ("line-count", "copying lines with a specific count of line to stdout")
+
+    let endCopyEntry = ArgEntry ("stop copying") |> _.addFlag(endFlag)
+
+    let exeCopyLines : ArgBehaviour =
+        fun dto ->
+            let mutable lineCount = dto.parameters[lineCountParam].value<int> ()
+
+            In.iterRest (fun iteratedLine ->
+                let line = iteratedLine |> Line
+
+                if line.isCmd |> not && lineCount > 0 then
+                    lineCount <- lineCount - 1
+                    Out.appendLine iteratedLine)
+
+    let exeCopyStartAndEnd : ArgBehaviour =
+        fun dto ->
+            let mutable copying = true
+
+            In.iterRest (fun iteratedLine ->
+                let line = iteratedLine |> Line
+
+                if line.isCmd |> not then
+                    Out.appendLine iteratedLine
+                elif line.cmdName.Equals "copy" then
+                    let validateDto = endCopyEntry |> ArgEntry.validate line.args.Value
+
+                    match validateDto with
+                    | Ok _ -> copying <- false
+                    | Error ex -> debugLog ex)
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(
+        ArgEntry ("copies by line")
+        |> _.addParameter(lineCountParam)
+        |> _.addBehaviour(exeCopyLines)
+    )
+    |> _.addEntry(
+        ArgEntry ("starts copying")
+        |> _.addFlag(startFlag)
+        |> _.addBehaviour(exeCopyStartAndEnd)
+    )
+    |> _.addEntry(
+        ArgEntry ("ends copying")
+        |> _.addFlag(endFlag)
+        |> _.addBehaviour(exeCopyStartAndEnd)
+    )

@@ -2,36 +2,47 @@ module Regl.CommandLine.Commands.Match
 
 open System
 open System.Text.RegularExpressions
+open Regl.Exts
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
-///TODO : remove
-[<Obsolete>]
-let usage = "regl match <REGEX> [--format <FORMAT>]"
+let cmdName = "match"
 
-///TODO : remove
-[<Obsolete>]
-let exe (r: CommandParseResult) =
-    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
-    let pattern = r.getParam 0
-    let format = r.tryGetFlagValue "--format" |> FlagVal.defaultString "$0"
+let cmdInfo =
+    "Matches the whole stdin with regex pattern then writes all matches to stdout"
 
-    pattern
-    |> Regex
-    |> _.Matches(InOut.In.all)
-    |> Seq.map (fun m -> formatMatch m format)
-    |> List.ofSeq
-    |> fun lines -> InOut.Out.lines <- lines
+let entry =
 
-///TODO : remove
-[<Obsolete>]
-let cmd =
-    let builder = CommandBuilder("match", exe)
-    builder.parameters <- [ Param("<REGEX>") ]
-    builder.optionalFlags <- [ InStringFlag("--format") ]
-    builder.usage <- usage
-    builder.build ()
+    let regexParam = Param ("the regex pattern to match with")
 
-//TODO : write entry
+    let formatFlag =
+        StringFlag (
+            "--format",
+            "the format to output every match. Like `$1` will print the first captured group. Or, `$0` will print the whole match. Even `tag $1` will insert text `tag ` then the first captured group."
+        )
+
+    let exeMatch : ArgBehaviour =
+        fun dto ->
+            InOut.In <- ReadonlyLinesBuffer (ByConsoleIn)
+            let pattern = dto.parameters[regexParam] |> _.ToString()
+
+            let format =
+                if dto.flags.containsFlag formatFlag then
+                    Some dto.flags[formatFlag]
+                else
+                    None
+
+            pattern |> Regex |> _.Matches(InOut.In.all)
+            |>?? (format.IsSome, Seq.map (fun m -> formatMatch m (format.Value.ToString ())), Seq.map _.Value)
+            |> List.ofSeq
+            |> fun lines -> InOut.Out.lines <- lines
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(
+        ArgEntry "Matches the whole stdin"
+        |> _.addParameter(regexParam)
+        |> _.addBehaviour(exeMatch)
+    )

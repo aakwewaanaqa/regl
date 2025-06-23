@@ -2,6 +2,7 @@ namespace Regl.CommandLine.Types.Arguments
 
 open System.Collections.Generic
 open Regl.CommandLine.Types
+open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
 
 
@@ -25,13 +26,17 @@ type ArgEntry (name : string, ?info : string) =
         e.flags <- e.flags @ [ flag ]
         e
 
+    member e.addFlags flags =
+        e.flags <- e.flags @ flags
+        e
+
     member e.addBehaviour behaviour =
         e.behaviour <- behaviour
         e
 
 and ArgValidateDto =
-    { flags : Dictionary<IFlag, List<FlagVal>>
-      parameters : Dictionary<IParam, FlagVal>
+    { flags : FlagValSet
+      parameters : Dictionary<IParam, ArgVal>
       rem : Args }
 
 and ArgBehaviour = ArgValidateDto -> unit
@@ -45,30 +50,24 @@ module ArgEntry =
             let getFlagRem =
                 let mutable rem = args
 
-                let flagVals : Dictionary<IFlag, List<FlagVal>> =
-                    Dictionary<IFlag, List<FlagVal>> ()
+                let set = FlagValSet()
 
                 for flag in va.flags do
                     let rec loopGetValue () =
                         try
                             let dto = rem |> Args.getValue flag |> guardResult
                             rem <- dto.rem
-
-                            if flagVals.ContainsKey flag |> not then
-                                flagVals[flag] <- List<FlagVal> ()
-
-                            flagVals[flag].Add dto.flagVal
+                            set.addVal flag dto.flagVal
                             loopGetValue ()
                         with ex ->
-                            if flagVals.ContainsKey flag |> not then raise ex else ()
-
+                            reraise()
                     loopGetValue ()
 
-                (flagVals, rem)
+                (set, rem)
 
             let getParamRem =
                 let mutable _, rem = getFlagRem
-                let mutable paramVals : Dictionary<IParam, FlagVal> = Dictionary<IParam, FlagVal> ()
+                let mutable paramVals : Dictionary<IParam, ArgVal> = Dictionary<IParam, ArgVal> []
 
                 for param in va.parameters do
                     let dto = rem |> Args.getParam param |> guardResult

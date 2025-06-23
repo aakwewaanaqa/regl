@@ -22,7 +22,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
     [<InlineData("-a -b")>]
     let ``test clustered short flags`` (argv : string) =
         let entry = ArgEntry("some entry")
-        entry.flags <- [ OnFlag("-a"); OnFlag("-b") ]
+        entry.flags <- [ BoolFlag("-a"); BoolFlag("-b") ]
         let result = entry |> ArgEntry.validate (Args argv) |> guardResult
         result.flags.ContainsKey (OnFlag("-a")) |> Assert.True
         result.flags.ContainsKey (OnFlag("-b")) |> Assert.True
@@ -33,7 +33,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
     [<InlineData("-abc")>]
     let ``test multiple clustered flags`` (argv : string) =
         let entry = ArgEntry("some entry")
-        entry.flags <- [ OnFlag("-a"); OnFlag("-b"); OnFlag("-c") ]
+        entry.flags <- [ BoolFlag("-a"); BoolFlag("-b"); BoolFlag("-c") ]
         let result = entry |> ArgEntry.validate (Args argv) |> guardResult
         result.flags.ContainsKey (OnFlag("-a")) |> Assert.True
         result.flags.ContainsKey (OnFlag("-b")) |> Assert.True
@@ -44,7 +44,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
     [<InlineData("-f -q -e 1337")>]
     let ``test flag value`` (argv : string) =
         let entry = ArgEntry("some entry")
-        entry.flags <- [ InStringFlag("-e"); OnFlag("-f"); OnFlag("-q") ]
+        entry.flags <- [ StringFlag("-e"); BoolFlag("-f"); BoolFlag("-q") ]
         let result = entry |> ArgEntry.validate (Args argv) |> guardResult
         result.flags.ContainsKey (OnFlag("-f")) |> Assert.True
         result.flags.ContainsKey (OnFlag("-q")) |> Assert.True
@@ -57,7 +57,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
     [<InlineData("-e foo -q -e bar")>]
     let ``test multiple flag values`` (argv : string) =
         let entry = ArgEntry("some entry")
-        entry.flags <- [ InStringFlag("-e"); OnFlag("-q") ]
+        entry.flags <- [ StringFlag("-e"); BoolFlag("-q") ]
         let result = entry |> ArgEntry.validate (Args argv) |> guardResult
         Assert.Contains(OfText "foo", result.flags[InStringFlag("-e")])
         Assert.Contains(OfText "bar", result.flags[InStringFlag("-e")])

@@ -1,11 +1,10 @@
-namespace Regl.CommandLine.Types
+namespace Regl.CommandLine.Types.FlagsAndParams
 
-type Param(name, ?usage) =
+type IntParam(name, ?usage) =
     interface IParam with
         member p.name = name
-        member p.usage = usage |> Option.defaultValue "..."
-        member p.parse (arg : string) = arg
-        member p.getVal (arg : string) = OfText arg
+        member p.usage = usage |> Option.defaultValue ""
+        member p.getVal (arg : string) = OfInt(arg |> int)
         override p.CompareTo (obj : obj) : int =
             match obj with
             | :? IParam as op -> name.CompareTo op.name

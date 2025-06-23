@@ -75,6 +75,14 @@ and ReadonlyLinesBuffer (source : BufferSource) =
             if i < this.length then
                 iter i this.lines[i]
 
+    member this.iterRest(iter : string -> unit) =
+        let startIndex = this.index
+        let endIndex = (this.length - 1)
+        for i in startIndex..endIndex do
+            if i < this.length then
+                iter this.lines[i]
+
+
     member this.filterRest (filter : string -> bool) (count : int) =
         let mutable count = count
         let mutable index = this.index

@@ -48,7 +48,7 @@ let exe (r : CommandParseResult) =
 [<Obsolete>]
 let cmd =
     let builder = CommandBuilder("gen", exe)
-    builder.optionalFlags <- [ InStringFlag("--file") ]
+    builder.optionalFlags <- [ StringFlag("--file") ]
     builder.build ()
 
 //TODO : write entry

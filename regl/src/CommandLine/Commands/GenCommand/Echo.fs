@@ -1,21 +1,24 @@
 module Regl.CommandLine.Commands.GenCommand.Echo
 
-open System
-open Regl.CommandLine.Builders
-open Regl.CommandLine.IO
-open Regl.CommandLine.Types
+open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
-///TODO : remove
-[<Obsolete>]
-let exe (r : CommandParseResult) =
-    r.getParam 0
-    |> InOut.Out.appendLine
+let cmdName = "echo"
 
-///TODO : remove
-[<Obsolete>]
-let cmd : CommandBody =
-    let builder = CommandBuilder("echo", exe)
-    builder.parameters <- [ Param("text") ]
-    builder.build()
+let cmdInfo = "echos or writes to stdout"
 
-//TODO : write entry
+let entry =
+
+    let bodyParam = Param("body", "the body to write to stdout")
+
+    let exeEcho : ArgBehaviour = fun dto ->
+        dto.parameters[bodyParam].value<string>()
+        |> Out.appendLine
+
+    CmdEntry(cmdName, cmdInfo)
+    |>_.addEntry(ArgEntry(cmdName)
+                 |> _.addParameter(bodyParam)
+                 |> _.addBehaviour(exeEcho)
+    )

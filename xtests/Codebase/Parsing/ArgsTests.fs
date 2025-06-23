@@ -56,7 +56,7 @@ type ArgsTests (output : ITestOutputHelper) =
         (flag, args[0]) |> Assert.Equal
         (value, args[1]) |> Assert.Equal
 
-        let flag = InStringFlag(flag)
+        let flag = StringFlag(flag)
         args |> Args.hasFlag flag |> Result.isOk |> Assert.True
         (value, args |> Args.getValue flag |> guardResult |> _.flagVal.ToString()) |> Assert.Equal
 
@@ -69,7 +69,7 @@ type ArgsTests (output : ITestOutputHelper) =
         (flag, args[0]) |> Assert.Equal
         (value, args[1]) |> Assert.Equal
 
-        let flag = InStringFlag flag
+        let flag = StringFlag flag
         args |> Args.hasFlag flag |> Result.isOk |> Assert.True
         (value, args |> Args.getValue flag |> guardResult |> _.flagVal.ToString()) |> Assert.Equal
 
@@ -85,7 +85,7 @@ type ArgsTests (output : ITestOutputHelper) =
         let args = Args line
         try
             for flag in flags.Split(",") do
-                let flag = OnFlag (flag.Trim())
+                let flag = BoolFlag (flag.Trim())
                 guardResult (args |> Args.hasFlag flag)
         with ex ->
             if expect then raise ex

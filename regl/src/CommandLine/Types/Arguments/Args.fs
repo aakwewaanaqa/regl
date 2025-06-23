@@ -4,9 +4,10 @@ open System
 open System.Text
 open System.Text.RegularExpressions
 open Regl.CommandLine.Types
+open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
 
-module private Shared =
+module internal Shared =
     let isFlag (n : string) = n.StartsWith "-"
 
     let isShortFlag (n : string) =
@@ -124,41 +125,31 @@ type Args =
     member this.Length = this.args.Length
     member this.Item
         with get index = this.args[index]
+    member this.Tail =
+        Args (this.args.Tail)
 
 [<Struct>]
 type ArgsDto = {
     flag : IFlag
-    flagVal : FlagVal
+    flagVal : ArgVal
     rem : Args
 }
 
 [<Struct>]
-type ArgsParamDto = {
+type ParamDto = {
     param : IParam
-    paramVal : FlagVal
+    paramVal : ArgVal
     rem : Args
 }
 
 module Args =
-    let isFlag (n : string) = n.StartsWith "-"
-
-    let isShortFlag (n : string) =
-        let shortFlagPattern = Regex "^-[a-zA-Z0-9]+"
-        shortFlagPattern.IsMatch n
-
-    let isLongFlag (n : string) =
-        let longFlagPattern = Regex "^--[a-zA-Z\-0-9]+"
-        longFlagPattern.IsMatch n
-
-    let isNotFlag (n : string) = n.StartsWith "-" |> not
-
     let hasFlag (flag : IFlag) (args : Args) =
         try
             let args = args.args
-            let argShortFlags = args |> List.filter isShortFlag
+            let argShortFlags = args |> List.filter Shared.isShortFlag
             guard (args.Length <= 0) "args was not provided..."
 
-            if flag.name |> isShortFlag then
+            if flag.name |> Shared.isShortFlag then
                 guard (argShortFlags |> List.isEmpty) $"provided args({args}) has not short flags"
                 let flat = argShortFlags |> List.reduce (fun a b -> $"{a}{b}")
 
@@ -168,7 +159,7 @@ module Args =
                     |> function
                         | None -> guard true $"args({args}) lacks -{a}"
                         | Some _ -> ()
-            elif flag.name |> isLongFlag then
+            elif flag.name |> Shared.isLongFlag then
                 guard
                     (args |> List.exists (fun arg -> arg.Equals flag.name) |> not)
                     $"flag({flag}) is not in args({args})"
@@ -189,7 +180,7 @@ module Args =
             let inIndex = inIndex.Value
             if flag.needInput then
                 guard (inIndex + 1 >= args.Length) $"args({args}) at index {inIndex + 1} should have val"
-                guard (args[inIndex + 1] |> isFlag) $"args({args}) at index {inIndex + 1} was a flag"
+                guard (args[inIndex + 1] |> Shared.isFlag) $"args({args}) at index {inIndex + 1} was a flag"
                 let flagVal = flag.getVal args[inIndex + 1]
                 let rem = args |> List.removeManyAt inIndex 2 |> Args
                 Ok { flag = flag; flagVal = flagVal; rem = rem }
@@ -205,7 +196,7 @@ module Args =
             let args = args.args
             let index =
                 args
-                |> List.tryFindIndex isNotFlag
+                |> List.tryFindIndex Shared.isNotFlag
                 |> guardTry $"args({args}) has no normal value..."
 
             let paramVal = param.getVal args[index]

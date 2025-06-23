@@ -1,26 +1,34 @@
 module Regl.CommandLine.Commands.GenCommand.AddEvcm
 
-open System
 open System.Text.RegularExpressions
-open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
 open Regl.CommandLine.Commands.GenCommand.Types
 open Regl.CommandLine.Commands.GenCommand.Shared
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
-///TODO : remove
-[<Obsolete>]
-let exe (r : CommandParseResult) : unit =
-    let pattern = r.getParam 0 |> Regex
-    let format = r.getParam 1
-    let envarName = r.getParam 2
-    let newOne = EnvironmentVariableContextMatcher (pattern, format, envarName)
-    evcms <- evcms @ [ newOne ]
+let cmdName = "add-evcm"
 
-///TODO : remove
-[<Obsolete>]
-let cmd : CommandBody =
-    let builder = CommandBuilder ("add-evcm", exe)
-    builder.parameters <- [ Param("<regex>"); Param("<format>"); Param("<envar-name>") ]
-    builder.build ()
+let cmdInfo = "Adds an environment variable context matcher to tpl command"
 
-//TODO : write entry
+let entry =
+    let regexParam = RegexParam ("regex", "the pattern of matching tpl context")
+    let formatParam = Param ("format", "the format of match to cast to")
+    let envarParam = Param ("envar-name", "the name of the environment variable to declare with")
+
+    let exeAddEvcm : ArgBehaviour =
+        fun dto ->
+            let pattern = dto.parameters[regexParam].value<Regex>()
+            let format = dto.parameters[formatParam].value<string>()
+            let envarName = dto.parameters[envarParam].value<string>()
+            let newOne = EnvironmentVariableContextMatcher (pattern, format, envarName)
+            evcms <- evcms @ [ newOne ]
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(
+        ArgEntry(cmdName)
+        |> _.addParameter(regexParam)
+        |> _.addParameter(formatParam)
+        |> _.addParameter(envarParam)
+        |> _.addBehaviour(exeAddEvcm)
+    )
