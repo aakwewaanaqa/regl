@@ -21,11 +21,15 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="Types\TestBase.fs" />
         <Compile Include="Shared.fs"/>
-        <Compile Include="*\*Tests.fs"/>
-        <Compile Include="*\*\*Tests.fs"/>
-        <Compile Include="*\*\*\*Tests.fs"/>
+        <Compile Include="Types\TestBase.fs" />
+        <Compile Include="Codebase\Parsing\ArgsTests.fs" />
+        <Compile Include="Codebase\Parsing\ArgEntryTests.fs" />
+        <Compile Include="Commands\Copy\Tests.fs" />
+        <Compile Include="Commands\Split\Tests.fs" />
+<!--        <Compile Include="*\*Tests.fs"/>-->
+<!--        <Compile Include="*\*\*Tests.fs"/>-->
+<!--        <Compile Include="*\*\*\*Tests.fs"/>-->
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

@@ -1,6 +1,7 @@
 module Regl.CommandLine.Commands.Copy
 
 open System
+open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types.Arguments
 open Regl.CommandLine.Types.Cmds
 open TextCopy
@@ -13,8 +14,8 @@ let cmdInfo = "Copies piped input to clipboard"
 let entry =
     let exeCopy : ArgBehaviour =
         fun dto ->
-            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
-            ClipboardService.SetText InOut.In.all
+            In <- ReadonlyLinesBuffer ByStdIn
+            ClipboardService.SetText In.all
 
     CmdEntry (cmdName, cmdInfo)
     |> _.addEntry(ArgEntry (cmdInfo) |> _.addBehaviour(exeCopy))

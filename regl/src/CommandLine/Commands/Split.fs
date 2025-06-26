@@ -36,7 +36,11 @@ let entry =
             |> fun lines -> Out.lines <- lines
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry((ArgEntry ("splits", "") |> _.addParameter(paramDelimiter)))
+    |> _.addEntry(
+        (ArgEntry ("splits", "")
+         |> _.addParameter(paramDelimiter))
+         |> _.addBehaviour(exeSplit)
+    )
     |> _.addEntry(
         (ArgEntry ("splits and quotes with \"")
          |> _.addParameter(paramDelimiter)

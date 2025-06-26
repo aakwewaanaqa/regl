@@ -18,8 +18,9 @@ and FlagValSet () =
         s.map <-
             s.map
             |> Map.change f (function
-                | Some vals -> Some (vals @ [ v ])
+                | Some vals -> Some (v :: vals)
                 | None -> Some [ v ])
+        s
 
     member s.containsFlag (f : IFlag) : bool =
         f |> s.map.ContainsKey

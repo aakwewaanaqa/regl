@@ -22,13 +22,10 @@ let tryCommands (cmds : CommandBody list) (argv : string list) =
         Error ex.Message
 
 let executeEntries (cmds : CmdEntry array) (args : Args) =
-    try
-        Ok (cmds
-            |> Array.find (fun cmd -> cmd.name.Equals args[0])
-            |> _.entries
-            |> List.find (fun entry -> entry |> ArgEntry.validate args.Tail |> _.IsOk))
-    with ex ->
-        Error ex
+    cmds
+    |> Array.find (fun cmd -> cmd.name.Equals args[0])
+    |> _.entries
+    |> List.tryFindBack (fun entry -> entry |> ArgEntry.validate(args.Tail) |> _.IsOk)
 
 let formatMatch (m : Match) (format : string) =
     let mutable formatted = format

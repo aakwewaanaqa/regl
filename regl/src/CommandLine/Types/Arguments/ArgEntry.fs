@@ -49,20 +49,15 @@ module ArgEntry =
 
             let getFlagRem =
                 let mutable rem = args
-
-                let set = FlagValSet ()
+                let mutable set = FlagValSet ()
 
                 for flag in ae.flags do
-                    let rec loopGetValue () =
-                        try
-                            let dto = rem |> Args.getValue flag |> guardResult
-                            rem <- dto.rem
-                            set.addVal flag dto.flagVal
-                            loopGetValue ()
-                        with ex ->
-                            reraise ()
-
-                    loopGetValue ()
+                    try
+                        let dto = rem |> Args.getValue flag |> guardResult
+                        rem <- dto.rem
+                        set <- set.addVal flag dto.flagVal
+                    with ex ->
+                        reraise ()
 
                 (set, rem)
 
@@ -79,14 +74,11 @@ module ArgEntry =
 
             let flags, _ = getFlagRem
             let parameters, rem = getParamRem
+            ae.behaviour({ flags = flags
+                           parameters = parameters
+                           rem = rem })
 
-            let dto =
-                { flags = flags
-                  parameters = parameters
-                  rem = rem }
-
-            let behaviour = ae.behaviour
-            Ok (behaviour dto)
+            Ok ()
         with ex ->
             Error $"{ex}"
 

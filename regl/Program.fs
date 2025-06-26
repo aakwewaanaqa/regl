@@ -25,7 +25,7 @@ module Program =
         let args = raw |> Args
         let result = args |> executeEntries cmdEntries
 
-        if result.IsOk then
+        if result.IsSome then
             0
         else
             1
