@@ -1,26 +1,23 @@
 module Regl.CommandLine.Commands.GenCommand.UnsetEnvar
 
 open System
-open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
-///TODO : remove
-[<Obsolete>]
-let usage = "//#!unset-envar <ENVAR-NAME>
-    Unsets (removes) the specified environment variable"
+let cmdName = "unset-envar"
 
-///TODO : remove
-[<Obsolete>]
-let exe (r : CommandParseResult) =
-    let varName = r.getParam 0
-    Environment.SetEnvironmentVariable(varName, null)
+let cmdInfo = "Unsets a environment variable"
 
-///TODO : remove
-[<Obsolete>]
-let cmd =
-    let builder = CommandBuilder("unset-envar", exe)
-    builder.parameters <- [ Param("envar-name") ]
-    builder.usage <- usage
-    builder.build ()
+let entry =
+    let envarName = Param("envar-name", "the environment variable name")
 
-//TODO : write entry
+    let exeUnsetEnvar : ArgBehaviour = fun dto ->
+        let name = dto.parameters[envarName].value<string>()
+        Environment.SetEnvironmentVariable(name, null)
+
+    CmdEntry(cmdName, cmdInfo)
+    |> _.addEntry(ArgEntry(cmdName)
+                  |> _.addParameter(envarName)
+                  |> _.addBehaviour(exeUnsetEnvar)
+    )

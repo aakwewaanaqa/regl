@@ -1,59 +1,14 @@
 module Regl.CommandLine.Commands.GenCommand.Implementation
 
-open System
 open Regl.CommandLine.Commands.GenCommand.Types.Lines
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand
-open Regl.CommandLine.Commands.GenCommand.Shared
 open Regl.CommandLine.Types.Arguments
 open Regl.CommandLine.Types.Cmds
 
-let subCmdEntries =
-    [ AddEvcm.cmd
-      Copy.cmd
-      Echo.cmd
-      Import.cmd
-      SetEnvar.cmd
-      Tpl.cmd
-      UnsetEnvar.cmd ]
-
-///TODO : remove
-[<Obsolete>]
-let exe (r : CommandParseResult) =
-    let iteri i (line : string) =
-        In.index <- i
-
-        if i = 0 then
-            identifier <- line.TrimEnd ()
-        elif line.Trim().StartsWith (identifier) then
-            line
-            |> _.Trim()
-            |> _.Substring(identifier.Length)
-            |> parseCommandLineArgs
-            |> tryCommands subCmdEntries
-            |> function
-                | Ok () -> ()
-                | Error ex -> debugLog $"regl gen -> {ex}"
-
-    r.tryGetFlagValue "--file"
-    |> function
-        | Some path -> In <- ReadonlyLinesBuffer (ByFilePath (path.ToString ()))
-        | None -> In <- ReadonlyLinesBuffer (ByStdIn)
-
-    In.iteriRest iteri
-
-///TODO : remove
-[<Obsolete>]
-let cmd =
-    let builder = CommandBuilder ("gen", exe)
-    builder.optionalFlags <- [ StringFlag ("--file") ]
-    builder.build ()
-
-//TODO : write entry
 let cmdName = "gen"
 
 let cmdInfo = "Generates codes from a source file..."

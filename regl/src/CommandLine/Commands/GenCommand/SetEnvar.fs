@@ -1,26 +1,27 @@
 module Regl.CommandLine.Commands.GenCommand.SetEnvar
 
 open System
-open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
-///TODO : remove
-[<Obsolete>]
-let usage = "set-envar <ENVAR-NAME> <VALUE>
-    Sets the environmental variable to a value"
+let cmdName = "set-envar"
 
-///TODO : remove
-[<Obsolete>]
-let exe (r : CommandParseResult) =
-    let varName = r.getParam 0
-    let varValue = r.getParam 1
-    Environment.SetEnvironmentVariable(varName, varValue)
+let cmdInfo = "sets environment variable to an appointed value"
 
-///TODO : remove
-[<Obsolete>]
-let cmd =
-    let builder = CommandBuilder("set-envar", exe)
-    builder.parameters <- [ Param("envar-name"); Param("value") ]
-    builder.build ()
+let entry =
+    let envarNameParam = Param("envar-name", "the name of the environment variable to be set")
 
-//TODO : write entry
+    let envarValueParam = Param("envar-val", "the value of the environment variable to be set with")
+
+    let exeSetEnvar : ArgBehaviour = fun dto ->
+        let name = dto.parameters[envarNameParam].value<string>()
+        let value = dto.parameters[envarValueParam].value<string>()
+        Environment.SetEnvironmentVariable(name, value)
+
+    CmdEntry(cmdName, cmdInfo)
+    |> _.addEntry(ArgEntry(cmdName)
+                  |> _.addParameter(envarNameParam)
+                  |> _.addParameter(envarValueParam)
+                  |> _.addBehaviour(exeSetEnvar)
+    )
