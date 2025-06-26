@@ -4,8 +4,8 @@ open System
 open System.Collections.Generic
 
 type IFlag =
-    abstract member name: string
-    abstract member usage: string
+    abstract member name : string
+    abstract member usage : string
     abstract member needInput : bool
     abstract member getVal : string -> ArgVal
 
@@ -42,12 +42,31 @@ and FlagValSet () =
     member s.Item
         with get f = s.map[f]
 
-    interface IEnumerable<FlagKvp> =
+    interface IEnumerable<KeyValuePair<IFlag, ArgVal list>> with
+        member s.GetEnumerator () : IEnumerator<KeyValuePair<IFlag, ArgVal list>> =
+            new Enumerator (s)
 
-[<Struct>]
-and FlagKvp =
-    val key : IFlag
-    val value : ArgVal
+        member s.GetEnumerator () : Collections.IEnumerator =
+            new Enumerator (s)
 
-    new (key, value) =
-        { key = key; value = value }
+and Enumerator (set : FlagValSet) =
+    member e.array = set.map |> Map.toArray
+    member val index = 0 with get, set
+
+    interface IEnumerator<KeyValuePair<IFlag, ArgVal list>> with
+        member e.Current : KeyValuePair<IFlag, ArgVal list> =
+            let k, v = e.array[e.index]
+            KeyValuePair (k, v)
+
+        member e.Current : obj =
+            let k, v = e.array[e.index]
+            KeyValuePair (k, v)
+
+        member e.MoveNext () =
+            not (e.index + 1 >= e.array.Length)
+
+        member e.Reset () =
+            e.index <- 0
+
+        member e.Dispose () : unit =
+            ()
