@@ -42,17 +42,17 @@ and ArgValidateDto =
 and ArgBehaviour = ArgValidateDto -> unit
 
 module ArgEntry =
-    let rec validate (args : Args) (va : ArgEntry) =
+    let rec validate (args : Args) (ae : ArgEntry) =
         try
-            let hasRequirements = va.parameters.Length > 0 || va.flags.Length > 0
-            guard (hasRequirements && args.length <= 0) $"validation named {va.name} has not enough args!"
+            let hasRequirements = ae.parameters.Length > 0 || ae.flags.Length > 0
+            guard (hasRequirements && args.length <= 0) $"validation named {ae.name} has not enough args!"
 
             let getFlagRem =
                 let mutable rem = args
 
-                let set = FlagValSet()
+                let set = FlagValSet ()
 
-                for flag in va.flags do
+                for flag in ae.flags do
                     let rec loopGetValue () =
                         try
                             let dto = rem |> Args.getValue flag |> guardResult
@@ -60,7 +60,8 @@ module ArgEntry =
                             set.addVal flag dto.flagVal
                             loopGetValue ()
                         with ex ->
-                            reraise()
+                            reraise ()
+
                     loopGetValue ()
 
                 (set, rem)
@@ -69,7 +70,7 @@ module ArgEntry =
                 let mutable _, rem = getFlagRem
                 let mutable paramVals : Dictionary<IParam, ArgVal> = Dictionary<IParam, ArgVal> []
 
-                for param in va.parameters do
+                for param in ae.parameters do
                     let dto = rem |> Args.getParam param |> guardResult
                     rem <- dto.rem
                     paramVals.Add (dto.param, dto.paramVal)
@@ -79,10 +80,13 @@ module ArgEntry =
             let flags, _ = getFlagRem
             let parameters, rem = getParamRem
 
-            Ok
+            let dto =
                 { flags = flags
                   parameters = parameters
                   rem = rem }
+
+            let behaviour = ae.behaviour
+            Ok (behaviour dto)
         with ex ->
             Error $"{ex}"
 

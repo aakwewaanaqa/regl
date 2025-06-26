@@ -5,6 +5,7 @@ open Regl.CommandLine.IO
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.Arguments
 open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
 let cmdName = "to-file"
 
@@ -16,13 +17,13 @@ let entry =
 
     let exeWriteToFile : ArgBehaviour =
         fun dto ->
-            InOut.In <- ReadonlyLinesBuffer (ByConsoleIn)
+            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
             let path = dto.parameters[Param "<file-path>"].ToString ()
             File.WriteAllText (path, InOut.In.all)
 
     let exeAppendToFile : ArgBehaviour =
         fun dto ->
-            InOut.In <- ReadonlyLinesBuffer (ByConsoleIn)
+            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
             let path = dto.parameters[Param "<file-path>"].ToString ()
             File.AppendAllText (path, InOut.In.all)
 

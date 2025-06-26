@@ -3,6 +3,8 @@ module Regl.CommandLine.Commands.Shared
 open System.Text
 open System.Text.RegularExpressions
 open Regl.CommandLine.Types
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
 let ternary (flag : bool) a b = if flag then a else b
 
@@ -18,6 +20,15 @@ let tryCommands (cmds : CommandBody list) (argv : string list) =
         Ok ()
     with ex ->
         Error ex.Message
+
+let executeEntries (cmds : CmdEntry array) (args : Args) =
+    try
+        Ok (cmds
+            |> Array.find (fun cmd -> cmd.name.Equals args[0])
+            |> _.entries
+            |> List.find (fun entry -> entry |> ArgEntry.validate args.Tail |> _.IsOk))
+    with ex ->
+        Error ex
 
 let formatMatch (m : Match) (format : string) =
     let mutable formatted = format

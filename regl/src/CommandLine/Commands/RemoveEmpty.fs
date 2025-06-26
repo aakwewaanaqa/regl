@@ -12,7 +12,7 @@ let cmdInfo = "Removes empty lines from stdin and writes to stdout"
 let entry =
     let exeRemoveEmpty : ArgBehaviour =
         fun dto ->
-            InOut.In <- ReadonlyLinesBuffer ByConsoleIn
+            InOut.In <- ReadonlyLinesBuffer ByStdIn
 
             InOut.In.lines
             |> List.filter (fun l -> not (l |> String.IsNullOrEmpty))

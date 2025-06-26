@@ -18,7 +18,7 @@ let entry =
 
     let exeWithScope : ArgBehaviour =
         fun dto ->
-            In <- ReadonlyLinesBuffer ByConsoleIn
+            In <- ReadonlyLinesBuffer ByStdIn
 
             let scopeVal = dto.flags.first<string> scopeFlag
             let opening = scopeVal[0]

@@ -2,6 +2,7 @@ module Regl.CommandLine.Commands.Match
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
@@ -16,7 +17,7 @@ let cmdInfo =
 
 let entry =
 
-    let regexParam = Param ("the regex pattern to match with")
+    let regexParam = RegexParam ("regex", "the regex pattern to match with")
 
     let formatFlag =
         StringFlag (
@@ -26,7 +27,7 @@ let entry =
 
     let exeMatch : ArgBehaviour =
         fun dto ->
-            InOut.In <- ReadonlyLinesBuffer (ByConsoleIn)
+            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
             let pattern = dto.parameters[regexParam] |> _.ToString()
 
             let format =

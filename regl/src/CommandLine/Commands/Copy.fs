@@ -13,7 +13,7 @@ let cmdInfo = "Copies piped input to clipboard"
 let entry =
     let exeCopy : ArgBehaviour =
         fun dto ->
-            InOut.In <- ReadonlyLinesBuffer (ByConsoleIn)
+            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
             ClipboardService.SetText InOut.In.all
 
     CmdEntry (cmdName, cmdInfo)

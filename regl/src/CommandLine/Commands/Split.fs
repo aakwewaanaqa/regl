@@ -2,6 +2,7 @@ module Regl.CommandLine.Commands.Split
 
 open System
 open System.Text.RegularExpressions
+open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
@@ -26,7 +27,7 @@ let entry =
             let hasQuote = dto.flags.containsFlag flagQuote
             let regex = dto.parameters[paramDelimiter] |> _.ToString() |> Regex
 
-            In <- ReadonlyLinesBuffer ByConsoleIn
+            In <- ReadonlyLinesBuffer ByStdIn
             regex.Split In.all
             |> List.ofArray
             |>? (hasTrim, List.map _.Trim())
