@@ -14,9 +14,9 @@ type Line =
 
     new (raw : string)
         =
-        if raw.StartsWith Line.cmdBeginning then
-            let raw = raw[Line.cmdBeginning.Length ..]
-            let args = raw |> Args
+        if raw.Trim().StartsWith Line.cmdBeginning then
+            let raw = raw
+            let args = raw[Line.cmdBeginning.Length ..] |> Args
             let cmdName = args[0]
             let args = args.Tail
 

@@ -32,16 +32,16 @@ let entry =
                     lineCount <- lineCount - 1
                     Out.appendLine iteratedLine)
 
-    let exeCopyStartAndEnd : ArgBehaviour =
+    let exeCopyStartToEnd : ArgBehaviour =
         fun dto ->
             let mutable copying = true
 
             In.iterRest (fun iteratedLine ->
                 let line = iteratedLine |> Line
 
-                if line.isCmd |> not then
+                if copying && line.isCmd |> not then
                     Out.appendLine iteratedLine
-                elif line.cmdName.Equals "copy" then
+                elif line.isCmd && line.cmdName.Value = "copy" then
                     let validateDto = endCopyEntry |> ArgEntry.validate line.args.Value
 
                     match validateDto with
@@ -49,18 +49,12 @@ let entry =
                     | Error ex -> debugLog ex)
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry ("copies by line")
-        |> _.addParameter(lineCountParam)
-        |> _.addBehaviour(exeCopyLines)
+    |> _.addEntry(ArgEntry ("copies by line")
+                  |> _.addParameter(lineCountParam)
+                  |> _.addBehaviour(exeCopyLines)
     )
-    |> _.addEntry(
-        ArgEntry ("starts copying")
-        |> _.addFlag(startFlag)
-        |> _.addBehaviour(exeCopyStartAndEnd)
+    |> _.addEntry(ArgEntry ("starts copying")
+                  |> _.addFlag(startFlag)
+                  |> _.addBehaviour(exeCopyStartToEnd)
     )
-    |> _.addEntry(
-        ArgEntry ("ends copying")
-        |> _.addFlag(endFlag)
-        |> _.addBehaviour(exeCopyStartAndEnd)
-    )
+    |> _.addEntry(endCopyEntry)

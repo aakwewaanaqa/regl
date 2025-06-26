@@ -25,18 +25,23 @@ let subCmdEntries =
 let entry =
     let exeGen : ArgBehaviour =
         fun dto ->
-            let mutable identifier = "//#!"
-
             In.iteriRest (fun i l ->
                 In.index <- i // push index forward
 
                 if i = 0 then
-                    identifier <- l
-                elif l.Trim().StartsWith (identifier) then
-                    let line = l.Trim().Substring (identifier.Length) |> Line
-
-                    if line.isCmd then
-                        line.raw |> Args |> executeEntries subCmdEntries |> ignore)
+                    Line.cmdBeginning <- l
+                else
+                    try
+                        let line = l |> Line
+                        if line.isCmd then
+                            subCmdEntries
+                            |> Array.find (fun cmd -> cmd.name = line.cmdName.Value)
+                            |> _.entries
+                            |> List.tryFindBack (fun entry -> entry |> ArgEntry.validate line.args.Value |> _.IsOk)
+                            |> ignore
+                    with ex ->
+                        debugLog ex
+            )
 
     let fileFlag =
         StringFlag ("--file", "the file path for the source file to be generated")
@@ -53,9 +58,10 @@ let entry =
             exeGen dto
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry ("gen with stdin") |> _.addBehaviour(exeByStdin))
-    |> _.addEntry(
-        ArgEntry ("gen with file path")
-        |> _.addFlag(fileFlag)
-        |> _.addBehaviour(exeByFile)
+    |> _.addEntry(ArgEntry ("gen with stdin")
+                  |> _.addBehaviour(exeByStdin)
+    )
+    |> _.addEntry(ArgEntry ("gen with file path")
+                  |> _.addFlag(fileFlag)
+                  |> _.addBehaviour(exeByFile)
     )

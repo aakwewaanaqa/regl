@@ -1,7 +1,9 @@
 module XTests.Commands.Gen.Copy.Tests
 
 open Regl.CommandLine.Commands.GenCommand
+open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO
+open Regl.CommandLine.Types.Arguments
 open XTests.Shared
 open XTests.Types
 open Xunit
@@ -23,7 +25,11 @@ type Tests (helper : ITestOutputHelper) =
     ii. By actions"
 
         setIn sourceFile
-        Implementation.cmd.parse [] |> Implementation.exe
+
+        Args "gen"
+        |> executeEntries [| Implementation.entry |]
+        |> _.IsSome
+        |> Assert.True
 
         (3, InOut.Out.length) |> Assert.Equal
         ("2. Build the house.", InOut.Out.lines[0]) |> Assert.Equal
@@ -46,7 +52,11 @@ type Tests (helper : ITestOutputHelper) =
     ii. By actions"
 
         setIn sourceFile
-        Implementation.cmd.parse [] |> Implementation.exe
+
+        Args "gen"
+        |> executeEntries [| Implementation.entry |]
+        |> _.IsSome
+        |> Assert.True
 
         (3, InOut.Out.length) |> Assert.Equal
         ("2. Build the house.", InOut.Out.lines[0]) |> Assert.Equal
@@ -67,7 +77,11 @@ type Tests (helper : ITestOutputHelper) =
     ii. By actions"
 
         setIn sourceFile
-        Implementation.cmd.parse [] |> Implementation.exe
+
+        Args "gen"
+        |> executeEntries [| Implementation.entry |]
+        |> _.IsSome
+        |> Assert.True
 
         (3, InOut.Out.length) |> Assert.Equal
         ("1. Building a house?", InOut.Out.lines[0]) |> Assert.Equal
@@ -90,7 +104,11 @@ type Tests (helper : ITestOutputHelper) =
     ii. By actions"
 
         setIn sourceFile
-        Implementation.cmd.parse [] |> Implementation.exe
+
+        Args "gen"
+        |> executeEntries [| Implementation.entry |]
+        |> _.IsSome
+        |> Assert.True
 
         (3, InOut.Out.length) |> Assert.Equal
         ("1. Building a house?", InOut.Out.lines[0]) |> Assert.Equal
