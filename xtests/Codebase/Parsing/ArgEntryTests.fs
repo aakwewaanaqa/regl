@@ -2,6 +2,7 @@ namespace XTests.Codebase.Parsing.ArgEntryTests
 
 open System.Collections.Generic
 open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
 open XTests.Types
 open Xunit
@@ -11,11 +12,14 @@ open Regl.CommandLine.Types
 type ArgEntryTests (helper : ITestOutputHelper) =
     inherit TestBase (helper)
 
+    let printFlags : ArgBehaviour = fun dto ->
+        dto.flags.map |> List.reduce (fun a b -> $"{a}{b}")
+
     [<Fact>]
     let ``test mechanics`` () =
         let dict = Dictionary<IFlag, bool>()
-        dict.Add (OnFlag("a"), true)
-        dict.ContainsKey (OnFlag("a")) |> Assert.True
+        dict.Add (BoolFlag("a"), true)
+        dict.ContainsKey (BoolFlag("a")) |> Assert.True
 
     [<Theory>]
     [<InlineData("-ab")>]

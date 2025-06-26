@@ -1,6 +1,7 @@
 namespace Regl.CommandLine.Types.FlagsAndParams
 
 open System
+open System.Collections.Generic
 
 type IFlag =
     abstract member name: string
@@ -40,3 +41,13 @@ and FlagValSet () =
 
     member s.Item
         with get f = s.map[f]
+
+    interface IEnumerable<FlagKvp> =
+
+[<Struct>]
+and FlagKvp =
+    val key : IFlag
+    val value : ArgVal
+
+    new (key, value) =
+        { key = key; value = value }
