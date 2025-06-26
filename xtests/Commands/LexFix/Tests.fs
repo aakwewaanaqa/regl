@@ -1,6 +1,8 @@
 module XTests.Commands.LexFix
 
+open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.Types.Arguments
 open XTests.Shared
 open XTests.Types
 open Xunit
@@ -11,16 +13,19 @@ type LexFix (helper : ITestOutputHelper) =
     inherit TestBase(helper)
 
     [<Theory>]
-    [<InlineData("<<>>>", "<>", "<<>>")>]
-    [<InlineData("((()))", "()", "((()))")>]
-    [<InlineData("{{}}}", "{}", "{{}}")>]   
-    [<InlineData("<<>><>>", "<>", "<<>><>")>]
-    [<InlineData("(()())", "()", "(()())")>]
-    [<InlineData("<a>b>>", "<>", "<a>b")>]
-    [<InlineData("<<abc>>>def", "<>", "<<abc>>def")>]
-    let ``test lex-fix`` (raw : string, pattern : string, expected : string) =
-        setIn raw 
-        LexFix.cmd.parse ["--scope"; pattern ]
-        |> LexFix.exe
+    [<InlineData("<<>>>", "lex-fix --scope <>", "<<>>")>]
+    [<InlineData("((()))", "lex-fix --scope ()", "((()))")>]
+    [<InlineData("{{}}}", "lex-fix --scope {}", "{{}}")>]
+    [<InlineData("<<>><>>", "lex-fix --scope <>", "<<>><>")>]
+    [<InlineData("(()())", "lex-fix --scope ()", "(()())")>]
+    [<InlineData("<a>b>>", "lex-fix --scope <>", "<a>b")>]
+    [<InlineData("<<abc>>>def", "lex-fix --scope <>", "<<abc>>def")>]
+    let ``test lex-fix`` (stdin : string, args : string, expected : string) =
+        setIn stdin
+
+        Args args
+        |> executeEntries [|LexFix.entry|]
+        |> _.IsSome
+        |> Assert.True
 
         (expected, Out.lines[0]) |> Assert.Equal

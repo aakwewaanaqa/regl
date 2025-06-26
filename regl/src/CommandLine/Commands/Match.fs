@@ -36,8 +36,12 @@ let entry =
                 else
                     None
 
-            pattern |> Regex |> _.Matches(InOut.In.all)
-            |>?? (format.IsSome, Seq.map (fun m -> formatMatch m (format.Value.ToString ())), Seq.map _.Value)
+            pattern
+            |> Regex
+            |> _.Matches(InOut.In.all)
+            |>?? (format.IsSome,
+                  Seq.map (fun ``match`` -> formatMatch ``match`` (format.Value.Head.value<string> ())),
+                  Seq.map _.Value)
             |> List.ofSeq
             |> fun lines -> InOut.Out.lines <- lines
 
@@ -45,5 +49,11 @@ let entry =
     |> _.addEntry(
         ArgEntry "Matches the whole stdin"
         |> _.addParameter(regexParam)
+        |> _.addBehaviour(exeMatch)
+    )
+    |> _.addEntry(
+        ArgEntry "Matches the whole stdin with format as stdout"
+        |> _.addParameter(regexParam)
+        |> _.addFlag(formatFlag)
         |> _.addBehaviour(exeMatch)
     )
