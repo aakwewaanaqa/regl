@@ -128,6 +128,11 @@ type Args =
     member this.Tail =
         Args (this.args.Tail)
 
+    override this.ToString() : string =
+        match this.args.Length > 0 with
+        | true -> this.args |> List.reduce (fun a b -> $"{a}{b}")
+        | false -> ""
+
 [<Struct>]
 type ArgsDto = {
     flag : IFlag

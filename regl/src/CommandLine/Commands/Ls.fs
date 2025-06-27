@@ -22,8 +22,6 @@ let entry =
     let patternFlag =
         StringFlag ("--pattern", "files or directories matching .net pattern")
 
-    let cmd = CmdEntry (cmdName, cmdInfo)
-    let entry = ArgEntry "lists all files or directories"
 
     let exeLs : ArgBehaviour =
         fun dto ->
@@ -31,12 +29,11 @@ let entry =
             let pwd = Directory.GetCurrentDirectory ()
             let isFile = dto.flags.containsFlag fFlag
             let isDir = dto.flags.containsFlag dFlag
-            let files = Directory.GetFiles (pwd, pattern)
-            let dirs = Directory.GetDirectories (pwd, pattern)
-
             let option =
                 dto.flags.containsFlag RFlag
                 <-?? (SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+            let files = Directory.GetFiles (pwd, pattern, option)
+            let dirs = Directory.GetDirectories (pwd, pattern, option)
 
             let paths =
                 if isFile && isDir then files |> Array.append dirs
@@ -45,11 +42,14 @@ let entry =
 
             paths |> List.ofArray |> (fun lines -> Out.lines <- lines)
 
-    let rec loop (cmd : CmdEntry) (combo : IFlag list list) =
-        match combo with
-        | head :: tail ->
-            let newCmd = cmd.addEntry (entry.addFlags(head).addBehaviour (exeLs))
-            loop newCmd tail
-        | [] -> cmd
+    let cmd = CmdEntry (cmdName, cmdInfo)
 
-    loop cmd (Flags.getAllPossibilities ([ dFlag ; fFlag ; RFlag ; patternFlag ]))
+    powerset [ dFlag :> IFlag ; fFlag :> IFlag ; RFlag :> IFlag ; patternFlag :> IFlag ]
+    |> List.map (fun combo ->
+        match combo.Length with
+        | 0 -> ArgEntry("lists files or directories").addBehaviour(exeLs)
+        | _ -> ArgEntry("lists files or directories").addFlags(combo).addBehaviour(exeLs)
+    )
+    |> List.iter (fun entry -> cmd.addEntry(entry) |> ignore)
+
+    cmd

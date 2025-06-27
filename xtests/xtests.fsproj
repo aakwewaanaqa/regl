@@ -25,9 +25,11 @@
         <Compile Include="Types\TestBase.fs" />
         <Compile Include="Codebase\Parsing\ArgsTests.fs" />
         <Compile Include="Codebase\Parsing\ArgEntryTests.fs" />
+        <Compile Include="Codebase\Exts\Tests.fs" />
         <Compile Include="Commands\Copy\Tests.fs" />
         <Compile Include="Commands\Split\Tests.fs" />
         <Compile Include="Commands\LexFix\Tests.fs" />
+        <Compile Include="Commands\Ls\Tests.fs" />
         <Compile Include="Commands\Match\Tests.fs" />
         <Compile Include="Commands\Gen\Copy\Tests.fs" />
         <Compile Include="Commands\Gen\Import\Tests.fs" />

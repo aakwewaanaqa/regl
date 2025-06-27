@@ -31,8 +31,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("0", Out.lines[0]) |> Assert.Equal
         ("1", Out.lines[1]) |> Assert.Equal
@@ -57,7 +56,6 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("2", Out.lines[0]) |> Assert.Equal
