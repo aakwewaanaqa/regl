@@ -22,26 +22,28 @@ let rec subCmdEntries =
        UnsetEnvar.entry |]
 
 and entry =
-    let fileParam = Param("file", "the file path to another source file")
+    let fileParam = Param ("file", "the file path to another source file")
 
-    let exeImport : ArgBehaviour = fun dto ->
-        let mutable identifier : string = ""
-        let mutable buffer = dto.parameters[fileParam].value<string>() |> ByFilePath |> LinesBuffer
-        buffer.iteriRest(fun i l ->
-            In.iteriRest (fun i l ->
-            In.index <- i // push index forward
+    let exeImport : ArgBehaviour =
+        fun dto ->
+            let mutable cmdBeginning = "//#!"
+            let buffer = dto.parameters[fileParam].value<string> () |> ByFilePath |> LinesBuffer
+            // iterates buffer with line index and raw string as each line
+            buffer.iteriRest (fun i raw ->
+                // push iterator forward
+                buffer.index <- i
+                // the first line will be the cmdBeginning indicator
+                match buffer.index with
+                | 0 -> cmdBeginning <- raw
+                | _ ->
+                    // the rest lines will be maybe commands to be executed if it starts with cmdBeginning
+                    // <see cmdBeginning/>
+                    match SourceLine (cmdBeginning, raw) with
+                    | line when line.isCmd -> line.args |> executeEntries subCmdEntries |> ignore
+                    | line -> line |> ignore)
 
-            if i = 0 then
-                identifier <- l
-            elif l.Trim().StartsWith (identifier) then
-                let line = l.Trim().Substring (identifier.Length) |> Line
-
-                if line.isCmd then
-                    line.raw |> Args |> executeEntries subCmdEntries |> ignore)
-            )
-
-    CmdEntry(cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry(cmdName)
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(ArgEntry (cmdName)
                   |> _.addParameter(fileParam)
                   |> _.addBehaviour(exeImport)
     )

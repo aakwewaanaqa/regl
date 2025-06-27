@@ -1,6 +1,7 @@
 module Regl.CommandLine.Commands.GenCommand.Copy
 
 open System
+open Regl.CommandLine.Commands.GenCommand.Shared
 open Regl.CommandLine.Commands.GenCommand.Types.Lines
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
@@ -13,48 +14,59 @@ let cmdName = "copy"
 let cmdInfo = "Copies context to stdout"
 
 let entry =
-    let startFlag = BoolFlag ("--start", "starts copying to stdout")
+    /// flag to start copying to stdout
+    let startFlag = BoolFlag ("--start", "start copying to stdout")
+    /// flag to stop copying to stdout
     let endFlag = BoolFlag ("--end", "stop copying to stdout")
 
+    /// param to tell how many copying lines to stdout
     let lineCountParam =
-        IntParam ("line-count", "copying lines with a specific count of line to stdout")
+        IntParam ("line-count", "tell how many copying lines to stdout")
 
+    /// `copy --stop` entry
     let endCopyEntry = ArgEntry ("stop copying") |> _.addFlag(endFlag)
 
-    let exeCopyLines : ArgBehaviour =
+    /// copy lines behaviour
+    let exeByLines : ArgBehaviour =
         fun dto ->
             let mutable lineCount = dto.parameters[lineCountParam].value<int> ()
 
-            In.iterRest (fun iteratedLine ->
-                let line = iteratedLine |> Line
+            In.iterRest (fun raw ->
+                let line = SourceLine (identifier, raw)
 
-                if line.isCmd |> not && lineCount > 0 then
+                match lineCount > 0 with
+                | true when not line.isCmd -> // when still copying
+                    Out.appendLine raw
                     lineCount <- lineCount - 1
-                    Out.appendLine iteratedLine)
+                    ()
+                | _ -> ())
 
-    let exeCopyStartToEnd : ArgBehaviour =
+    /// copy from `copy --start` to `copy --end` behaviour
+    let exeByStartToEnd : ArgBehaviour =
         fun dto ->
             let mutable copying = true
+            // iterates the rest lines when encountered the copy --start
+            In.iterRest (fun raw ->
+                let line = SourceLine (identifier, raw)
 
-            In.iterRest (fun iteratedLine ->
-                let line = iteratedLine |> Line
-
-                if copying && line.isCmd |> not then
-                    Out.appendLine iteratedLine
-                elif line.isCmd && line.cmdName.Value = "copy" then
-                    let validateDto = endCopyEntry |> ArgEntry.validate line.args.Value
-
-                    match validateDto with
-                    | Ok _ -> copying <- false
-                    | Error ex -> debugLog ex)
+                match copying with
+                | true when not line.isCmd -> // encountered a normal line
+                    Out.appendLine raw
+                    ()
+                | true when line.isCmd && endCopyEntry |> ArgEntry.validate line.args |> _.IsOk -> // encountered `copy --end`
+                    copying <- false
+                    ()
+                | _ -> ())
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry ("copies by line")
-                  |> _.addParameter(lineCountParam)
-                  |> _.addBehaviour(exeCopyLines)
+    |> _.addEntry(
+        ArgEntry ("copies by line")
+        |> _.addParameter(lineCountParam)
+        |> _.addBehaviour(exeByLines)
     )
-    |> _.addEntry(ArgEntry ("starts copying")
-                  |> _.addFlag(startFlag)
-                  |> _.addBehaviour(exeCopyStartToEnd)
+    |> _.addEntry(
+        ArgEntry ("starts copying")
+        |> _.addFlag(startFlag)
+        |> _.addBehaviour(exeByStartToEnd)
     )
     |> _.addEntry(endCopyEntry)

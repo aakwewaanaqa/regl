@@ -57,6 +57,7 @@
 
         <!--Bash Commands of Gen Command Types-->
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\Lines\Line.fs" />
+        <Compile Include="src\CommandLine\Commands\GenCommand\Types\Lines\SourceLine.fs" />
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fs"/>
         <!--Bash Commands of Gen Command Types-->
