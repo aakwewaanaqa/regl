@@ -1,30 +1,62 @@
 module Regl.CommandLine.Commands.Split
 
+open System
 open System.Text.RegularExpressions
-open Regl.CommandLine.Commands.Shared
+open Regl.CommandLine.Types.FlagsAndParams
+open Regl.Exts
 open Regl.CommandLine.IO
+open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
-let usage =
-    "regl split <DELIMITER>
-    Splits piped input using specified delimiter
-    then outputs them into lines"
+let cmdName = "split"
 
-let exe (r : CommandParseResult) =
-    // Reads piped input
-    InOut.In <- ReadonlyLinesBuffer ByConsoleIn
+let cmdInfo = "Splits stdin to lines and writes to stdout"
 
-    r.getParam 0
-    |> Regex
-    |> _.Split(InOut.In.all)
-    |> List.ofArray
-    |> List.map (fun l -> ternary (r.hasFlag "--quote") $"\"{l}\"" l)
-    |> fun e -> InOut.Out.lines <- e
+//TODO : write entry
+let entry =
 
-let cmd =
-    let builder = CommandBuilder ("split", exe)
-    builder.parameters <- [ Param("<DELIMITER>") ]
-    builder.optionalFlags <- [ OnFlag("--quote") ]
-    builder.usage <- usage
-    builder.build ()
+    let paramDelimiter = Param ("delimiter", "the regex pattern to split with")
+    let flagQuote = BoolFlag ("--quote", "to quote with \"")
+    let flagTrim = BoolFlag ("--trim", "to trim leading and following spaces...")
+
+    let exeSplit : ArgBehaviour =
+        fun dto ->
+            let hasTrim = dto.flags.containsFlag flagTrim
+            let hasQuote = dto.flags.containsFlag flagQuote
+            let regex = dto.parameters[paramDelimiter] |> _.ToString() |> Regex
+
+            In <- ReadonlyLinesBuffer ByStdIn
+            regex.Split In.all
+            |> List.ofArray
+            |>? (hasTrim, List.map _.Trim())
+            |> List.filter (fun l -> l |> String.IsNullOrEmpty |> not)
+            |>? (hasQuote, List.map (fun l -> $"\"{l}\""))
+            |> fun lines -> Out.lines <- lines
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(
+        (ArgEntry ("splits", "")
+         |> _.addParameter(paramDelimiter))
+         |> _.addBehaviour(exeSplit)
+    )
+    |> _.addEntry(
+        (ArgEntry ("splits and quotes with \"")
+         |> _.addParameter(paramDelimiter)
+         |> _.addFlag(flagQuote))
+         |> _.addBehaviour(exeSplit)
+    )
+    |> _.addEntry(
+        (ArgEntry ("splits and trim starts and ends")
+         |> _.addParameter(paramDelimiter)
+         |> _.addFlag(flagTrim))
+         |> _.addBehaviour(exeSplit)
+    )
+    |> _.addEntry(
+        (ArgEntry ("splits and trim starts and ends then quotes with \"")
+         |> _.addParameter(paramDelimiter)
+         |> _.addFlag(flagQuote)
+         |> _.addFlag(flagTrim))
+         |> _.addBehaviour(exeSplit)
+    )

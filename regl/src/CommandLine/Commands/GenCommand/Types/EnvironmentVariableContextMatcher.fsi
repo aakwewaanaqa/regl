@@ -3,24 +3,24 @@ namespace Regl.CommandLine.Commands.GenCommand.Types
 open System.Text.RegularExpressions
 
 /// <summary>
-/// 环境变量上下文匹配器，用于基于正则表达式匹配从上下文中提取值并设置为环境变量
+/// Environment variable context matcher, used to extract values from context based on regular expressions and set them as environment variables
 /// </summary>
 type EnvironmentVariableContextMatcher =
     /// <summary>
-    /// 初始化新的环境变量上下文匹配器实例
+    /// Initializes a new instance of environment variable context matcher
     /// </summary>
-    /// <param name="pattern">用于匹配上下文的正则表达式模式</param>
-    /// <param name="format">格式化字符串，用于从匹配中提取值，可使用 $0、$1 等替换组</param>
-    /// <param name="envarName">要设置的环境变量名称</param>
+    /// <param name="pattern">Regular expression pattern used to match context</param>
+    /// <param name="format">Format string used to extract values from matches, can use replacement groups like $0, $1, etc.</param>
+    /// <param name="envarName">Name of the environment variable to set</param>
     new : pattern : Regex * format : string * envarName : string -> EnvironmentVariableContextMatcher
 
     /// <summary>
-    /// 对提供的上下文进行匹配，并将匹配结果设置为环境变量
+    /// Matches the provided context and sets the match results as environment variables
     /// </summary>
-    /// <param name="ctx">要匹配的上下文字符串</param>
-    /// <returns>无返回值</returns>
+    /// <param name="ctx">Context string to match</param>
+    /// <returns>No return value</returns>
     /// <remarks>
-    /// 匹配的结果会根据指定的格式字符串进行格式化，然后设置为指定的环境变量。
-    /// 如果正则表达式有多个匹配项，每个匹配项都会导致环境变量被设置，最后一个匹配将成为最终值。
+    /// The match results will be formatted according to the specified format string and set as the specified environment variable.
+    /// If the regular expression has multiple matches, each match will cause the environment variable to be set, with the last match becoming the final value.
     /// </remarks>
     member doMatch : ctx : string -> unit

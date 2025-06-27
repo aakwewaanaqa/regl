@@ -1,7 +1,9 @@
 module XTests.Commands.Gen.Import
 
 open System.IO
+open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.Types.Arguments
 open XTests.Shared
 open XTests.Types
 open Xunit
@@ -27,7 +29,10 @@ type Tests (helper : ITestOutputHelper) =
         File.WriteAllText ("sourceFile2.tmp", sourceFile2)
         setIn sourceFile1
 
-        Implementation.cmd.parse [] |> Implementation.exe
+        Args "gen"
+        |> executeEntries [| Implementation.entry |]
+        |> _.IsSome
+        |> Assert.True
 
         ("0", Out.lines[0]) |> Assert.Equal
         ("1", Out.lines[1]) |> Assert.Equal
@@ -50,5 +55,9 @@ type Tests (helper : ITestOutputHelper) =
         File.WriteAllText ("2.tpl", templateFile2)
         setIn sourceFile
 
-        Implementation.cmd.parse [] |> Implementation.exe
+        Args "gen"
+        |> executeEntries [| Implementation.entry |]
+        |> _.IsSome
+        |> Assert.True
+
         ("2", Out.lines[0]) |> Assert.Equal

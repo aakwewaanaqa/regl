@@ -1,7 +1,0 @@
-namespace Regl.CommandLine.Types
-
-type IFlag =
-    /// The name of the flag
-    abstract member name : string
-    /// The explanation of the flag to be used like
-    abstract member usage : string

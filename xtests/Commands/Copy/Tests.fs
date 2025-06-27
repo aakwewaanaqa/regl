@@ -1,6 +1,8 @@
 module XTests.Commands.Copy.Tests
 
 open Regl.CommandLine.Commands
+open Regl.CommandLine.Commands.Shared
+open Regl.CommandLine.Types.Arguments
 open TextCopy
 open XTests.Shared
 open XTests.Types
@@ -14,11 +16,21 @@ type Tests(helper : ITestOutputHelper) =
     [<Fact>]
     let ``test copy no LF`` () =
         setIn "1 line is here"
-        Copy.cmd.parse [] |> Copy.cmd.execute
+
+        Args "copy"
+        |> executeEntries([|Copy.entry|])
+        |> _.IsSome
+        |> Assert.True
+
         ("1 line is here", ClipboardService.GetText()) |> Assert.Equal
 
     [<Fact>]
     let ``test copy has LF`` () =
         setIn "1 line is here \n 2 second line is here \n"
-        Copy.cmd.parse [] |> Copy.cmd.execute
+
+        Args "copy"
+        |> executeEntries([|Copy.entry|])
+        |> _.IsSome
+        |> Assert.True
+
         ("1 line is here \n 2 second line is here \n", ClipboardService.GetText()) |> Assert.Equal

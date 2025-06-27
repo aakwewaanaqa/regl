@@ -1,31 +1,31 @@
 ﻿namespace Regl
 
+open System
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.Types.Arguments
 
 module Program =
     /// Entry point for the application
     /// Returns 0 to indicate successful execution
     [<EntryPoint>]
-    let main (argv : string array) =
-        let cmds =
-            [ Copy.cmd
-              LexFix.cmd
-              Ls.cmd
-              Match.cmd
-              RemoveEmpty.cmd
-              Split.cmd
-              ToFile.cmd
-              GenCommand.Implementation.cmd ]
+    let main (_ : string array) =
+        let cmdEntries =
+            [| Copy.entry
+               LexFix.entry
+               Ls.entry
+               Match.entry
+               RemoveEmpty.entry
+               Split.entry
+               ToFile.entry
+               GenCommand.Implementation.entry |]
 
-        argv
-        |> List.ofArray
-        |> tryCommands cmds
-        |> function
-            | Ok () ->
-                Out.sendToPipe ()
-                0
-            | Error ex ->
-                debugLog ex
-                1
+        let raw = Environment.CommandLine
+        let args = raw |> Args
+        let result = args |> executeEntries cmdEntries
+
+        if result.IsSome then
+            0
+        else
+            1

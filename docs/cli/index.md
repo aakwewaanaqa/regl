@@ -1,6 +1,5 @@
 ---
 tags: ['for mcp', 'cli']
-description: 'cli commands for `regl`'
 ---
 
 # Lists

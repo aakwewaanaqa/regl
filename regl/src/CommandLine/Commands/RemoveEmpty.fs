@@ -2,21 +2,22 @@ module Regl.CommandLine.Commands.RemoveEmpty
 
 open System
 open Regl.CommandLine.IO
-open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
-let exe (result: CommandParseResult) =
-    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
-    InOut.In.lines
-    |> List.filter (fun l -> not (l |> String.IsNullOrEmpty))
-    |> List.iter (fun l -> InOut.Out.appendLine l)
+let cmdName = "remove-empty"
 
-    InOut.Out.sendToPipe()
+let cmdInfo = "Removes empty lines from stdin and writes to stdout"
 
-let cmd =
+let entry =
+    let exeRemoveEmpty : ArgBehaviour =
+        fun dto ->
+            InOut.In <- ReadonlyLinesBuffer ByStdIn
 
-    let builder = CommandBuilder("remove-empty", exe)
-    builder.usage <- "regl remove-empty
-    Execute the remove-empty command
-    "
-    builder.build ()
+            InOut.In.lines
+            |> List.filter (fun l -> not (l |> String.IsNullOrEmpty))
+            |> List.iter (fun l -> InOut.Out.appendLine l)
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(ArgEntry ("Removes empty lines")
+                  |> _.addBehaviour(exeRemoveEmpty))
