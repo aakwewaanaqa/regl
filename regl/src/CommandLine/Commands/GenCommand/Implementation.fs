@@ -1,5 +1,7 @@
 module Regl.CommandLine.Commands.GenCommand.Implementation
 
+open Regl.CommandLine
+open Regl.CommandLine.Commands.GenCommand.Shared
 open Regl.CommandLine.Commands.GenCommand.Types.Lines
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
@@ -25,22 +27,18 @@ let subCmdEntries =
 let entry =
     let exeGen : ArgBehaviour =
         fun dto ->
-            In.iteriRest (fun i l ->
+            In.iteriRest (fun i raw ->
                 In.index <- i // push index forward
-
-                if i = 0 then
-                    Line.cmdBeginning <- l
-                else
+                match i = 0 with
+                | true -> identifier <- raw
+                | false ->
                     try
-                        let line = l |> Line
-                        if line.isCmd then
-                            subCmdEntries
-                            |> Array.find (fun cmd -> cmd.name = line.cmdName.Value)
-                            |> _.entries
-                            |> List.tryFindBack (fun entry -> entry |> ArgEntry.validate line.args.Value |> _.IsOk)
-                            |> ignore
+                        let line = SourceLine(identifier, raw)
+                        match line.isCmd with
+                        | true -> line.args |> executeEntries subCmdEntries |> ignore
+                        | false -> ()
                     with ex ->
-                        debugLog ex
+                        Debug.through ex |> ignore
             )
 
     let fileFlag =

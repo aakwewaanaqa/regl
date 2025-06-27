@@ -29,12 +29,11 @@ let entry =
             let pwd = Directory.GetCurrentDirectory ()
             let isFile = dto.flags.containsFlag fFlag
             let isDir = dto.flags.containsFlag dFlag
-            let files = Directory.GetFiles (pwd, pattern)
-            let dirs = Directory.GetDirectories (pwd, pattern)
-
             let option =
                 dto.flags.containsFlag RFlag
                 <-?? (SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+            let files = Directory.GetFiles (pwd, pattern, option)
+            let dirs = Directory.GetDirectories (pwd, pattern, option)
 
             let paths =
                 if isFile && isDir then files |> Array.append dirs
