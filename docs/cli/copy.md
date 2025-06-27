@@ -1,9 +1,10 @@
 ---
 tags: []
-description: 'Copies piped input or redirected input to clipboard.'
 ---
 
 # Copy
+
+Copies piped input or redirected input to clipboard.
 
 ## Notice
 
@@ -14,6 +15,14 @@ description: 'Copies piped input or redirected input to clipboard.'
 ```sh
 regl copy
 ```
+
+### Options
+
+None
+
+### Outputs
+
+None
 
 ## Examples
 

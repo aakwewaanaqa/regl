@@ -3,26 +3,39 @@ module Regl.CommandLine.Commands.ToFile
 open System.IO
 open Regl.CommandLine.IO
 open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
-let usage = "regl to-file <FILE-PATH> [--append]
-    Writes piped input to a file
-        --append : Appends writing
-"
+let cmdName = "to-file"
 
-let exe (r: CommandParseResult) =
-    // Reads piped input
-    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
+let cmdInfo = "writes stdin to a designated file"
 
-    let path = r.getParam 0
+let entry =
+    let filePathParam = Param ("file-path", "file to write to")
+    let appendFlag = BoolFlag ("--append", "writing will append to end of the file")
 
-    if r.hasFlag "--append" then
-        File.AppendAllText(path, InOut.In.all)
-    else
-        File.WriteAllText(path, InOut.In.all)
+    let exeWriteToFile : ArgBehaviour =
+        fun dto ->
+            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
+            let path = dto.parameters[Param "<file-path>"].ToString ()
+            File.WriteAllText (path, InOut.In.all)
 
-let cmd =
-    let builder = CommandBuilder("to-file", exe)
-    builder.usage <- usage
-    builder.parameters <- [ Param("<FILE>") ]
-    builder.build ()
+    let exeAppendToFile : ArgBehaviour =
+        fun dto ->
+            InOut.In <- ReadonlyLinesBuffer (ByStdIn)
+            let path = dto.parameters[Param "<file-path>"].ToString ()
+            File.AppendAllText (path, InOut.In.all)
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(
+        ArgEntry "writes new or overwrite file"
+        |> _.addParameter(filePathParam)
+        |> _.addBehaviour(exeWriteToFile)
+    )
+    |> _.addEntry(
+        ArgEntry "appends old file"
+        |> _.addParameter(filePathParam)
+        |> _.addFlag(appendFlag)
+        |> _.addBehaviour(exeAppendToFile)
+    )

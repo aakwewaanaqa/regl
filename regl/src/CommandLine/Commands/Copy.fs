@@ -1,18 +1,21 @@
 module Regl.CommandLine.Commands.Copy
 
+open System
+open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 open TextCopy
 open Regl.CommandLine.IO
-open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
 
-let usage = "regl copy
-    Copies piped input to clipboard"
+let cmdName = "copy"
 
-let exe (_: CommandParseResult) =
-    InOut.In <- ReadonlyLinesBuffer(ByConsoleIn)
-    ClipboardService.SetText InOut.In.all
+let cmdInfo = "Copies piped input to clipboard"
 
-let cmd =
-    let builder = CommandBuilder("copy", exe)
-    builder.usage <- "regl copy"
-    builder.build ()
+let entry =
+    let exeCopy : ArgBehaviour =
+        fun dto ->
+            In <- ReadonlyLinesBuffer ByStdIn
+            ClipboardService.SetText In.all
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(ArgEntry (cmdInfo) |> _.addBehaviour(exeCopy))

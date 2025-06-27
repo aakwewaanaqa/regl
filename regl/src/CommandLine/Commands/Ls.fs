@@ -1,30 +1,55 @@
 module Regl.CommandLine.Commands.Ls
 
 open System.IO
-open Regl.CommandLine.IO
+open Regl.Exts
+open Regl.CommandLine.IO.InOut
+open Regl.CommandLine.Types.FlagsAndParams
 open Regl.CommandLine.Types
-open Regl.CommandLine.Commands.Shared
-open Regl.CommandLine.Builders
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
-let usage = "regl ls [-R] [--pattern <PATTERN>]
-    Lists fils in current's directory.
-        -R        : Recursively searches the current directory.
-        --pattern : Applies pattern to search method."
+let cmdName = "ls"
 
-let exe (r: CommandParseResult) =
-    let hasPattern = r.tryGetFlagValue "--pattern"
-    let isRecursive = r.hasFlag "-R"
-    let searchOption = ternary isRecursive SearchOption.AllDirectories SearchOption.TopDirectoryOnly
-    let pattern = hasPattern |> FlagOption.defaultString ""
+let cmdInfo =
+    "list all files or directory from current working directory and outputs them by lines as stdout"
 
-    Directory.GetCurrentDirectory()
-    |> fun pwd -> Directory.GetFiles(pwd, pattern, searchOption)
-    |> List.ofArray
-    |> fun lines -> InOut.Out.lines <- lines
+let entry =
 
-let cmd =
+    let dFlag = BoolFlag ("-d", "directories")
+    let fFlag = BoolFlag ("-f", "files")
+    let RFlag = BoolFlag ("-R", "recursively")
 
-    let builder = CommandBuilder("ls", exe)
-    builder.optionalFlags <- [ OnFlag("-R"); InStringFlag("--pattern") ]
-    builder.usage <- usage
-    builder.build ()
+    let patternFlag =
+        StringFlag ("--pattern", "files or directories matching .net pattern")
+
+    let cmd = CmdEntry (cmdName, cmdInfo)
+    let entry = ArgEntry "lists all files or directories"
+
+    let exeLs : ArgBehaviour =
+        fun dto ->
+            let pattern = dto.flags.firstOrDefault patternFlag ""
+            let pwd = Directory.GetCurrentDirectory ()
+            let isFile = dto.flags.containsFlag fFlag
+            let isDir = dto.flags.containsFlag dFlag
+            let files = Directory.GetFiles (pwd, pattern)
+            let dirs = Directory.GetDirectories (pwd, pattern)
+
+            let option =
+                dto.flags.containsFlag RFlag
+                <-?? (SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+
+            let paths =
+                if isFile && isDir then files |> Array.append dirs
+                elif isDir then dirs
+                else files
+
+            paths |> List.ofArray |> (fun lines -> Out.lines <- lines)
+
+    let rec loop (cmd : CmdEntry) (combo : IFlag list list) =
+        match combo with
+        | head :: tail ->
+            let newCmd = cmd.addEntry (entry.addFlags(head).addBehaviour (exeLs))
+            loop newCmd tail
+        | [] -> cmd
+
+    loop cmd (Flags.getAllPossibilities ([ dFlag ; fFlag ; RFlag ; patternFlag ]))

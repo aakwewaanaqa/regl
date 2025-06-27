@@ -21,11 +21,17 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="Types\TestBase.fs" />
         <Compile Include="Shared.fs"/>
-        <Compile Include="*\*Tests.fs"/>
-        <Compile Include="*\*\*Tests.fs"/>
-        <Compile Include="*\*\*\*Tests.fs"/>
+        <Compile Include="Types\TestBase.fs" />
+        <Compile Include="Codebase\Parsing\ArgsTests.fs" />
+        <Compile Include="Codebase\Parsing\ArgEntryTests.fs" />
+        <Compile Include="Commands\Copy\Tests.fs" />
+        <Compile Include="Commands\Split\Tests.fs" />
+        <Compile Include="Commands\LexFix\Tests.fs" />
+        <Compile Include="Commands\Match\Tests.fs" />
+        <Compile Include="Commands\Gen\Copy\Tests.fs" />
+        <Compile Include="Commands\Gen\Import\Tests.fs" />
+        <Compile Include="Commands\Gen\Tpl\Tests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

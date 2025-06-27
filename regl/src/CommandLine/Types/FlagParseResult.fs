@@ -1,11 +1,14 @@
 namespace Regl.CommandLine.Types
 
+open System
+open Microsoft.FSharp.Core.LanguagePrimitives
+
 type FlagParseResult = {
     name : string
-    value : FlagOption
+    value : FlagVal
 }
 
-and FlagOption =
+and FlagVal =
     | OfBool of bool
     | OfText of string
 
@@ -14,8 +17,8 @@ and FlagOption =
         | OfBool b -> $"{b}"
         | OfText str -> str
 
-module FlagOption =
-    let defaultString (a : string) (opt : FlagOption option) =
+module FlagVal =
+    let defaultString (a : string) (opt : FlagVal option) =
         if opt.IsSome then
             match opt.Value with
             | OfText str -> str

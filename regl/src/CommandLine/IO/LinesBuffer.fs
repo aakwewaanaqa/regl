@@ -11,7 +11,7 @@ type BufferSource =
     | ByFilePath of string
     | BySeq of string seq
     | ByList of string list
-    | ByConsoleIn
+    | ByStdIn
 
 and ReadonlyLinesBuffer (source : BufferSource) =
     let _all =
@@ -21,7 +21,7 @@ and ReadonlyLinesBuffer (source : BufferSource) =
         | ByFilePath path -> File.ReadAllText path
         | BySeq sequence -> sequence |> Seq.reduce (fun a b -> $"{a}\n{b}")
         | ByList list -> list |> List.reduce (fun a b -> $"{a}\n{b}")
-        | ByConsoleIn -> Console.In.ReadToEnd ()
+        | ByStdIn -> Console.In.ReadToEnd ()
 
     let _lines = _all.Split "\n" |> List.ofArray
 
@@ -75,6 +75,14 @@ and ReadonlyLinesBuffer (source : BufferSource) =
             if i < this.length then
                 iter i this.lines[i]
 
+    member this.iterRest(iter : string -> unit) =
+        let startIndex = this.index
+        let endIndex = (this.length - 1)
+        for i in startIndex..endIndex do
+            if i < this.length then
+                iter this.lines[i]
+
+
     member this.filterRest (filter : string -> bool) (count : int) =
         let mutable count = count
         let mutable index = this.index
@@ -114,7 +122,7 @@ and LinesBuffer (source) =
         | ByFilePath path -> File.ReadAllText(path).Split "\n" |> List.ofArray
         | BySeq sequence -> sequence |> List.ofSeq
         | ByList list -> list
-        | ByConsoleIn -> Console.In.ReadToEnd().Split "\n" |> List.ofArray with get, set
+        | ByStdIn -> Console.In.ReadToEnd().Split "\n" |> List.ofArray with get, set
 
     override this.lines
         with get () = this._lines

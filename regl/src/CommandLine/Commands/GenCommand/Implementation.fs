@@ -1,47 +1,67 @@
 module Regl.CommandLine.Commands.GenCommand.Implementation
 
+open Regl.CommandLine.Commands.GenCommand.Types.Lines
 open Regl.CommandLine.IO
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types
-open Regl.CommandLine.Builders
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand
-open Regl.CommandLine.Commands.GenCommand.Shared
+open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
-let subCmds = [
-    AddEvcm.cmd
-    Copy.cmd
-    Echo.cmd
-    Import.cmd
-    SetEnvar.cmd
-    Tpl.cmd
-    UnsetEnvar.cmd
-]
+let cmdName = "gen"
 
-let exe (r : CommandParseResult) =
-    let iteri i (line: string) =
-        In.index <- i
+let cmdInfo = "Generates codes from a source file..."
 
-        if i = 0 then
-            identifier <- line.TrimEnd()
-        elif line.Trim().StartsWith(identifier) then
-            line
-            |> _.Trim()
-            |> _.Substring(identifier.Length)
-            |> parseCommandLineArgs
-            |> tryCommands subCmds
-            |> function
-                | Ok () -> ()
-                | Error ex -> debugLog $"regl gen -> {ex}"
+let subCmdEntries =
+    [| AddEvcm.entry
+       Copy.entry
+       Echo.entry
+       Import.entry
+       SetEnvar.entry
+       Tpl.entry
+       UnsetEnvar.entry |]
 
-    r.tryGetFlagValue "--file"
-    |> function
-        | Some path -> In <- ReadonlyLinesBuffer(ByFilePath (path.ToString()))
-        | None -> In <- ReadonlyLinesBuffer(ByConsoleIn)
+let entry =
+    let exeGen : ArgBehaviour =
+        fun dto ->
+            In.iteriRest (fun i l ->
+                In.index <- i // push index forward
 
-    In.iteriRest iteri
+                if i = 0 then
+                    Line.cmdBeginning <- l
+                else
+                    try
+                        let line = l |> Line
+                        if line.isCmd then
+                            subCmdEntries
+                            |> Array.find (fun cmd -> cmd.name = line.cmdName.Value)
+                            |> _.entries
+                            |> List.tryFindBack (fun entry -> entry |> ArgEntry.validate line.args.Value |> _.IsOk)
+                            |> ignore
+                    with ex ->
+                        debugLog ex
+            )
 
-let cmd =
-    let builder = CommandBuilder("gen", exe)
-    builder.optionalFlags <- [ InStringFlag("--file") ]
-    builder.build ()
+    let fileFlag =
+        StringFlag ("--file", "the file path for the source file to be generated")
+
+    let exeByStdin : ArgBehaviour =
+        fun dto ->
+            In <- ReadonlyLinesBuffer (ByStdIn)
+            exeGen dto
+
+    let exeByFile : ArgBehaviour =
+        fun dto ->
+            let file = dto.flags.first<string> (fileFlag)
+            In <- ReadonlyLinesBuffer (ByFilePath file)
+            exeGen dto
+
+    CmdEntry (cmdName, cmdInfo)
+    |> _.addEntry(ArgEntry ("gen with stdin")
+                  |> _.addBehaviour(exeByStdin)
+    )
+    |> _.addEntry(ArgEntry ("gen with file path")
+                  |> _.addFlag(fileFlag)
+                  |> _.addBehaviour(exeByFile)
+    )
