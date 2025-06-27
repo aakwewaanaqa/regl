@@ -19,8 +19,7 @@ type Tests(helper : ITestOutputHelper) =
 
         Args "copy"
         |> executeEntries([|Copy.entry|])
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("1 line is here", ClipboardService.GetText()) |> Assert.Equal
 
@@ -30,7 +29,6 @@ type Tests(helper : ITestOutputHelper) =
 
         Args "copy"
         |> executeEntries([|Copy.entry|])
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("1 line is here \n 2 second line is here \n", ClipboardService.GetText()) |> Assert.Equal

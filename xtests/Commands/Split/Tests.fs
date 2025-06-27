@@ -20,10 +20,9 @@ type Tests (helper : ITestOutputHelper) =
         Args "split [.]"
         |> executeEntries [| Split.entry |]
         |> fun entry ->
-            helper.WriteLine entry.Value.name
+            helper.WriteLine entry.name
             entry
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("192", Out.lines[0]) |> Assert.Equal
         ("168", Out.lines[1]) |> Assert.Equal
@@ -36,8 +35,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "split [.] --quote"
         |> executeEntries [| Split.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("\"192\"", Out.lines[0]) |> Assert.Equal
         ("\"168\"", Out.lines[1]) |> Assert.Equal
@@ -55,8 +53,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "split [.] --quote --trim"
         |> executeEntries [| Split.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("\"192\"", Out.lines[0]) |> Assert.Equal
         ("\"168\"", Out.lines[1]) |> Assert.Equal

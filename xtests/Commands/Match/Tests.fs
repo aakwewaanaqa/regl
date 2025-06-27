@@ -24,7 +24,6 @@ type Tests (helper : ITestOutputHelper) =
 
         Args args
         |> executeEntries [| Match.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (expected, InOut.Out.lines[0]) |> Assert.Equal

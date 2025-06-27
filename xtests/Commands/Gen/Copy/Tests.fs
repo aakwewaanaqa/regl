@@ -28,8 +28,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (3, InOut.Out.length) |> Assert.Equal
         ("2. Build the house.", InOut.Out.lines[0]) |> Assert.Equal
@@ -55,8 +54,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (3, InOut.Out.length) |> Assert.Equal
         ("2. Build the house.", InOut.Out.lines[0]) |> Assert.Equal
@@ -80,8 +78,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (3, InOut.Out.length) |> Assert.Equal
         ("1. Building a house?", InOut.Out.lines[0]) |> Assert.Equal
@@ -107,8 +104,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (3, InOut.Out.length) |> Assert.Equal
         ("1. Building a house?", InOut.Out.lines[0]) |> Assert.Equal

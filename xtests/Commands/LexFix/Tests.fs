@@ -25,7 +25,6 @@ type LexFix (helper : ITestOutputHelper) =
 
         Args args
         |> executeEntries [|LexFix.entry|]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (expected, Out.lines[0]) |> Assert.Equal

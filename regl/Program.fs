@@ -10,22 +10,27 @@ module Program =
     /// Entry point for the application
     /// Returns 0 to indicate successful execution
     [<EntryPoint>]
-    let main (_ : string array) =
-        let cmdEntries =
-            [| Copy.entry
-               LexFix.entry
-               Ls.entry
-               Match.entry
-               RemoveEmpty.entry
-               Split.entry
-               ToFile.entry
-               GenCommand.Implementation.entry |]
+    let main (argv : string array) =
+        try
+            let cmdEntries =
+                [| Copy.entry
+                   LexFix.entry
+                   Ls.entry
+                   Match.entry
+                   RemoveEmpty.entry
+                   Split.entry
+                   ToFile.entry
+                   GenCommand.Implementation.entry |]
 
-        let raw = Environment.CommandLine
-        let args = raw |> Args
-        let result = args |> executeEntries cmdEntries
+            argv
+            |> List.ofArray
+            |> Args
+            |> executeEntries cmdEntries
+            |> ignore
 
-        if result.IsSome then
+            Out.sendToPipe()
+
             0
-        else
+        with ex ->
+            printf $"{ex}"
             1

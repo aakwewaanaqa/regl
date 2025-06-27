@@ -2,6 +2,7 @@ module Regl.CommandLine.Commands.Shared
 
 open System.Text
 open System.Text.RegularExpressions
+open Regl.CommandLine
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.Arguments
 open Regl.CommandLine.Types.Cmds
@@ -23,9 +24,11 @@ let tryCommands (cmds : CommandBody list) (argv : string list) =
 
 let executeEntries (cmds : CmdEntry array) (args : Args) =
     cmds
-    |> Array.find (fun cmd -> cmd.name.Equals args[0])
+    |> Array.find (fun cmd -> cmd.name = args[0])
+    |> Debug.through
     |> _.entries
-    |> List.tryFindBack (fun entry -> entry |> ArgEntry.validate(args.Tail) |> _.IsOk)
+    |> List.findBack (fun entry -> entry |> ArgEntry.validate(args.Tail) |> _.IsOk)
+    |> Debug.through
 
 let formatMatch (m : Match) (format : string) =
     let mutable formatted = format

@@ -20,8 +20,7 @@ type Tests (helper : ITestOutputHelper) =
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         ("[FromBody]", Out.lines[0]) |> Assert.Equal<string>
         ("[FromQuery]", Out.lines[0]) |> Assert.NotEqual<string>
@@ -50,8 +49,7 @@ fi
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (4, Out.length) |> Assert.Equal
         ("True", Out.lines[0]) |> Assert.Equal
@@ -82,8 +80,7 @@ fi
 
         Args "gen"
         |> executeEntries [| Implementation.entry |]
-        |> _.IsSome
-        |> Assert.True
+        |> ignore
 
         (4, Out.length) |> Assert.Equal
         ("True", Out.lines[0]) |> Assert.Equal

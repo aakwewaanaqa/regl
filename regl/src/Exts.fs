@@ -34,3 +34,11 @@ let inline (/??) (dict : Dictionary<'a, 'b>) (key : 'a, def : 'b) =
         dict[key]
     else
         def
+
+let rec powerset (set : 'a list) =
+    match set with
+    | [] -> [[]] // Base case: the powerset of an empty list is a list containing only the empty list
+    | head :: tail ->
+        let subPowerset = powerset tail // Recursively get the powerset of the tail
+        let withHead = List.map (fun subset -> head :: subset) subPowerset // Add the head to each subset of the tail
+        subPowerset @ withHead // Combine subsets without the head and subsets with the head

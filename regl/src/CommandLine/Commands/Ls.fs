@@ -22,8 +22,6 @@ let entry =
     let patternFlag =
         StringFlag ("--pattern", "files or directories matching .net pattern")
 
-    let cmd = CmdEntry (cmdName, cmdInfo)
-    let entry = ArgEntry "lists all files or directories"
 
     let exeLs : ArgBehaviour =
         fun dto ->
@@ -45,11 +43,14 @@ let entry =
 
             paths |> List.ofArray |> (fun lines -> Out.lines <- lines)
 
-    let rec loop (cmd : CmdEntry) (combo : IFlag list list) =
-        match combo with
-        | head :: tail ->
-            let newCmd = cmd.addEntry (entry.addFlags(head).addBehaviour (exeLs))
-            loop newCmd tail
-        | [] -> cmd
+    let cmd = CmdEntry (cmdName, cmdInfo)
 
-    loop cmd (Flags.getAllPossibilities ([ dFlag ; fFlag ; RFlag ; patternFlag ]))
+    powerset [ dFlag :> IFlag ; fFlag :> IFlag ; RFlag :> IFlag ; patternFlag :> IFlag ]
+    |> List.map (fun combo ->
+        match combo.Length with
+        | 0 -> ArgEntry("lists files or directories").addBehaviour(exeLs)
+        | _ -> ArgEntry("lists files or directories").addFlags(combo).addBehaviour(exeLs)
+    )
+    |> List.iter (fun entry -> cmd.addEntry(entry) |> ignore)
+
+    cmd
