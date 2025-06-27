@@ -1,3 +1,13 @@
+# Installation
+
+## LINUX
+
+```sh
+cd /opt
+sudo curl -LO https://github.com/aakwewaanaqa/regl/releases/download/v0.0.2/regl
+sudo curl -LO https://github.com/aakwewaanaqa/regl/releases/download/v0.0.2/regl.pdb
+```
+
 # README
 
 ## FEATURE
