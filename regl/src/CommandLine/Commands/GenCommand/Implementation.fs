@@ -1,5 +1,6 @@
 module Regl.CommandLine.Commands.GenCommand.Implementation
 
+open Regl
 open Regl.CommandLine
 open Regl.CommandLine.Commands.GenCommand.Shared
 open Regl.CommandLine.Commands.GenCommand.Types.Lines
@@ -10,6 +11,7 @@ open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.Commands.GenCommand
 open Regl.CommandLine.Types.Arguments
 open Regl.CommandLine.Types.Cmds
+open Regl.CommandLine.Types.FlagsAndParams
 
 let cmdName = "gen"
 
@@ -25,41 +27,39 @@ let subCmdEntries =
        UnsetEnvar.entry |]
 
 let entry =
-    let exeGen : ArgBehaviour =
+    /// the file path for the source file to be generated
+    let fileFlag =
+        StringFlag("--file", "the file path for the source file to be generated")
+
+    /// labels the gen command
+    let labelFlag = StringFlag("--label", "labels the gen command")
+
+    let combos = Exts.powerset [ fileFlag :> IFlag; labelFlag :> IFlag ]
+    
+    let exeGen: ArgBehaviour =
         fun dto ->
+            match dto.flags.tryFirst<string> fileFlag with
+            | Some file -> In <- ReadonlyLinesBuffer(ByFilePath file)
+            | None -> In <- ReadonlyLinesBuffer ByStdIn
+
+            match dto.flags.tryFirst<string> labelFlag with
+            | Some label -> Debug.through label |> ignore
+            | None -> ()
+
             In.iteriRest (fun i raw ->
                 In.index <- i // push index forward
+
                 match i = 0 with
                 | true -> identifier <- raw
                 | false ->
                     try
                         let line = SourceLine(identifier, raw)
+
                         match line.isCmd with
                         | true -> line.args |> executeEntries subCmdEntries |> ignore
                         | false -> ()
                     with ex ->
-                        Debug.through ex |> ignore
-            )
+                        Debug.through ex |> ignore)
 
-    let fileFlag =
-        StringFlag ("--file", "the file path for the source file to be generated")
-
-    let exeByStdin : ArgBehaviour =
-        fun dto ->
-            In <- ReadonlyLinesBuffer (ByStdIn)
-            exeGen dto
-
-    let exeByFile : ArgBehaviour =
-        fun dto ->
-            let file = dto.flags.first<string> (fileFlag)
-            In <- ReadonlyLinesBuffer (ByFilePath file)
-            exeGen dto
-
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry ("gen with stdin")
-                  |> _.addBehaviour(exeByStdin)
-    )
-    |> _.addEntry(ArgEntry ("gen with file path")
-                  |> _.addFlag(fileFlag)
-                  |> _.addBehaviour(exeByFile)
-    )
+    CmdEntry(cmdName, cmdInfo)
+    |> CmdEntry.acceptCombos combos exeGen

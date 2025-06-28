@@ -22,16 +22,17 @@ let entry =
     let patternFlag =
         StringFlag ("--pattern", "files or directories matching .net pattern")
 
-
     let exeLs : ArgBehaviour =
         fun dto ->
             let pattern = dto.flags.firstOrDefault patternFlag ""
             let pwd = Directory.GetCurrentDirectory ()
             let isFile = dto.flags.containsFlag fFlag
             let isDir = dto.flags.containsFlag dFlag
+            
             let option =
-                dto.flags.containsFlag RFlag
-                <-?? (SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+                if dto.flags.containsFlag RFlag then SearchOption.AllDirectories
+                else SearchOption.TopDirectoryOnly
+            
             let files = Directory.GetFiles (pwd, pattern, option)
             let dirs = Directory.GetDirectories (pwd, pattern, option)
 
@@ -42,14 +43,15 @@ let entry =
 
             paths |> List.ofArray |> (fun lines -> Out.lines <- lines)
 
-    let cmd = CmdEntry (cmdName, cmdInfo)
+    let mutable cmd = CmdEntry (cmdName, cmdInfo)
 
+    // Add all possibilities for combinations of params and flags
     powerset [ dFlag :> IFlag ; fFlag :> IFlag ; RFlag :> IFlag ; patternFlag :> IFlag ]
     |> List.map (fun combo ->
         match combo.Length with
         | 0 -> ArgEntry("lists files or directories").addBehaviour(exeLs)
         | _ -> ArgEntry("lists files or directories").addFlags(combo).addBehaviour(exeLs)
     )
-    |> List.iter (fun entry -> cmd.addEntry(entry) |> ignore)
+    |> List.iter (fun entry -> cmd <- cmd.addEntry(entry))
 
     cmd

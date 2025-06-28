@@ -1,6 +1,8 @@
 ﻿namespace Regl
 
 open System
+open System.IO
+open Regl.CommandLine
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO.InOut
@@ -29,8 +31,11 @@ module Program =
             |> ignore
 
             Out.sendToPipe()
-
+            Debug.close()
+            
             0
         with ex ->
-            printf $"{ex}"
+            Debug.writeErr ex.Message
+            Debug.close()
+            
             1

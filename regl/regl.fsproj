@@ -27,12 +27,13 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\CommandLine\Debug\Debug.fs" />
         
         <!--IO-->
         <Compile Include="src\CommandLine\IO\LinesBuffer.fs"/>
         <Compile Include="src\CommandLine\IO\InOut.fs"/>
         <!--IO-->
+        
+        <Compile Include="src\CommandLine\Debug\Debug.fs" />
 
         <!--CLI - Types-->
             <!--CLI - Types - Flags-->

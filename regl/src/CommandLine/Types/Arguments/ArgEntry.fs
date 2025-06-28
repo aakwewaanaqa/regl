@@ -26,9 +26,12 @@ type ArgEntry (name : string, ?info : string) =
         e.flags <- e.flags @ [ flag ]
         e
 
-    member e.addFlags flags =
-        e.flags <- e.flags @ flags
-        e
+    member e.addFlags (flags : IFlag list) =
+        if flags.IsEmpty then
+            e
+        else
+            e.flags <- e.flags @ flags
+            e
 
     member e.addBehaviour behaviour =
         e.behaviour <- behaviour

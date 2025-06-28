@@ -40,6 +40,11 @@ and FlagValSet () =
         with ex ->
             [ def ]
 
+    member s.tryFirst<'a> (f : IFlag) =
+        match s.map.ContainsKey f with
+        | true -> Some (s.map[f] |> List.head |> _.value<'a>())
+        | false -> None
+    
     member s.Item
         with get f = s.map[f]
 
