@@ -17,5 +17,7 @@ let entry =
             In <- ReadonlyLinesBuffer ByStdIn
             ClipboardService.SetText In.all
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry cmdName |> _.addBehaviour(exeCopy))
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addBehaviour(exeCopy))

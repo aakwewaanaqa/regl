@@ -18,6 +18,7 @@ let entry =
             |> List.filter (fun l -> not (l |> String.IsNullOrEmpty))
             |> List.iter (fun l -> InOut.Out.appendLine l)
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry cmdName
-                  |> _.addBehaviour(exeRemoveEmpty))
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addBehaviour(exeRemoveEmpty))

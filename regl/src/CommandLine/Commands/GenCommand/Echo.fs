@@ -17,8 +17,8 @@ let entry =
         dto.parameters[bodyParam].value<string>()
         |> Out.appendLine
 
-    CmdEntry(cmdName, cmdInfo)
-    |>_.addEntry(ArgEntry(cmdName)
-                 |> _.addParameter(bodyParam)
-                 |> _.addBehaviour(exeEcho)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(bodyParam)
+            .addBehaviour(exeEcho))

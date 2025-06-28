@@ -4,27 +4,40 @@ open System.Text
 open Regl.CommandLine.Types.Arguments
 open Regl.CommandLine.Types.FlagsAndParams
 
-type CmdEntry (name : string, ?info : string) =
+type CmdEntry (name : string) =
     member c.name = name
 
-    member c.info = info |> Option.defaultValue ""
+    member val info = "" with get, set
+    
+    member c.addInfo info =
+        c.info <- info
+        c
+    
+    member val notice : string = "" with get, set
+    /// add notice to a command
+    member c.addNotice notice =
+        c.notice <- notice
+        c    
     
     member val entries : ArgEntry list = [] with get, set
     /// add entry to a command
     /// also sort them by the sum of parameters and flags
     member c.addEntry(entry : ArgEntry) =
+        entry.name <- name
         c.entries <-
             c.entries @ [ entry ]
             |> List.sortBy (fun entry -> entry.flags.Length + entry.parameters.Length) 
         c
 
+
+    
     override c.ToString() = name
 
 module CmdEntry =
     let acceptCombos (combos : IFlag list list) (exe : ArgBehaviour) (cmd : CmdEntry) =
         combos
         |> List.map (fun combo ->
-           cmd.addEntry(ArgEntry(cmd.name)
+           cmd.addEntry(ArgEntry()
                         |> _.addFlags(combo)
                         |> _.addBehaviour(exe)))
         |> List.last

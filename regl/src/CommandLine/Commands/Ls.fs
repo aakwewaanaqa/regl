@@ -51,5 +51,5 @@ let entry =
 
             paths |> List.ofArray |> (fun lines -> Out.lines <- lines)
 
-    CmdEntry (cmdName, cmdInfo)
+    CmdEntry(cmdName).addInfo(cmdInfo)
     |> CmdEntry.acceptCombos combos exeLs

@@ -63,5 +63,5 @@ let entry =
                     with ex ->
                         Debug.through ex |> ignore)
 
-    CmdEntry(cmdName, cmdInfo)
+    CmdEntry(cmdName).addInfo(cmdInfo)
     |> CmdEntry.acceptCombos combos exeGen

@@ -48,9 +48,8 @@ let entry =
             let result = loop (In.all.ToCharArray () |> List.ofArray)
             Out.all <- result
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry cmdName
-        |> _.addFlag(scopeFlag)
-        |> _.addBehaviour(exeWithScope)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addFlag(scopeFlag)
+            .addBehaviour(exeWithScope))

@@ -12,8 +12,8 @@ open Regl.Exts
 /// In case that a command has multiple choices to provide args.
 /// The properties named parameters and flags are all required.
 /// </summary>
-type ArgEntry (name : string) =
-    member this.name = name
+type ArgEntry () =
+    member val name = "" with get, set
     member val parameters : IParam list = [] with get, set
     member val flags : IFlag list = [] with get, set
     member val behaviour : ArgBehaviour = ignore with get, set

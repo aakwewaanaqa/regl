@@ -29,8 +29,7 @@ let entry =
         BoolFlag("--end", "ends reading for source file context")
     /// `tpl --stop` stop reading arg entry
     let tplEndEntry =
-        ArgEntry cmdName
-        |> _.addFlag(endFlag)
+        ArgEntry().addFlag(endFlag)
 
     /// turn bash-file's every single line which begins with `#> ...` to `echo "..."`
     /// this makes tab alignment possible
@@ -90,15 +89,14 @@ let entry =
         exeTpl buffer dto // truly executes the `tpl` command
 
 
-    CmdEntry(cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry(cmdName)
-                  |> _.addParameter(lineCountParam)
-                  |> _.addParameter(bashFileParam)
-                  |> _.addBehaviour(readByLines)
-    )
-    |> _.addEntry(ArgEntry(cmdName)
-                  |> _.addFlag(startFlag)
-                  |> _.addParameter(bashFileParam)
-                  |> _.addBehaviour(readByStartAndEnd)
-    )
-    |> _.addEntry(tplEndEntry)
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(lineCountParam)
+            .addParameter(bashFileParam)
+            .addBehaviour(readByLines))
+        .addEntry(ArgEntry()
+            .addFlag(startFlag)
+            .addParameter(bashFileParam)
+            .addBehaviour(readByStartAndEnd))
+        .addEntry(tplEndEntry)

@@ -35,28 +35,21 @@ let entry =
             |>? (hasQuote, List.map (fun l -> $"\"{l}\""))
             |> fun lines -> Out.lines <- lines
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        (ArgEntry cmdName
-         |> _.addParameter(paramDelimiter))
-         |> _.addBehaviour(exeSplit)
-    )
-    |> _.addEntry(
-        (ArgEntry cmdName
-         |> _.addParameter(paramDelimiter)
-         |> _.addFlag(flagQuote))
-         |> _.addBehaviour(exeSplit)
-    )
-    |> _.addEntry(
-        (ArgEntry cmdName
-         |> _.addParameter(paramDelimiter)
-         |> _.addFlag(flagTrim))
-         |> _.addBehaviour(exeSplit)
-    )
-    |> _.addEntry(
-        (ArgEntry cmdName
-         |> _.addParameter(paramDelimiter)
-         |> _.addFlag(flagQuote)
-         |> _.addFlag(flagTrim))
-         |> _.addBehaviour(exeSplit)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+             .addParameter(paramDelimiter)
+             .addBehaviour(exeSplit))
+        .addEntry(ArgEntry()
+             .addParameter(paramDelimiter)
+             .addFlag(flagQuote)
+             .addBehaviour(exeSplit))
+        .addEntry(ArgEntry()
+             .addParameter(paramDelimiter)
+             .addFlag(flagTrim)
+             .addBehaviour(exeSplit))
+        .addEntry(ArgEntry()
+             .addParameter(paramDelimiter)
+             .addFlag(flagQuote)
+             .addFlag(flagTrim)
+             .addBehaviour(exeSplit))

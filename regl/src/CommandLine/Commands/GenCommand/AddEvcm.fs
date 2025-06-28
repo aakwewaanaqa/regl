@@ -24,11 +24,10 @@ let entry =
             let newOne = EnvironmentVariableContextMatcher (pattern, format, envarName)
             evcms <- evcms @ [ newOne ]
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry(cmdName)
-        |> _.addParameter(regexParam)
-        |> _.addParameter(formatParam)
-        |> _.addParameter(envarParam)
-        |> _.addBehaviour(exeAddEvcm)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(regexParam)
+            .addParameter(formatParam)
+            .addParameter(envarParam)
+            .addBehaviour(exeAddEvcm))
