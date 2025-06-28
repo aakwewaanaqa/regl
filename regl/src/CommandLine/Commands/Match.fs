@@ -47,12 +47,12 @@ let entry =
 
     CmdEntry (cmdName, cmdInfo)
     |> _.addEntry(
-        ArgEntry (cmdName, "Matches the whole stdin")
+        ArgEntry cmdName
         |> _.addParameter(regexParam)
         |> _.addBehaviour(exeMatch)
     )
     |> _.addEntry(
-        ArgEntry (cmdName, "Matches the whole stdin with format as stdout")
+        ArgEntry cmdName
         |> _.addParameter(regexParam)
         |> _.addFlag(formatFlag)
         |> _.addBehaviour(exeMatch)

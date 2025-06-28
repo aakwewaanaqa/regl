@@ -37,24 +37,24 @@ let entry =
 
     CmdEntry (cmdName, cmdInfo)
     |> _.addEntry(
-        (ArgEntry (cmdName, "")
+        (ArgEntry cmdName
          |> _.addParameter(paramDelimiter))
          |> _.addBehaviour(exeSplit)
     )
     |> _.addEntry(
-        (ArgEntry (cmdName,"splits and quotes with \"")
+        (ArgEntry cmdName
          |> _.addParameter(paramDelimiter)
          |> _.addFlag(flagQuote))
          |> _.addBehaviour(exeSplit)
     )
     |> _.addEntry(
-        (ArgEntry (cmdName,"splits and trim starts and ends")
+        (ArgEntry cmdName
          |> _.addParameter(paramDelimiter)
          |> _.addFlag(flagTrim))
          |> _.addBehaviour(exeSplit)
     )
     |> _.addEntry(
-        (ArgEntry (cmdName, "splits and trim starts and ends then quotes with \"")
+        (ArgEntry cmdName
          |> _.addParameter(paramDelimiter)
          |> _.addFlag(flagQuote)
          |> _.addFlag(flagTrim))

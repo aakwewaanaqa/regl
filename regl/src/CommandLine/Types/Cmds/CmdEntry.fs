@@ -10,9 +10,12 @@ type CmdEntry (name : string, ?info : string) =
     member c.info = info |> Option.defaultValue ""
     
     member val entries : ArgEntry list = [] with get, set
-
+    /// add entry to a command
+    /// also sort them by the sum of parameters and flags
     member c.addEntry(entry : ArgEntry) =
-        c.entries <- c.entries @ [ entry ]
+        c.entries <-
+            c.entries @ [ entry ]
+            |> List.sortBy (fun entry -> entry.flags.Length + entry.parameters.Length) 
         c
 
     override c.ToString() = name
@@ -26,11 +29,36 @@ module CmdEntry =
                         |> _.addBehaviour(exe)))
         |> List.last
         
+    let collectFlags (cmd : CmdEntry) =
+        cmd.entries
+        |> List.map _.flags
+        |> List.collect id
+        |> List.distinct
+        |> List.sortBy _.name.Length
+        
     let getManual (cmd : CmdEntry) =
-        StringBuilder()
-        |> _.AppendLine($"Command:")
-        |> _.AppendLine($"    regl {cmd.name}")
-        |> _.AppendLine($"        {cmd.info}")
-        |> _.AppendLine($"Entries:")
-        |> _.AppendJoin("\n", cmd.entries |> List.map ArgEntry.getManual)
-        |> _.ToString()
+        let mutable builder =
+            StringBuilder()
+                .AppendLine("Command:")
+                .AppendLine($"    regl {cmd.name}")
+            
+        builder <-
+            if cmd.info.Length > 0 then
+                builder.AppendLine($"        {cmd.info}")
+            else
+                builder
+        
+        builder <-
+            let flags = cmd |> collectFlags
+            if flags.Length > 0 then
+                builder.AppendLine("    Flags:")
+                       .AppendJoin("\n", flags |> List.map (fun f -> $"        {f.name} {f.info}"))
+                       .AppendLine()
+            else
+                builder
+        
+        builder <-
+            builder.AppendLine("    Entries:")
+                   .AppendJoin("\n", cmd.entries |> List.map ArgEntry.getManual)
+        
+        builder.ToString()

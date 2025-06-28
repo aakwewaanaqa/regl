@@ -6,8 +6,12 @@ open System.IO
 
 let private logPath = "debug.log"
 
-let logWriter: TextWriter =
-    if Console.IsOutputRedirected then
+let private toDebugLog =
+    Console.IsOutputRedirected 
+    || Environment.GetCommandLineArgs().[0] = "gen"
+
+let private logWriter: TextWriter =
+    if toDebugLog then
         File.AppendText(logPath)
     else
         Console.Out
@@ -18,8 +22,8 @@ let writeLog a =
     logWriter.Write($"{a}\n")
     logWriter.Flush()
 
-let errWriter: TextWriter =
-    if Console.IsErrorRedirected then
+let private errWriter: TextWriter =
+    if toDebugLog then
         File.AppendText(logPath)
     else
         Console.Error
@@ -38,7 +42,6 @@ let close () =
 let through a =
     let trace = StackTrace(true)
 
-    // 使用結構化日誌
     writeLog "Start processing stack trace"
 
     for i in 0 .. trace.FrameCount - 1 do
@@ -52,7 +55,6 @@ let through a =
 
         let lineNumber = frame.GetFileLineNumber()
 
-        // 使用結構化日誌格式
         writeLog (
             "Stack Frame [{FrameNumber}] Method: {MethodName} at {FileName}:{LineNumber}",
             i,

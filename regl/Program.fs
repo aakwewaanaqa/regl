@@ -32,6 +32,7 @@ module Program =
 
             argv
             |> List.ofArray
+            |> List.reduce (fun a b -> $"{a} {b}")
             |> Args
             |> executeEntries cmds
             |> ignore

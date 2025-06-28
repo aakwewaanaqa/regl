@@ -35,9 +35,10 @@ let entry =
             let pwd = Directory.GetCurrentDirectory ()
             let isFile = dto.flags.containsFlag fFlag
             let isDir = dto.flags.containsFlag dFlag
+            let isRecursively = dto.flags.containsFlag RFlag
             
             let option =
-                if dto.flags.containsFlag RFlag then SearchOption.AllDirectories
+                if isRecursively then SearchOption.AllDirectories
                 else SearchOption.TopDirectoryOnly
             
             let files = Directory.GetFiles (pwd, pattern, option)

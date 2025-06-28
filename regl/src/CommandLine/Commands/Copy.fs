@@ -18,4 +18,4 @@ let entry =
             ClipboardService.SetText In.all
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry (cmdName, cmdInfo) |> _.addBehaviour(exeCopy))
+    |> _.addEntry(ArgEntry cmdName |> _.addBehaviour(exeCopy))

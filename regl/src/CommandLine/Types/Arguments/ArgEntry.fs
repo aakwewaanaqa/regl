@@ -12,9 +12,8 @@ open Regl.Exts
 /// In case that a command has multiple choices to provide args.
 /// The properties named parameters and flags are all required.
 /// </summary>
-type ArgEntry (name : string, ?info : string) =
+type ArgEntry (name : string) =
     member this.name = name
-    member this.info = info |> Option.defaultValue ""
     member val parameters : IParam list = [] with get, set
     member val flags : IFlag list = [] with get, set
     member val behaviour : ArgBehaviour = ignore with get, set
@@ -89,7 +88,7 @@ module ArgEntry =
     let getManual (ae : ArgEntry) =
         let mutable builder =
             StringBuilder()
-            |> _.Append("    regl ")
+            |> _.Append("        regl ")
             |> _.Append(ae.name)
         
         builder <-
@@ -105,11 +104,5 @@ module ArgEntry =
                 |> _.AppendJoin(" ", ae.flags |> List.map _.manual)
             else
                 builder
-        
-        builder <-
-            if ae.info |> String.length > 0 then
-                builder.Append($"\n        {ae.info}")
-            else
-                builder.AppendLine()
                 
         builder.ToString()

@@ -29,12 +29,12 @@ let entry =
 
     CmdEntry (cmdName, cmdInfo)
     |> _.addEntry(
-        ArgEntry (cmdName, "writes new or overwrite file")
+        ArgEntry cmdName
         |> _.addParameter(filePathParam)
         |> _.addBehaviour(exeWriteToFile)
     )
     |> _.addEntry(
-        ArgEntry (cmdName, "appends old file")
+        ArgEntry cmdName
         |> _.addParameter(filePathParam)
         |> _.addFlag(appendFlag)
         |> _.addBehaviour(exeAppendToFile)

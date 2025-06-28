@@ -29,7 +29,7 @@ let entry =
         BoolFlag("--end", "ends reading for source file context")
     /// `tpl --stop` stop reading arg entry
     let tplEndEntry =
-        ArgEntry(cmdName, "stops tpl reading")
+        ArgEntry cmdName
         |> _.addFlag(endFlag)
 
     /// turn bash-file's every single line which begins with `#> ...` to `echo "..."`

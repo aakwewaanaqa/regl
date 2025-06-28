@@ -19,5 +19,5 @@ let entry =
             |> List.iter (fun l -> InOut.Out.appendLine l)
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry (cmdName, "Removes empty lines")
+    |> _.addEntry(ArgEntry cmdName
                   |> _.addBehaviour(exeRemoveEmpty))

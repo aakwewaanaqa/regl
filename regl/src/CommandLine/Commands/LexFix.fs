@@ -50,7 +50,7 @@ let entry =
 
     CmdEntry (cmdName, cmdInfo)
     |> _.addEntry(
-        ArgEntry(cmdName, "fix by scope")
+        ArgEntry cmdName
         |> _.addFlag(scopeFlag)
         |> _.addBehaviour(exeWithScope)
     )
