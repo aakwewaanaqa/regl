@@ -1,33 +1,39 @@
 ﻿namespace Regl
 
 open System
-open System.IO
+open System.Text
 open Regl.CommandLine
 open Regl.CommandLine.Commands
 open Regl.CommandLine.Commands.Shared
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types.Arguments
+open Regl.CommandLine.Types.Cmds
 
 module Program =
-    /// Entry point for the application
-    /// Returns 0 to indicate successful execution
+    let cmds =
+        [| Copy.entry
+           LexFix.entry
+           Ls.entry
+           Match.entry
+           RemoveEmpty.entry
+           Split.entry
+           ToFile.entry
+           GenCommand.Implementation.entry |]
+        
+    let manual =
+        cmds
+        |> Array.map CmdEntry.getManual
+        |> Array.reduce (fun a b -> $"{a}\n\n{b}")
+        |> fun m -> "\n" + m
+    
     [<EntryPoint>]
     let main (argv : string array) =
         try
-            let cmdEntries =
-                [| Copy.entry
-                   LexFix.entry
-                   Ls.entry
-                   Match.entry
-                   RemoveEmpty.entry
-                   Split.entry
-                   ToFile.entry
-                   GenCommand.Implementation.entry |]
 
             argv
             |> List.ofArray
             |> Args
-            |> executeEntries cmdEntries
+            |> executeEntries cmds
             |> ignore
 
             Out.sendToPipe()
@@ -35,7 +41,9 @@ module Program =
             
             0
         with ex ->
+            
             Debug.writeErr ex.Message
+            Debug.writeLog manual
             Debug.close()
             
             1

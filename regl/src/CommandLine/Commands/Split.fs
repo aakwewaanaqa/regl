@@ -12,7 +12,7 @@ open Regl.CommandLine.Types.Cmds
 
 let cmdName = "split"
 
-let cmdInfo = "Splits stdin to lines and writes to stdout"
+let cmdInfo = "splits stdin to lines and writes to stdout"
 
 //TODO : write entry
 let entry =
@@ -37,24 +37,24 @@ let entry =
 
     CmdEntry (cmdName, cmdInfo)
     |> _.addEntry(
-        (ArgEntry ("splits", "")
+        (ArgEntry (cmdName, "")
          |> _.addParameter(paramDelimiter))
          |> _.addBehaviour(exeSplit)
     )
     |> _.addEntry(
-        (ArgEntry ("splits and quotes with \"")
+        (ArgEntry (cmdName,"splits and quotes with \"")
          |> _.addParameter(paramDelimiter)
          |> _.addFlag(flagQuote))
          |> _.addBehaviour(exeSplit)
     )
     |> _.addEntry(
-        (ArgEntry ("splits and trim starts and ends")
+        (ArgEntry (cmdName,"splits and trim starts and ends")
          |> _.addParameter(paramDelimiter)
          |> _.addFlag(flagTrim))
          |> _.addBehaviour(exeSplit)
     )
     |> _.addEntry(
-        (ArgEntry ("splits and trim starts and ends then quotes with \"")
+        (ArgEntry (cmdName, "splits and trim starts and ends then quotes with \"")
          |> _.addParameter(paramDelimiter)
          |> _.addFlag(flagQuote)
          |> _.addFlag(flagTrim))

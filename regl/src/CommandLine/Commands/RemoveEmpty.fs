@@ -7,7 +7,7 @@ open Regl.CommandLine.Types.Cmds
 
 let cmdName = "remove-empty"
 
-let cmdInfo = "Removes empty lines from stdin and writes to stdout"
+let cmdInfo = "removes empty lines from stdin and writes to stdout"
 
 let entry =
     let exeRemoveEmpty : ArgBehaviour =
@@ -19,5 +19,5 @@ let entry =
             |> List.iter (fun l -> InOut.Out.appendLine l)
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry ("Removes empty lines")
+    |> _.addEntry(ArgEntry (cmdName, "Removes empty lines")
                   |> _.addBehaviour(exeRemoveEmpty))

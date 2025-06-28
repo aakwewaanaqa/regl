@@ -9,7 +9,7 @@ open Regl.CommandLine.IO
 
 let cmdName = "copy"
 
-let cmdInfo = "Copies piped input to clipboard"
+let cmdInfo = "copies piped input to clipboard"
 
 let entry =
     let exeCopy : ArgBehaviour =
@@ -18,4 +18,4 @@ let entry =
             ClipboardService.SetText In.all
 
     CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry (cmdInfo) |> _.addBehaviour(exeCopy))
+    |> _.addEntry(ArgEntry (cmdName, cmdInfo) |> _.addBehaviour(exeCopy))

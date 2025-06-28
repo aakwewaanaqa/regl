@@ -13,7 +13,7 @@ let logWriter: TextWriter =
         Console.Out
 
 let writeLog a =
-    logWriter.Write(DateTime.Now.ToString("o"))
+    logWriter.Write(DateTime.Now.ToString())
     logWriter.Write(" INFO ")
     logWriter.Write($"{a}\n")
     logWriter.Flush()

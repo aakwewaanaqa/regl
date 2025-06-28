@@ -15,7 +15,9 @@ open Regl.CommandLine.Types.FlagsAndParams
 
 let cmdName = "gen"
 
-let cmdInfo = "Generates codes from a source file..."
+let cmdInfo = "generates codes from a source file
+        uses like `< source.cs regl gen`
+        or `regl gen --file source.cs` 😎"
 
 let subCmdEntries =
     [| AddEvcm.entry

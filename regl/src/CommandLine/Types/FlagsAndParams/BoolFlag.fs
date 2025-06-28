@@ -3,8 +3,8 @@ namespace Regl.CommandLine.Types
 open System
 open Regl.CommandLine.Types.FlagsAndParams
 
-type BoolFlag (name, ?usage) =
-    let usage = usage |> Option.defaultValue ""
+type BoolFlag (name, ?info) =
+    let info = info |> Option.defaultValue ""
 
     [<Obsolete>]
     member f.name =
@@ -25,7 +25,8 @@ type BoolFlag (name, ?usage) =
 
     interface IFlag with
         member f.name = name
-        member f.usage = usage
+        member f.info = info
+        member f.manual = $"{name}"
         member f.needInput = false
 
         member f.getVal _ =

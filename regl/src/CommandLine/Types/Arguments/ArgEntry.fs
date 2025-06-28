@@ -1,6 +1,7 @@
 namespace Regl.CommandLine.Types.Arguments
 
 open System.Collections.Generic
+open System.Text
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
@@ -85,8 +86,30 @@ module ArgEntry =
         with ex ->
             Error $"{ex}"
 
-    let printHelp (va : ArgEntry) =
-        $"""Entry {va.name} : {va.info} :
-->  requires parameters {va.parameters |> List.map (fun p -> $"<{p.name}>")}
-->  requires flags {va.flags |> List.map (fun p -> $"<{p.name}>")}
-"""
+    let getManual (ae : ArgEntry) =
+        let mutable builder =
+            StringBuilder()
+            |> _.Append("    regl ")
+            |> _.Append(ae.name)
+        
+        builder <-
+            if ae.parameters.Length > 0 then
+                builder.Append(' ')
+                |> _.AppendJoin(" ", ae.parameters |> List.map (fun p -> $"<{p.name}>"))
+            else
+                builder
+        
+        builder <-
+            if ae.flags.Length > 0 then
+                builder.Append(' ')
+                |> _.AppendJoin(" ", ae.flags |> List.map _.manual)
+            else
+                builder
+        
+        builder <-
+            if ae.info |> String.length > 0 then
+                builder.Append($"\n        {ae.info}")
+            else
+                builder.AppendLine()
+                
+        builder.ToString()

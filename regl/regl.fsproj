@@ -42,7 +42,6 @@
             <Compile Include="src\CommandLine\Types\FlagsAndParams\FlagValSet.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\BoolFlag.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\StringFlag.fs" />
-            <Compile Include="src\CommandLine\Types\FlagsAndParams\Flags.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\IParam.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\Param.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\RegexParam.fs" />

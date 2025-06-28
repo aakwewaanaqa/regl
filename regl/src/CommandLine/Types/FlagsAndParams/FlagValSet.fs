@@ -5,7 +5,8 @@ open System.Collections.Generic
 
 type IFlag =
     abstract member name : string
-    abstract member usage : string
+    abstract member info : string
+    abstract member manual : string
     abstract member needInput : bool
     abstract member getVal : string -> ArgVal
 
