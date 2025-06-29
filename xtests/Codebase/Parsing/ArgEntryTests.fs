@@ -36,7 +36,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
             dto.flags.containsFlag(bFlag) |> Assert.True
             dto.flags.containsFlag(cFlag) |> Assert.True
 
-        ArgEntry "some entry"
+        ArgEntry()
         |> _.addFlag(BoolFlag "-a")
         |> _.addFlag(BoolFlag "-b")
         |> _.addFlag(BoolFlag "-c")
@@ -58,7 +58,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
             dto.flags.containsFlag(qFlag) |> Assert.True
             ("1337", dto.flags.first(eFlag)) |> Assert.Equal
 
-        ArgEntry "some entry"
+        ArgEntry()
         |> _.addFlag(BoolFlag "-f")
         |> _.addFlag(BoolFlag "-q")
         |> _.addFlag(eFlag)
@@ -84,7 +84,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
             dto.flags.containsFlag(bFlag) |> Assert.True
             ("boo", dto.parameters[cParam].value<string>()) |> Assert.Equal
 
-        ArgEntry "some entry"
+        ArgEntry()
         |> _.addParameter(cParam)
         |> _.addFlag(aFlag)
         |> _.addFlag(bFlag)
@@ -106,7 +106,7 @@ type ArgEntryTests (helper : ITestOutputHelper) =
             ("foo", dto.flags[eFlag].[0].value<string>()) |> Assert.Equal
             ("bar", dto.flags[eFlag].[1].value<string>()) |> Assert.Equal
 
-        ArgEntry "some entry"
+        ArgEntry()
         |> _.addFlag(StringFlag "-e")
         |> _.addFlag(BoolFlag "-q")
         |> _.addBehaviour(``assert``)

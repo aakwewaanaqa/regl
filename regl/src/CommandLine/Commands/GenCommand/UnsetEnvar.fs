@@ -16,8 +16,8 @@ let entry =
         let name = dto.parameters[envarName].value<string>()
         Environment.SetEnvironmentVariable(name, null)
 
-    CmdEntry(cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry(cmdName)
-                  |> _.addParameter(envarName)
-                  |> _.addBehaviour(exeUnsetEnvar)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(envarName)
+            .addBehaviour(exeUnsetEnvar))

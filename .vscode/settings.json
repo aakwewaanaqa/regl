@@ -1,0 +1,8 @@
+{
+    "FSharp.inlayHints.typeAnnotations": true,
+    "[fsharp]": {
+        "editor.inlayHints.enabled": "on"
+    },
+    "FSharp.inlayHints.disableLongTooltip": true,
+    "window.autoDetectColorScheme": false
+}

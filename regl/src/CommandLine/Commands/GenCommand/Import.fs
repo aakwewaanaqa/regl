@@ -42,8 +42,8 @@ and entry =
                     | line when line.isCmd -> line.args |> executeEntries subCmdEntries |> ignore
                     | line -> line |> ignore)
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry (cmdName)
-                  |> _.addParameter(fileParam)
-                  |> _.addBehaviour(exeImport)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(fileParam)
+            .addBehaviour(exeImport))

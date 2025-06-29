@@ -9,13 +9,18 @@ open Regl.CommandLine.IO
 
 let cmdName = "copy"
 
-let cmdInfo = "Copies piped input to clipboard"
+let cmdInfo = "copies piped input to clipboard"
+
+let cmdNotice = "this commands rely on xsel on linux platform"
 
 let entry =
     let exeCopy : ArgBehaviour =
-        fun dto ->
+        fun _ ->
             In <- ReadonlyLinesBuffer ByStdIn
             ClipboardService.SetText In.all
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(ArgEntry (cmdInfo) |> _.addBehaviour(exeCopy))
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addNotice(cmdNotice)
+        .addEntry(ArgEntry()
+            .addBehaviour(exeCopy))

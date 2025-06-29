@@ -1,7 +1,7 @@
 module Regl.CommandLine.Commands.Ls
 
 open System.IO
-open Regl.Exts
+open Regl
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types.FlagsAndParams
 open Regl.CommandLine.Types
@@ -22,16 +22,25 @@ let entry =
     let patternFlag =
         StringFlag ("--pattern", "files or directories matching .net pattern")
 
-
+    let combos = Exts.powerset [
+        dFlag :> IFlag
+        fFlag :> IFlag
+        RFlag :> IFlag
+        patternFlag :> IFlag
+    ]
+    
     let exeLs : ArgBehaviour =
         fun dto ->
             let pattern = dto.flags.firstOrDefault patternFlag ""
             let pwd = Directory.GetCurrentDirectory ()
             let isFile = dto.flags.containsFlag fFlag
             let isDir = dto.flags.containsFlag dFlag
+            let isRecursively = dto.flags.containsFlag RFlag
+            
             let option =
-                dto.flags.containsFlag RFlag
-                <-?? (SearchOption.AllDirectories, SearchOption.TopDirectoryOnly)
+                if isRecursively then SearchOption.AllDirectories
+                else SearchOption.TopDirectoryOnly
+            
             let files = Directory.GetFiles (pwd, pattern, option)
             let dirs = Directory.GetDirectories (pwd, pattern, option)
 
@@ -42,14 +51,5 @@ let entry =
 
             paths |> List.ofArray |> (fun lines -> Out.lines <- lines)
 
-    let cmd = CmdEntry (cmdName, cmdInfo)
-
-    powerset [ dFlag :> IFlag ; fFlag :> IFlag ; RFlag :> IFlag ; patternFlag :> IFlag ]
-    |> List.map (fun combo ->
-        match combo.Length with
-        | 0 -> ArgEntry("lists files or directories").addBehaviour(exeLs)
-        | _ -> ArgEntry("lists files or directories").addFlags(combo).addBehaviour(exeLs)
-    )
-    |> List.iter (fun entry -> cmd.addEntry(entry) |> ignore)
-
-    cmd
+    CmdEntry(cmdName).addInfo(cmdInfo)
+    |> CmdEntry.acceptCombos combos exeLs

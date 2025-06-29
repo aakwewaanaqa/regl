@@ -11,9 +11,10 @@ open Xunit.Abstractions
 
 type Tests (helper : ITestOutputHelper) =
     inherit TestBase(helper)
-
+    
     [<Fact>]
     let ``test copy by line`` () =
+        // lang=md
         let sourceFile =
             "//#!
 1. Building a house?
@@ -37,6 +38,7 @@ type Tests (helper : ITestOutputHelper) =
 
     [<Fact>]
     let ``test copy by line + //#!wrong commands`` () =
+        //lang=md
         let sourceFile =
             "//#!
 1. Building a house?
@@ -63,6 +65,7 @@ type Tests (helper : ITestOutputHelper) =
 
     [<Fact>]
     let ``test copy by --start + --end`` () =
+        // lang=md
         let sourceFile =
             "//#!
 //#!copy --start
@@ -87,6 +90,7 @@ type Tests (helper : ITestOutputHelper) =
 
     [<Fact>]
     let ``test copy by --start + --end + //#!wrong commands`` () =
+        // lang=md
         let sourceFile =
             "//#!
 //#!copy --start

@@ -14,7 +14,7 @@ let cmdInfo = "lexically fixes stdin and writes to stdout"
 
 let entry =
     let scopeFlag =
-        StringFlag ("--scope", "match opening and closing character. ex: <> or {}")
+        StringFlag ("--scope", "match opening and closing characters. ex: <> or {}")
 
     let exeWithScope : ArgBehaviour =
         fun dto ->
@@ -48,9 +48,8 @@ let entry =
             let result = loop (In.all.ToCharArray () |> List.ofArray)
             Out.all <- result
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry("fix by scope")
-        |> _.addFlag(scopeFlag)
-        |> _.addBehaviour(exeWithScope)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addFlag(scopeFlag)
+            .addBehaviour(exeWithScope))

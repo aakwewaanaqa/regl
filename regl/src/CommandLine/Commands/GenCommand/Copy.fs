@@ -24,7 +24,7 @@ let entry =
         IntParam ("line-count", "tell how many copying lines to stdout")
 
     /// `copy --stop` entry
-    let endCopyEntry = ArgEntry ("stop copying") |> _.addFlag(endFlag)
+    let endCopyEntry = ArgEntry() |> _.addFlag(endFlag)
 
     /// copy lines behaviour
     let exeByLines : ArgBehaviour =
@@ -58,15 +58,12 @@ let entry =
                     ()
                 | _ -> ())
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry ("copies by line")
-        |> _.addParameter(lineCountParam)
-        |> _.addBehaviour(exeByLines)
-    )
-    |> _.addEntry(
-        ArgEntry ("starts copying")
-        |> _.addFlag(startFlag)
-        |> _.addBehaviour(exeByStartToEnd)
-    )
-    |> _.addEntry(endCopyEntry)
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(lineCountParam)
+            .addBehaviour(exeByLines))
+        .addEntry(ArgEntry()
+            .addFlag(startFlag)
+            .addBehaviour(exeByStartToEnd))
+        .addEntry(endCopyEntry)

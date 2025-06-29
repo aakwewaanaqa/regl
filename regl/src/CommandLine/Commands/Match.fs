@@ -13,7 +13,7 @@ open Regl.CommandLine.Types.Cmds
 let cmdName = "match"
 
 let cmdInfo =
-    "Matches the whole stdin with regex pattern then writes all matches to stdout"
+    "matches the whole stdin with regex pattern then writes all matches to stdout"
 
 let entry =
 
@@ -45,15 +45,12 @@ let entry =
             |> List.ofSeq
             |> fun lines -> InOut.Out.lines <- lines
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry "Matches the whole stdin"
-        |> _.addParameter(regexParam)
-        |> _.addBehaviour(exeMatch)
-    )
-    |> _.addEntry(
-        ArgEntry "Matches the whole stdin with format as stdout"
-        |> _.addParameter(regexParam)
-        |> _.addFlag(formatFlag)
-        |> _.addBehaviour(exeMatch)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(regexParam)
+            .addBehaviour(exeMatch))
+        .addEntry(ArgEntry()
+            .addParameter(regexParam)
+            .addFlag(formatFlag)
+            .addBehaviour(exeMatch))

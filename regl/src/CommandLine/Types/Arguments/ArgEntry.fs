@@ -1,6 +1,7 @@
 namespace Regl.CommandLine.Types.Arguments
 
 open System.Collections.Generic
+open System.Text
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.FlagsAndParams
 open Regl.Exts
@@ -11,9 +12,8 @@ open Regl.Exts
 /// In case that a command has multiple choices to provide args.
 /// The properties named parameters and flags are all required.
 /// </summary>
-type ArgEntry (name : string, ?info : string) =
-    member this.name = name
-    member this.info = info |> Option.defaultValue ""
+type ArgEntry () =
+    member val name = "" with get, set
     member val parameters : IParam list = [] with get, set
     member val flags : IFlag list = [] with get, set
     member val behaviour : ArgBehaviour = ignore with get, set
@@ -26,9 +26,12 @@ type ArgEntry (name : string, ?info : string) =
         e.flags <- e.flags @ [ flag ]
         e
 
-    member e.addFlags flags =
-        e.flags <- e.flags @ flags
-        e
+    member e.addFlags (flags : IFlag list) =
+        if flags.IsEmpty then
+            e
+        else
+            e.flags <- e.flags @ flags
+            e
 
     member e.addBehaviour behaviour =
         e.behaviour <- behaviour
@@ -82,8 +85,24 @@ module ArgEntry =
         with ex ->
             Error $"{ex}"
 
-    let printHelp (va : ArgEntry) =
-        $"""Entry {va.name} : {va.info} :
-->  requires parameters {va.parameters |> List.map (fun p -> $"<{p.name}>")}
-->  requires flags {va.flags |> List.map (fun p -> $"<{p.name}>")}
-"""
+    let getManual (ae : ArgEntry) =
+        let mutable builder =
+            StringBuilder()
+            |> _.Append("        regl ")
+            |> _.Append(ae.name)
+        
+        builder <-
+            if ae.parameters.Length > 0 then
+                builder.Append(' ')
+                |> _.AppendJoin(" ", ae.parameters |> List.map (fun p -> $"<{p.name}>"))
+            else
+                builder
+        
+        builder <-
+            if ae.flags.Length > 0 then
+                builder.Append(' ')
+                |> _.AppendJoin(" ", ae.flags |> List.map _.manual)
+            else
+                builder
+                
+        builder.ToString()

@@ -23,16 +23,24 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\*.fs"/>
+        <!--Exceptions-->
+        <Compile Include="src\Exceptions\CLICommandNotFoundException.fs" />
+        <Compile Include="src\Exceptions\CLIEntryNotValidException.fs" />
+        <Compile Include="src\Exceptions\CLIEmptyArgException.fs" />
+        <!--Exceptions-->
+
+        <Compile Include="src\Exts.fs"/>
+        <Compile Include="src\Lang.fs"/>
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="src\CommandLine\Debug\Debug.fs" />
         
         <!--IO-->
         <Compile Include="src\CommandLine\IO\LinesBuffer.fs"/>
         <Compile Include="src\CommandLine\IO\InOut.fs"/>
         <!--IO-->
+        
+        <Compile Include="src\CommandLine\Debug\Debug.fs" />
 
         <!--CLI - Types-->
             <!--CLI - Types - Flags-->
@@ -41,7 +49,6 @@
             <Compile Include="src\CommandLine\Types\FlagsAndParams\FlagValSet.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\BoolFlag.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\StringFlag.fs" />
-            <Compile Include="src\CommandLine\Types\FlagsAndParams\Flags.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\IParam.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\Param.fs" />
             <Compile Include="src\CommandLine\Types\FlagsAndParams\RegexParam.fs" />
@@ -63,7 +70,6 @@
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fsi"/>
         <Compile Include="src\CommandLine\Commands\GenCommand\Types\*.fs"/>
         <!--Bash Commands of Gen Command Types-->
-        <!--Types-->
 
         <!--Shared Functions-->
         <Compile Include="src\CommandLine\Commands\Shared.fs"/>
@@ -90,7 +96,8 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Compile Include="Program.fs"/>
+        <Compile Include="src\CommandLine\Shared.fs" />
+        <Compile Include="src\Program.fs" />
     </ItemGroup>
 
     <ItemGroup>

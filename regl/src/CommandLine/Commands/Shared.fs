@@ -1,7 +1,10 @@
 module Regl.CommandLine.Commands.Shared
 
+open System
+open System.Collections.Generic
 open System.Text
 open System.Text.RegularExpressions
+open Regl.Exceptions
 open Regl.CommandLine
 open Regl.CommandLine.Types
 open Regl.CommandLine.Types.Arguments
@@ -23,12 +26,22 @@ let tryCommands (cmds : CommandBody list) (argv : string list) =
         Error ex.Message
 
 let executeEntries (cmds : CmdEntry array) (args : Args) =
-    cmds
-    |> Array.find (fun cmd -> cmd.name = args[0])
-    |> Debug.through
-    |> _.entries
-    |> List.findBack (fun entry -> entry |> ArgEntry.validate(args.Tail) |> _.IsOk)
-    |> Debug.through
+    match args.Length > 0 with
+    | false -> raise(CLIEmptyArgException())
+    | true -> ()
+  
+    let cmd =
+        cmds
+        |> Array.tryFind (fun cmd -> cmd.name = args[0])
+        |> function
+        | Some cmd -> cmd
+        | None -> raise(CLICommandNotFoundException args[0])    
+    
+    cmd.entries
+    |> List.tryFindBack (fun entry -> entry |> ArgEntry.validate(args.Tail) |> _.IsOk)
+    |> function
+    | Some entry -> entry
+    | None -> raise(CLIEntryNotValidException cmd.name) 
 
 let formatMatch (m : Match) (format : string) =
     let mutable formatted = format

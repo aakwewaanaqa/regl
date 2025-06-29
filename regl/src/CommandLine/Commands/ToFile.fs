@@ -27,15 +27,12 @@ let entry =
             let path = dto.parameters[Param "<file-path>"].ToString ()
             File.AppendAllText (path, InOut.In.all)
 
-    CmdEntry (cmdName, cmdInfo)
-    |> _.addEntry(
-        ArgEntry "writes new or overwrite file"
-        |> _.addParameter(filePathParam)
-        |> _.addBehaviour(exeWriteToFile)
-    )
-    |> _.addEntry(
-        ArgEntry "appends old file"
-        |> _.addParameter(filePathParam)
-        |> _.addFlag(appendFlag)
-        |> _.addBehaviour(exeAppendToFile)
-    )
+    CmdEntry(cmdName)
+        .addInfo(cmdInfo)
+        .addEntry(ArgEntry()
+            .addParameter(filePathParam)
+            .addBehaviour(exeWriteToFile))
+        .addEntry(ArgEntry()
+            .addParameter(filePathParam)
+            .addFlag(appendFlag)
+            .addBehaviour(exeAppendToFile))
