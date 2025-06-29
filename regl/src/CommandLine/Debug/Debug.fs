@@ -7,7 +7,7 @@ open System.IO
 let private logPath = "debug.log"
 
 let private isConsole =
-       not Console.IsOutputRedirected  
+    not Console.IsOutputRedirected
     && not (Environment.GetCommandLineArgs().[0] = "gen")
 
 let private logFile =
@@ -15,74 +15,87 @@ let private logFile =
     | true -> null
     | false -> File.AppendText(logPath)
 
+let private originalConsoleBgColor =
+    match isConsole with
+    | true -> Console.BackgroundColor
+    | false -> ConsoleColor.Gray
+
+let private originalConsoleFgColor =
+    match isConsole with
+    | true -> Console.ForegroundColor
+    | false -> ConsoleColor.White
+
 /// the writer for debugging issues
-type private Writer(isError : bool) =        
-    let writer : TextWriter =
+type private Writer(isError: bool) =
+    let writer: TextWriter =
         match isConsole with
-        | false ->
-            logFile
+        | false -> logFile
         | true ->
             match isError with
             | true -> Console.Error
             | false -> Console.Out
-    
+
     member val private _bgColor = ConsoleColor.Black with get, set
     member val private _fgColor = ConsoleColor.White with get, set
+
+    member private w.fgColor
+        with get () =
+            match isConsole with
+            | true -> Console.ForegroundColor
+            | false -> w._fgColor
+        and set (fgColor: ConsoleColor) =
+            match isConsole with
+            | true ->
+                Console.ForegroundColor <- fgColor
+            | false ->
+                w._fgColor <- fgColor
     
-    member private w.bgColor 
+    member private w.bgColor
         with get () =
             match isConsole with
             | true -> Console.BackgroundColor
             | false -> w._bgColor
-        and set (c : ConsoleColor) =
-            let correspondingColor =
-                match c with
-                | ConsoleColor.Blue
-                | ConsoleColor.Red
-                | ConsoleColor.Green
-                | ConsoleColor.White -> ConsoleColor.Black
-                | ConsoleColor.Black -> ConsoleColor.White
-                | _ -> ConsoleColor.White
+        and set (bgColor: ConsoleColor) =
             match isConsole with
             | true ->
-                Console.BackgroundColor <- c
-                Console.ForegroundColor <- correspondingColor
+                Console.BackgroundColor <- bgColor
             | false ->
-                w._bgColor <- c
-                w._fgColor <- correspondingColor
-    
+                w._bgColor <- bgColor
+
     /// to write with bg color
     /// and name it with capital C for tuple input
-    member w.Write (msg : string, ?bgColor : ConsoleColor) =
-        let bgColor = defaultArg bgColor ConsoleColor.Black
-        
-        w.Write(DateTime.Now.ToString())
+    member w.Write(msg: string, ?bgColor: ConsoleColor) =
+
         match isError with
         | true ->
             w.bgColor <- ConsoleColor.Red
+            w.fgColor <- ConsoleColor.White
+            writer.Write(DateTime.Now.ToString())
             writer.Write(" ERR  ")
-            w.bgColor <- ConsoleColor.Black
         | false ->
             w.bgColor <- ConsoleColor.Green
-            w.Write(" INFO ")
-            w.bgColor <- ConsoleColor.Black
-            
-        w.bgColor <- bgColor
-        writer.Write msg
-        w.bgColor <- ConsoleColor.Black
-        writer.Flush()
+            w.fgColor <- ConsoleColor.White
+            writer.Write(DateTime.Now.ToString())
+            writer.Write(" INFO ")
+
+        match bgColor with
+        | None ->
+            w.bgColor <- originalConsoleBgColor
+            w.fgColor <- originalConsoleFgColor
+        | Some bgColor ->
+            w.bgColor <- bgColor
+            w.fgColor <- originalConsoleFgColor
         
-let private logWriter =
-    Writer false
+        writer.Write msg
+        writer.Flush()
 
-let writeLog a =
-    logWriter.Write($"{a}\n")
+let private logWriter = Writer false
 
-let private errWriter =
-    Writer true
+let writeLog a = logWriter.Write($"{a}\n")
 
-let writeErr error =
-    errWriter.Write($"{error}\n")
+let private errWriter = Writer true
+
+let writeErr error = errWriter.Write($"{error}\n")
 
 let through a =
     let trace = StackTrace(true)
@@ -110,7 +123,7 @@ let through a =
 
     a
 
-let close() =
+let close () =
     match isConsole with
     | true -> ()
     | false ->
