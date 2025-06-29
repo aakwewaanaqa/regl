@@ -14,7 +14,7 @@ let cmdInfo = "lexically fixes stdin and writes to stdout"
 
 let entry =
     let scopeFlag =
-        StringFlag ("--scope", "match opening and closing character. ex: <> or {}")
+        StringFlag ("--scope", "match opening and closing characters. ex: <> or {}")
 
     let exeWithScope : ArgBehaviour =
         fun dto ->
