@@ -55,7 +55,9 @@ module CmdEntry =
 
     let getManual (cmd: CmdEntry) =
         let mutable builder =
-            StringBuilder().AppendLine("Command:").AppendLine($"    regl {cmd.name}")
+            StringBuilder()
+                .AppendLine("Command:")
+                .AppendLine($"    regl {cmd.name}")
 
         builder <-
             if cmd.info.Length > 0 then
@@ -74,6 +76,14 @@ module CmdEntry =
             else
                 builder
 
+        builder <-
+            if cmd.notice.Length > 0 then
+                builder
+                    .AppendLine("    Notice:")
+                    .AppendLine($"        {cmd.notice}")
+            else
+                builder
+        
         builder <-
             builder
                 .AppendLine("    Entries:")
