@@ -6,38 +6,83 @@ open System.IO
 
 let private logPath = "debug.log"
 
-let private toDebugLog =
-    Console.IsOutputRedirected 
-    || Environment.GetCommandLineArgs().[0] = "gen"
+let private isConsole =
+       not Console.IsOutputRedirected  
+    && not (Environment.GetCommandLineArgs().[0] = "gen")
 
-let private logWriter: TextWriter =
-    if toDebugLog then
-        File.AppendText(logPath)
-    else
-        Console.Out
+let private logFile =
+    match isConsole with
+    | true -> null
+    | false -> File.AppendText(logPath)
+
+/// the writer for debugging issues
+type private Writer(isError : bool) =        
+    let writer : TextWriter =
+        match isConsole with
+        | false ->
+            logFile
+        | true ->
+            match isError with
+            | true -> Console.Error
+            | false -> Console.Out
+    
+    member val private _bgColor = ConsoleColor.Black with get, set
+    member val private _fgColor = ConsoleColor.White with get, set
+    
+    member private w.bgColor 
+        with get () =
+            match isConsole with
+            | true -> Console.BackgroundColor
+            | false -> w._bgColor
+        and set (c : ConsoleColor) =
+            let correspondingColor =
+                match c with
+                | ConsoleColor.Blue
+                | ConsoleColor.Red
+                | ConsoleColor.Green
+                | ConsoleColor.White -> ConsoleColor.Black
+                | ConsoleColor.Black -> ConsoleColor.White
+                | _ -> ConsoleColor.White
+            match isConsole with
+            | true ->
+                Console.BackgroundColor <- c
+                Console.ForegroundColor <- correspondingColor
+            | false ->
+                w._bgColor <- c
+                w._fgColor <- correspondingColor
+    
+    /// to write with bg color
+    /// and name it with capital C for tuple input
+    member w.Write (msg : string, ?bgColor : ConsoleColor) =
+        let bgColor = defaultArg bgColor ConsoleColor.Black
+        
+        w.Write(DateTime.Now.ToString())
+        match isError with
+        | true ->
+            w.bgColor <- ConsoleColor.Red
+            writer.Write(" ERR  ")
+            w.bgColor <- ConsoleColor.Black
+        | false ->
+            w.bgColor <- ConsoleColor.Green
+            w.Write(" INFO ")
+            w.bgColor <- ConsoleColor.Black
+            
+        w.bgColor <- bgColor
+        writer.Write msg
+        w.bgColor <- ConsoleColor.Black
+        writer.Flush()
+        
+let private logWriter =
+    Writer false
 
 let writeLog a =
-    logWriter.Write(DateTime.Now.ToString())
-    logWriter.Write(" INFO ")
     logWriter.Write($"{a}\n")
-    logWriter.Flush()
 
-let private errWriter: TextWriter =
-    if toDebugLog then
-        File.AppendText(logPath)
-    else
-        Console.Error
+let private errWriter =
+    Writer true
 
 let writeErr error =
-    errWriter.Write(DateTime.Now.ToString())
-    errWriter.Write(" ERROR ")
     errWriter.Write($"{error}\n")
-    errWriter.Flush()
-    errWriter.Close()
-
-let close () =
-    logWriter.Close()
-    errWriter.Close()
 
 let through a =
     let trace = StackTrace(true)
@@ -64,3 +109,10 @@ let through a =
         )
 
     a
+
+let close() =
+    match isConsole with
+    | true -> ()
+    | false ->
+        logFile.Flush()
+        logFile.Close()
