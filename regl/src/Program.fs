@@ -25,7 +25,6 @@ let main (argv : string array) =
             |> ignore
 
             Out.sendToPipe()
-            Debug.close()
             
             0
         with
