@@ -60,7 +60,7 @@ type Tests (helper : ITestOutputHelper) =
         let gitignore = "
 *.env
 *.pyc
-*.doc*
+.doc
         "
         File.WriteAllText(".gitignore", gitignore)
         
