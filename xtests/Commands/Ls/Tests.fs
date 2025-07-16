@@ -10,8 +10,8 @@ open XTests.Types
 open Xunit
 open Xunit.Abstractions
 
-type Tests (helper : ITestOutputHelper) =
-    inherit TestBase (helper)
+type Tests(helper: ITestOutputHelper) =
+    inherit TestBase(helper)
 
     [<Theory>]
     [<InlineData("ls")>]
@@ -29,7 +29,7 @@ type Tests (helper : ITestOutputHelper) =
     [<InlineData("ls -df --pattern '*'")>]
     [<InlineData("ls -Rf --pattern '*'")>]
     [<InlineData("ls -Rdf --pattern '*'")>]
-    let ``test ls`` (args : string) =
+    let ``test ls`` (args: string) =
         (32, Ls.entry.entries.Length) |> Assert.Equal
         ("ls", Ls.entry.name) |> Assert.Equal
 
@@ -37,33 +37,30 @@ type Tests (helper : ITestOutputHelper) =
 
     [<Fact>]
     let ``test fact`` () =
-        
-        [|
-            "/home/c0054/UnityProjects/regl/xtests/bin/Release/net9.0/mine.env"
-            "/home/c0054/UnityProjects/regl/xtests/bin/Release/net9.0/main.pyc"
-        |]
-        |> Array.filter(fun path ->
-            [|
-                Regex(".*\.env")
-                Regex(".*\.pyc")
-            |]
-            |> Array.exists(_.IsMatch(path))
-            |> not
-        )
+
+        [| "/home/c0054/UnityProjects/regl/xtests/bin/Release/net9.0/mine.env"
+           "/home/c0054/UnityProjects/regl/xtests/bin/Release/net9.0/main.pyc" |]
+        |> Array.filter (fun path ->
+            [| Regex(".*\.env"); Regex(".*\.pyc") |]
+            |> Array.exists (_.IsMatch(path))
+            |> not)
         |> fun array -> Assert.True(array.Length = 0)
-    
+
     [<Theory>]
     [<InlineData("ls --ignore-file='.gitignore'")>]
-    let ``test ls -f --ignore-file`` (args : string) =
+    let ``test ls --ignore-file`` (args: string) =
         // Arrange
         // Prepare gitignore and files
-        let gitignore = "
+        let gitignore =
+            "
 *.env
 *.pyc
+
 .doc
-        "
+"
+
         File.WriteAllText(".gitignore", gitignore)
-        
+
         let someTxt = "123"
         File.WriteAllText("something.txt", someTxt)
         File.WriteAllText("nothing.txt", someTxt)
@@ -71,15 +68,16 @@ type Tests (helper : ITestOutputHelper) =
         File.WriteAllText("mine.env", someTxt)
         File.WriteAllText("main.pyc", someTxt)
 
-        Directory.CreateDirectory(".doc") |> ignore        
+        Directory.CreateDirectory(".doc") |> ignore
         File.WriteAllText(".doc/main.pyc", someTxt)
-        
+
         // Act
-        let entry = Args args
-                    |> executeEntries [| Ls.entry |]
-             
+        let entry = Args args |> executeEntries [| Ls.entry |]
+
         // Assert
-        helper.WriteLine(InOut.Out.all)
-        Assert.False(InOut.Out.all.Contains(".pyc"))
-        Assert.False(InOut.Out.all.Contains(".env"))
-        Assert.False(InOut.Out.all.Contains(".doc"))
+        let all = InOut.Out.all
+        helper.WriteLine(all)
+        Assert.True(all.Length > 0)
+        Assert.False(all.Contains(".pyc"))
+        Assert.False(all.Contains(".env"))
+        Assert.False(all.Contains(".doc"))

@@ -35,8 +35,7 @@ let entry =
     
     let exeLs : ArgBehaviour =
         fun dto ->            
-            let pattern = dto.flags.firstOrDefault patternFlag ""
-            let pwd = Directory.GetCurrentDirectory ()
+            let pattern = dto.flags.firstOrDefault patternFlag "*"
             let isFile = dto.flags.containsFlag fFlag
             let isDir = dto.flags.containsFlag dFlag
             let isRecursively = dto.flags.containsFlag RFlag
@@ -49,6 +48,7 @@ let entry =
             
             let paths =           
                 let founds =                                            
+                    let pwd = Directory.GetCurrentDirectory ()
                     if isFile && isDir then
                         Directory.GetFiles (pwd, pattern, option)
                         |> Array.append (Directory.GetDirectories (pwd, pattern, option))

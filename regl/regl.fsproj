@@ -63,6 +63,8 @@
         <Compile Include="src\CommandLine\Types\Arguments\ArgEntry.fs" />
 
         <Compile Include="src\CommandLine\Types\Cmds\CmdEntry.fs" />
+
+        <Compile Include="src\CommandLine\Types\PathMatcher.fs" />
         <!--CLI - Types-->
 
         <!--Bash Commands of Gen Command Types-->
