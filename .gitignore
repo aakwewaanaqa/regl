@@ -1,7 +1,7 @@
-bin/
-obj/
-publish/
-/packages/
+**/bin/
+**/obj/
+**/publish/
+**/packages/
 riderModule.iml
-/_ReSharper.Caches/
+**/_ReSharper.Caches/
 *.user
