@@ -9,7 +9,9 @@ type AChar(c: char) =
         override a.next: INode option = a.next
 
         override a.visit(f: NodeCargo) : NodeCargo option =
-            if f.head = c then
+            if f |> NodeCargo.isDepleted then
+                None
+            elif f.head = c then
                 let rem = f |> NodeCargo.take 1
 
                 match a.next with

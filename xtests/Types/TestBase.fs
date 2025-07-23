@@ -14,3 +14,4 @@ type TestBase(helper : ITestOutputHelper) =
         InOut.Out.all <- ""
 
     member b.helper = helper
+

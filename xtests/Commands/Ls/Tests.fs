@@ -56,7 +56,7 @@ type Tests(helper: ITestOutputHelper) =
 *.env
 *.pyc
 
-.doc
+*.doc
 "
 
         File.WriteAllText(".gitignore", gitignore)

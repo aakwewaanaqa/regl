@@ -13,8 +13,7 @@ type Pattern =
         member p.visit(cargo : PatternCargo) =
             let nc = NodeCargo(cargo.path, 0)
             let head = p._nodes.Head
-            let result = head.visit nc
-            match result with
+            match head.visit nc with
                 | Some _ ->
                     match p._isExclusive with
                     | true -> cargo.exclude()

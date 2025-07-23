@@ -12,12 +12,15 @@ type WildCard() =
             match w.next with
             | Some next ->
                 let rec loopStep (count: int) =
-                    f
-                    |> NodeCargo.take count
-                    |> next.visit
-                    |> function
-                        | Some f -> Some f
-                        | None -> loopStep (count + 1)
+                    let taken = f |> NodeCargo.take count
+                    if taken |> NodeCargo.isDepleted then
+                        next.visit f
+                    else
+                        taken
+                        |> next.visit
+                        |> function
+                            | Some f -> Some f
+                            | None -> loopStep (count + 1)
 
                 loopStep 0
             | None -> NodeCargo(f.src, f.src.Length - 1) |> Some
