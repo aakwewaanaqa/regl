@@ -2,6 +2,7 @@ module Regl.CommandLine.Commands.Ls
 
 open System.IO
 open System.Text.RegularExpressions
+open Fnm.Types.Builders
 open Regl
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types.FlagsAndParams
@@ -57,16 +58,15 @@ let entry =
                         Directory.GetFiles (pwd, pattern, option)            
                 
                 if ignoreFile |> System.String.IsNullOrWhiteSpace |> not then
-                    let matcher = Matcher()
+                    let foundFilter (found : string) =
+                        ignoreFile
+                        |> MatchBuilder.ofFilePath
+                        |> _.visit(found)
+                        |> _.isIn 
                     
-                    File.ReadAllLines ignoreFile
-                    |> Array.map(_.Trim())
-                    |> Array.filter(fun pattern -> pattern.StartsWith('#') |> not)
-                    |> fun patterns -> matcher.AddExcludePatterns patterns
-       
-                    matcher.Match(founds).Files
-                    |> Seq.map(_.Path)
-                    |> List.ofSeq
+                    founds
+                    |> Array.filter foundFilter
+                    |> List.ofArray
                 else
                     founds
                     |> List.ofArray

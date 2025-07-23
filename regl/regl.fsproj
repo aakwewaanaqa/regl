@@ -20,6 +20,7 @@
 
     <ItemGroup>
         <PackageReference Include="TextCopy" Version="6.2.1"/>
+        <ProjectReference Include="..\fnm\fnm.fsproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -99,8 +100,5 @@
         <Compile Include="src\CommandLine\Shared.fs" />
         <Compile Include="src\Program.fs" />
     </ItemGroup>
-
-    <ItemGroup>
-    </ItemGroup>
-
+    
 </Project>

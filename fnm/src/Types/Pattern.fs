@@ -1,16 +1,24 @@
 namespace Fnm.Types
 
-type Pattern(isExclusive : bool, nodes : INode list) =
-    class
+type Pattern =
+    struct
+        val private _isExclusive : bool
+        val private _nodes : INode list
+        
+        new (isExclusive : bool, nodes : INode list) = {
+            _isExclusive = isExclusive
+            _nodes = nodes
+        }
+        
         member p.visit(cargo : PatternCargo) =
             let nc = NodeCargo(cargo.path, 0)
-            let head = nodes.Head
+            let head = p._nodes.Head
             let result = head.visit nc
             match result with
                 | Some _ ->
-                    match isExclusive with
-                    | true -> cargo.exclude() |> Some
-                    | false -> cargo.``include``() |> Some
+                    match p._isExclusive with
+                    | true -> cargo.exclude()
+                    | false -> cargo.``include``()
                 | None ->
-                    Some cargo
+                    cargo
     end

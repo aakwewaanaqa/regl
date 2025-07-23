@@ -8,12 +8,17 @@
 
     <ItemGroup>
         <Compile Include="src\Types\NodeCargo.fs" />
+        <Compile Include="src\Types\PatternCargo.fs" />
+        
         <Compile Include="src\Types\INode.fs" />
         <Compile Include="src\Types\Nodes\AChar.fs" />
         <Compile Include="src\Types\Nodes\WildCard.fs" />
-        <Compile Include="src\Types\PatternCargo.fs" />
+        
         <Compile Include="src\Types\Pattern.fs" />
+        <Compile Include="src\Types\Matcher.fs" />
+        
         <Compile Include="src\Types\Builders\PatternBuilder.fs" />
+        <Compile Include="src\Types\Builders\MatchBuilder.fs" />
     </ItemGroup>
 
 </Project>
