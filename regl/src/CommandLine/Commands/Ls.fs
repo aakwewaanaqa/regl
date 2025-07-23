@@ -2,7 +2,6 @@ module Regl.CommandLine.Commands.Ls
 
 open System.IO
 open System.Text.RegularExpressions
-open Microsoft.Extensions.FileSystemGlobbing
 open Regl
 open Regl.CommandLine.IO.InOut
 open Regl.CommandLine.Types.FlagsAndParams

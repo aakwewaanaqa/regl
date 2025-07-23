@@ -1,6 +1,6 @@
-namespace fnm.Types
+namespace Fnm.Types
 
-type Flux =
+type NodeCargo =
     struct
         val private _src: string
         val private _index: int
@@ -14,5 +14,5 @@ type Flux =
         member f.index: int = f._index
     end
 
-module Flux =
-    let take (count: int) (f: Flux) = Flux(f.src, f.index + count)
+module NodeCargo =
+    let take (count: int) (f: NodeCargo) = NodeCargo(f.src, f.index + count)
