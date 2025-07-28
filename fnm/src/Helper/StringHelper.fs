@@ -33,6 +33,6 @@ let findScope (opening : char) (closing : char) (str : string) =
     )
     
     if foundStart then
-        (startAt, endAt) |> Some
+        SubstringRange(startAt, endAt - startAt + 1) |> Some
     else
         None
