@@ -7,6 +7,11 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <Compile Include="src\Helper\StringHelper.fs" />
+        <Compile Include="src\Pattern\Parse\ParseCargo.fs" />
+        <Compile Include="src\Pattern\Parse\IPatternParseNode.fs" />
+        <Compile Include="src\Pattern\Parse\Nodes\Negate.fs" />
+        
         <Compile Include="src\Types\NodeCargo.fs" />
         <Compile Include="src\Types\PatternCargo.fs" />
         
@@ -19,6 +24,7 @@
         
         <Compile Include="src\Types\Builders\PatternBuilder.fs" />
         <Compile Include="src\Types\Builders\MatchBuilder.fs" />
+        <Content Include="refactor.md" />
     </ItemGroup>
 
 </Project>
