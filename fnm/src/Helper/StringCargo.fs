@@ -1,5 +1,10 @@
 namespace Fnm.Helper
 
+
+type CargoMode =
+    | DecodeEscape
+    | Normal
+
 type StringCargo =
     struct
         val str: string
@@ -33,3 +38,40 @@ module StringCargo =
             |> _.str.Substring(range.startAt, endAt)
             |> Some
         | _ -> None
+        
+    let tryScope (opening: char) (closing: char) (mode: CargoMode) (cargo: StringCargo) =
+        let mutable isEscaped = false
+        let mutable foundStart = false
+        let mutable startAt = 0
+        let mutable endAt = cargo.length - 1
+        let characters = cargo.str.ToCharArray()
+        
+        characters
+        |> Array.iteri (fun i c ->
+            match c with
+            | '\\' when not isEscaped ->
+                isEscaped <- true
+            | '\\' when isEscaped ->
+                isEscaped <- false
+            | c when not foundStart && not isEscaped && c = opening ->
+                startAt <- i
+                foundStart <- true
+            | _ -> ()
+        )
+        
+        characters
+        |> Array.iteri (fun i c ->
+            match c with
+            | '\\' when not isEscaped ->
+                isEscaped <- true
+            | '\\' when isEscaped ->
+                isEscaped <- false
+            | c when not isEscaped && c = closing ->
+                endAt <- i
+            | _ -> ()
+        )
+        
+        if foundStart then
+            SubstringRange(startAt, endAt - startAt + 1) |> Some
+        else
+            None
