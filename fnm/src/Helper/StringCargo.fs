@@ -16,14 +16,23 @@ type StringCargo =
 
         member cargo.length
             with get () = cargo.str.Length
+            
+        member cargo.take(count: int) =
+            cargo.str.Substring(count - 1) |> StringCargo
     end
     
 module StringCargo =
-    let tryHead (str : StringCargo) =
-        if str.length > 0 then
-            str[0] |> Some
-        else
+    let tryHead (mode: CargoMode) (cargo : StringCargo) =
+        if cargo.length < 1 then
             None
+        elif mode = DecodeEscape && cargo[0] = '\\' then
+            if cargo.length < 2 then
+                None
+            else    
+                (cargo[1], cargo.take 2) |> Some
+        else
+            (cargo[0], cargo.take 1) |> Some
+         
             
     let trySubstring (src: StringCargo) (range: SubstringRange) =
         let isStartIn = range.startAt < src.length
@@ -39,7 +48,7 @@ module StringCargo =
             |> Some
         | _ -> None
         
-    let tryScope (opening: char) (closing: char) (mode: CargoMode) (cargo: StringCargo) =
+    let tryFindScope (opening: char) (closing: char) (mode: CargoMode) (cargo: StringCargo) =
         let mutable isEscaped = false
         let mutable foundStart = false
         let mutable startAt = 0
@@ -49,7 +58,7 @@ module StringCargo =
         characters
         |> Array.iteri (fun i c ->
             match c with
-            | '\\' when not isEscaped ->
+            | '\\' when not isEscaped && mode = DecodeEscape ->
                 isEscaped <- true
             | '\\' when isEscaped ->
                 isEscaped <- false
@@ -62,7 +71,7 @@ module StringCargo =
         characters
         |> Array.iteri (fun i c ->
             match c with
-            | '\\' when not isEscaped ->
+            | '\\' when not isEscaped && mode = DecodeEscape ->
                 isEscaped <- true
             | '\\' when isEscaped ->
                 isEscaped <- false
@@ -75,3 +84,4 @@ module StringCargo =
             SubstringRange(startAt, endAt - startAt + 1) |> Some
         else
             None
+            

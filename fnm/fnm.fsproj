@@ -11,6 +11,7 @@
         <Compile Include="src\Helper\StringHelper.fs" />
         <Compile Include="src\Helper\StringCargo.fs" />
         
+        <Compile Include="src\Pattern\Parse\Parser.fs" />
         <Compile Include="src\Pattern\Parse\ParseCargo.fs" />
         <Compile Include="src\Pattern\Parse\IPatternParseNode.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\Negate.fs" />

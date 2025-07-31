@@ -1,11 +1,18 @@
 namespace Fnm.Pattern.Parse.Nodes
 
+open Fnm.Helper
 open Fnm.Pattern.Parse
 
 type Negate =
-    class
-        interface IPatternParseNode with
+    struct        
+        interface IPatternParseNode<Negate> with
             override n.tryParse cargo =
-                cargo
-                |> ParseCargo.tryTakeChar '!'
+                try
+                    match cargo |> StringCargo.tryHead Normal with
+                    | Some (head, rem) when head = '!' ->
+                        Some (Negate(), rem)
+                    | _ ->
+                        None
+                with _ ->
+                    None
     end
