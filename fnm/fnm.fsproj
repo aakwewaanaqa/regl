@@ -17,6 +17,7 @@
         <Compile Include="src\Pattern\Parse\Nodes\Negate.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\WildCard.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\Bracket\CharRange.fs" />
+        <Compile Include="src\Pattern\Parse\Nodes\Character.fs" />
         
         <Compile Include="src\Types\NodeCargo.fs" />
         <Compile Include="src\Types\PatternCargo.fs" />

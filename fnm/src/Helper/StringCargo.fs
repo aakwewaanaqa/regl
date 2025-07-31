@@ -1,8 +1,10 @@
 namespace Fnm.Helper
 
+open System.Text
 
-type CargoMode =
-    | DecodeEscape
+
+type ConsumeMode =
+    | Escaping
     | Normal
 
 type StringCargo =
@@ -22,19 +24,18 @@ type StringCargo =
     end
     
 module StringCargo =
-    let tryHead (mode: CargoMode) (cargo : StringCargo) =
+    let tryHead (mode: ConsumeMode) (cargo : StringCargo) =
         if cargo.length < 1 then
             None
-        elif mode = DecodeEscape && cargo[0] = '\\' then
+        elif mode = Escaping && cargo[0] = '\\' then
             if cargo.length < 2 then
                 None
             else    
                 (cargo[1], cargo.take 2) |> Some
         else
             (cargo[0], cargo.take 1) |> Some
-         
-            
-    let trySubstring (src: StringCargo) (range: SubstringRange) =
+
+    let trySubstring (range: SubstringRange) (src: StringCargo) =
         let isStartIn = range.startAt < src.length
         let isEndIn = range.endAt < src.length
         match range.endAt with
@@ -48,7 +49,43 @@ module StringCargo =
             |> Some
         | _ -> None
         
-    let tryFindScope (opening: char) (closing: char) (mode: CargoMode) (cargo: StringCargo) =
+    let tryTake (count: int) (mode: ConsumeMode) (cargo: StringCargo) =
+        if cargo.length < count then
+            None
+        elif mode = Escaping then
+            let mutable isEscaped = false
+            let mutable builder = StringBuilder()
+            
+            let rec loopFn (chars: char list) =
+                if builder.Length = count then
+                    builder.ToString() |> Some
+                elif chars.Length = 0 then
+                    None
+                else
+                    match chars.Head with
+                    | '\\' when not isEscaped ->
+                        isEscaped <- true
+                        chars.Tail |> loopFn
+                    | c ->
+                        isEscaped <- false
+                        builder <- builder.Append c
+                        chars.Tail |> loopFn
+            
+            cargo.str.ToCharArray()
+            |> List.ofArray
+            |> loopFn
+            |> function
+                | Some value ->            
+                    let rem = cargo.str.Substring(value.Length) |> StringCargo
+                    (value, rem) |> Some
+                | None ->
+                    None
+        else
+            let value = cargo.str.Substring(0, count)
+            let rem   = cargo.str.Substring(count) |> StringCargo
+            (value, rem) |> Some
+            
+    let tryFindScope (opening: char) (closing: char) (mode: ConsumeMode) (cargo: StringCargo) =
         let mutable isEscaped = false
         let mutable foundStart = false
         let mutable startAt = 0
@@ -58,7 +95,7 @@ module StringCargo =
         characters
         |> Array.iteri (fun i c ->
             match c with
-            | '\\' when not isEscaped && mode = DecodeEscape ->
+            | '\\' when not isEscaped && mode = Escaping ->
                 isEscaped <- true
             | '\\' when isEscaped ->
                 isEscaped <- false
@@ -71,7 +108,7 @@ module StringCargo =
         characters
         |> Array.iteri (fun i c ->
             match c with
-            | '\\' when not isEscaped && mode = DecodeEscape ->
+            | '\\' when not isEscaped && mode = Escaping ->
                 isEscaped <- true
             | '\\' when isEscaped ->
                 isEscaped <- false

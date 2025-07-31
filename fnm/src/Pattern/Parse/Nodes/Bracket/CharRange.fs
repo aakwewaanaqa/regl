@@ -1,36 +1,32 @@
-namespace Fnm.Pattern.Parse.Nodes.Bracket
+module Fnm.Pattern.Parse.Nodes.Bracket.CharRange
 
-open System
 open Fnm.Helper
 open Fnm.Pattern.Parse
 
-type CharRange =
-    struct
-        val rangeStart: char
-        val rangeEnd: char
+let private makeMatchFn (fromChar: char) (toChar: char): Matcher =
+    let fn cargo =
+        match cargo |> StringCargo.tryHead Normal with
+        | Some(c, rem) ->
+            let c = c |> int
+            let f = fromChar |> int
+            let t = toChar |> int
+            if c >= f && c <= t then Some rem else None
+        | None -> None
 
-        new(rangeStart: char, rangeEnd: char) =
-            { rangeStart = rangeStart
-              rangeEnd = rangeEnd }
+    fn
 
-    end
+let parseFn: Parser =
+    let fn cargo =
+        try
+            let fromChar, rem = cargo |> StringCargo.tryHead Escaping |> Option.get
+            let hyphen, rem = rem |> StringCargo.tryHead Normal |> Option.get
 
-module CharRange =
-    let tryParse: Parser<CharRange> =
-        let fn cargo =
-            let esMode = DecodeEscape
-            let nmMode = Normal
-
-            try
-                let head0, rem = cargo |> StringCargo.tryHead esMode |> Option.get
-                let head1, rem = rem |> StringCargo.tryHead nmMode |> Option.get
-
-                if head1 = '-' then
-                    let head2, rem = rem |> StringCargo.tryHead esMode |> Option.get
-                    (CharRange(head0, head2), rem) |> Some
-                else
-                    None
-            with _ ->
+            if hyphen = '-' then
+                let toChar, rem = rem |> StringCargo.tryHead Escaping |> Option.get
+                (makeMatchFn fromChar toChar, rem) |> Some
+            else
                 None
+        with _ ->
+            None
 
-        fn
+    fn
