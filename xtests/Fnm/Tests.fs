@@ -18,14 +18,16 @@ type Tests(helper: ITestOutputHelper) =
     [<InlineData("*.env", "abc/mine.env", true)>]          
     [<InlineData("*.env", "/a/b/c/d/abc/mine.env", true)>] 
     [<InlineData("*.env", "/a/b/c/d/abc/mine.doc", false)>]
+    [<InlineData("*abc*", "/a/b/c/d/abc/mine.doc", true)>]                   
+    [<InlineData("*abc", "/a/b/c/d/abc/mine.doc", true)>]                   
     [<InlineData("*abc", "abc", true)>]                    
     [<InlineData("*abc*", "abc", true)>]                   
     [<InlineData("aab", "abc", false)>]                    
     [<InlineData("aabede", "abc", false)>]                 
-    let ``fact``(pattern: string, path: string, isMatched: bool) =
+    let ``test basic tree``(pattern: string, path: string, isMatched: bool) =
         pattern
         |> StringCargo
-        |> Trees.basicParse
+        |> Trees.basicTree
         |> function
             | Some matcher ->
                 path

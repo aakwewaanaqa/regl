@@ -5,7 +5,7 @@ open Fnm.Helper
 open Fnm.Pattern.Parse.Nodes
 
 
-let basicParse (pattern: StringCargo) =
+let basicTree (pattern: StringCargo) =
     let bindParser (second: Parser) (first: Parser) : Parser =
         let combined cargo =
             match cargo |> first with
@@ -23,7 +23,8 @@ let basicParse (pattern: StringCargo) =
         |> bindParser WildCard.parseFn
         |> bindParser Character.parseFn
 
-    /// Matchers have to be bound for the condition that if the first passed. 
+    /// Matchers have to be bound for the condition that if the first passed.
+    /// Also their 
     let bindMatcher (second: Matcher) (first: Matcher) : Matcher =
         let combined cargo =
             let rec run () =
@@ -37,7 +38,10 @@ let basicParse (pattern: StringCargo) =
             
             run ()
 
-        combined |> CannotFail
+        if first.IsCanRetry || second.IsCanRetry then
+            combined |> CanRetry
+        else
+            combined |> CannotFail
 
     let rec matchTree (previous: Matcher) (rem: StringCargo) =
         match rem |> parseTree with

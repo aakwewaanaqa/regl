@@ -3,7 +3,7 @@ module Fnm.Pattern.Parse.Nodes.WildCard
 open Fnm.Helper
 open Fnm.Pattern.Parse
 
-let private matchFn: Matcher =
+let private makeMatchFn (): Matcher =
     let mutable attempt = 0
 
     let fn cargo =
@@ -20,7 +20,7 @@ let parseFn: Parser =
         match cargo |> StringCargo.tryHead Escaping with
         | Some(c, rem) ->
             match c with
-            | NotEscaped c when c = '*' -> (matchFn, rem) |> Some
+            | NotEscaped c when c = '*' -> (makeMatchFn (), rem) |> Some
             | _ -> None
         | _ -> None
 
