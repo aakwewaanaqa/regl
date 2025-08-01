@@ -9,12 +9,13 @@
     <ItemGroup>
         <Compile Include="src\Helper\SubstringRange.fs" />
         <Compile Include="src\Helper\StringHelper.fs" />
+        <Compile Include="src\Helper\CharCargo.fs" />
         <Compile Include="src\Helper\StringCargo.fs" />
         
         <Compile Include="src\Pattern\Parse\Delegates.fs" />
-        <Compile Include="src\Pattern\Parse\Nodes\Negate.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\WildCard.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\Bracket\CharRange.fs" />
+        <Compile Include="src\Pattern\Parse\Nodes\Bracket\Negate.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\Character.fs" />
         <Compile Include="src\Pattern\Parse\Nodes\Any.fs" />
         <Compile Include="src\Pattern\Parse\Trees.fs" />

@@ -3,18 +3,18 @@ module Fnm.Pattern.Parse.Nodes.Character
 open Fnm.Helper
 open Fnm.Pattern.Parse
 
-let private makeMatchFn (c: char): Matcher =
+let private makeMatchFn (character: char): Matcher =
     let fn cargo =
         match cargo |> StringCargo.tryHead Normal with
-        | Some(v, rem) when v = c -> Some rem 
+        | Some(c, rem) when c.character = character -> Some rem 
         | _ -> None
         
-    fn
+    fn |> CannotFail
     
 let parseFn: Parser =
     let fn cargo =
         match cargo |> StringCargo.tryHead Escaping with
-        | Some(c, rem) -> (makeMatchFn c, rem) |> Some
+        | Some(c, rem) -> (makeMatchFn c.character, rem) |> Some
         | None -> None
     
     fn

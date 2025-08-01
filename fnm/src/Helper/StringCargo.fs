@@ -20,20 +20,46 @@ type StringCargo =
             with get () = cargo.str.Length
             
         member cargo.take(count: int) =
-            cargo.str.Substring(count - 1) |> StringCargo
+            cargo.str.Substring(count) |> StringCargo
     end
     
 module StringCargo =
-    let tryHead (mode: ConsumeMode) (cargo : StringCargo) =
-        if cargo.length < 1 then
+    let tryHead (mode: ConsumeMode) (cargo: StringCargo) =
+        if cargo.length = 0 then
             None
-        elif mode = Escaping && cargo[0] = '\\' then
-            if cargo.length < 2 then
-                None
-            else    
-                (cargo[1], cargo.take 2) |> Some
         else
-            (cargo[0], cargo.take 1) |> Some
+            match mode with
+            | Escaping when cargo[0] = '\\' ->
+                if cargo.length = 1 then
+                    None
+                else
+                    (cargo[1] |> Escaped, cargo.take 2) |> Some
+            | Escaping -> (cargo[0] |> NotEscaped, cargo.take 1) |> Some
+            | Normal -> (cargo[0] |> NotEscaped, cargo.take 1) |> Some
+            
+    let tryFind (character: char) (mode: ConsumeMode) (cargo: StringCargo) =
+        match mode with
+        | Escaping ->
+            let mutable isEscaped = false
+            let rec findFn (rem: char list) =
+                if rem.Length = 0 then
+                    None
+                else
+                    match rem.Head with
+                    | '\\' when not isEscaped ->
+                        isEscaped <- true
+                        findFn rem.Tail
+                    | c when isEscaped && c = character -> c |> Escaped |> Some
+                    | c when c = character -> c |> NotEscaped |> Some
+                    | c -> findFn rem.Tail
+            
+            cargo.str.ToCharArray()
+            |> List.ofArray
+            |> findFn
+        | Normal ->
+            match cargo.str.IndexOf(character) with
+            | -1 -> None
+            | _ -> character |> NotEscaped |> Some
 
     let trySubstring (range: SubstringRange) (src: StringCargo) =
         let isStartIn = range.startAt < src.length

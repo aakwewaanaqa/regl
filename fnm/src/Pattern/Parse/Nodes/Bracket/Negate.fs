@@ -1,14 +1,14 @@
-module Fnm.Pattern.Parse.Nodes.Any
+module Fnm.Pattern.Parse.Nodes.Bracket.Negate
 
 open Fnm.Helper
 open Fnm.Pattern.Parse
 
-let matchFn: Matcher =
+let private matchFn: Matcher =
     let fn cargo =
         match cargo |> StringCargo.tryHead Normal with
-        | Some(c, rem) -> rem |> Some
-        | None -> None
-    
+        | Some(c, rem) when c.character = '!' -> Some rem
+        | _ -> None
+
     fn |> CannotFail
 
 let parseFn: Parser =
@@ -16,7 +16,8 @@ let parseFn: Parser =
         match cargo |> StringCargo.tryHead Escaping with
         | Some(c, rem) ->
             match c with
-            | NotEscaped c when c = '?' -> (matchFn, rem) |> Some
+            | NotEscaped c when c = '!' -> (matchFn, rem) |> Some
             | _ -> None
         | _ -> None
+
     fn

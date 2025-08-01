@@ -36,6 +36,7 @@
         <Compile Include="Commands\Gen\Copy\Tests.fs" />
         <Compile Include="Commands\Gen\Import\Tests.fs" />
         <Compile Include="Commands\Gen\Tpl\Tests.fs" />
+        <Compile Include="Fnm\Tests.fs" />
         <Compile Include="Program.fs"/>
     </ItemGroup>
 

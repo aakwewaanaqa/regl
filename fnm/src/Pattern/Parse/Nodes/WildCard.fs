@@ -13,12 +13,15 @@ let private matchFn: Matcher =
             rem |> Some
         | None -> None
 
-    fn
+    fn |> CanRetry
 
 let parseFn: Parser =
     let fn cargo =
-        match cargo |> StringCargo.tryHead Normal with
-        | Some(head, rem) when head = '*' -> (matchFn, rem) |> Some
+        match cargo |> StringCargo.tryHead Escaping with
+        | Some(c, rem) ->
+            match c with
+            | NotEscaped c when c = '*' -> (matchFn, rem) |> Some
+            | _ -> None
         | _ -> None
 
     fn
